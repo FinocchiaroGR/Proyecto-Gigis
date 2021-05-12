@@ -13,13 +13,13 @@
 
           <% if(mostrarCalif) { %>
 
-            <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= intervalos.cicloIni %> </td>
+            <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini %> </td>
 
             <% let cicloCont = 0, progCont = 0; %>
-            <% for(let i = 0; i<intervalos.cant; i++) { %>
-              <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= (parseInt(intervalos.cicloIni)+parseInt(cicloCont)) %> </td>
+            <% for(let i = 0; i<cantCol; i++) { %>
+              <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= (parseInt(ciclos.ini)+parseInt(cicloCont)) %> </td>
               
-              <% if(((progCont+1) % listaProg.length) === 0){ %>
+              <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
               <% } else { %>
                 <%progCont++;%>
@@ -33,7 +33,7 @@
           <% } %>
         </tr>
       </thead>
-      <% for(let i = 0; i < datos.length; i++) { %>
+      <% for(let i = 0; i < cantPart; i++) { %>
         <tr>
 
           <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
@@ -44,6 +44,20 @@
           <% } %>
 
           <% if(mostrarCalif) { %>
+
+            <% cicloCont = 0, progCont = 0; %>
+            <% for(let j = 0; j < cantCol; j++) { %>
+              <% if(((progCont+1) % cantProg) === 0){ %>
+              <td> </td>
+              
+              <% if(((progCont+1) % cantProg) === 0){ %>
+                <% progCont = 0; cicloCont++;%>
+              <% } else { %>
+                <%progCont++;%>
+              <% } %>
+            <% } %>
+            <!-- 
+
             <td><%= Math.round((datos[i][col_Datos[6]['name']]) * 10) / 10 %> </td>
 
             <% let acumProm=0,contProm = 0,flag=0;%>
@@ -61,6 +75,7 @@
             <td><%= Math.round((datos[i][col_Datos[flag]['name']] ) * 10) / 10 %></td>
             <td><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
             <td><%= Math.round(((datos[i][col_Datos[flag]['name']] - datos[i][col_Datos[6]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
+            -->
           <% } %>
         </tr>
       <% } %>

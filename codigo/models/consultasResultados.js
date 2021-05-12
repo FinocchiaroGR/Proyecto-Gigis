@@ -1,3 +1,4 @@
+const database = require('../util/database');
 const db = require('../util/database');
 
 const color = ['red', 'blue', 'green', 'yellow'];
@@ -27,10 +28,6 @@ module.exports = class DatosConsultas {
   setListaProg(listaProgam){
     //console.table(listaProgam);
     this.listaProgam = listaProgam;
-  }
-
-  getListaProg(){
-    return this.listaProgam;
   }
 
   getModoConsulta(){
@@ -104,22 +101,6 @@ module.exports = class DatosConsultas {
         califOava:      this.califOava
       };
       return arrdeBools;
-  }
-
-  getIntervalos(){
-        let cantJoins = 0;
-        if(this.intervaloCiclo){
-            cantJoins = (this.cicloFin - this.cicloIni+1)*this.listaProgam.length;
-        } else {
-            cantJoins = this.listaProgam.length;
-        }
-        let intervalos = {
-            cant : cantJoins,
-            cicloIni : this.cicloIni,
-            cicloFin : this.cicloFin,
-            cantProg : this.listaProgam.length
-        };
-        return intervalos;
   }
 
   fetch(){
@@ -351,7 +332,7 @@ module.exports = class DatosConsultas {
   }
 
   fetch2() {
-    let texto = 'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno';
+    let texto = 'SELECT login, nombreUsuario, apellidoPaterno, apellidoMaterno, idCiclo, idPrograma';
     let vars = [];
 
     //Mostrar sexo y edad de los participantes
@@ -443,10 +424,40 @@ module.exports = class DatosConsultas {
         }
         vars.push(this.valueSexo);
     }
-    console.log(texto);
+    console.log('Final: \n' + texto);
     this.ultimaConsulta = texto;
     this.varsUltimaConsulta = vars;
     return db.execute(texto,vars);
+  }
+
+  fetchCants(){
+    let TotCol = 0;
+    if(this.intervaloCiclo){
+        TotCol = (this.cicloFin - this.cicloIni+1)*this.listaProgam.length;
+    } else {
+        TotCol = this.listaProgam.length;
+    }
+    let data = {
+        TotCol : TotCol,
+        cicloIni : this.cicloIni,
+        cicloFin : this.cicloFin,
+        TotProg : this.listaProgam.length,
+        TotCicl : this.cicloFin - this.cicloIni+1,
+        listaProg : this.listaProgam, 
+        TotPart : 0
+    }
+    let texto = 'SELECT COUNT(*) AS `TotPart` FROM (' + this.ultimaConsulta + 'GROUP BY login) t';
+    let vars = this.varsUltimaConsulta;
+    db.execute(texto,vars)
+    .then(([rows, fieldData]) => {
+        data.TotPart = rows[0].TotPart;
+        if(data.TotPart === 0){
+            throw Error('No existen coincidencias con estas condiciones');
+        }
+        return data;
+    }).catch( err => {
+        console.log(err);
+    });
   }
 
   fetchGen(){

@@ -197,32 +197,38 @@ const arrows = Arrow.fetchAll();
 
 exports.getResultados = ((request, response, next) => {
     let bools = datosConsultas.getBools();
-    let intervalos = datosConsultas.getIntervalos();
-    let listaProg = datosConsultas.getListaProg();
     Programas.fetchAll()
     .then(([rows_Programas, fieldData_Prog]) => {
-        datosConsultas.fetch()
+        datosConsultas.fetch2()
         .then(([rowsDatos, fieldData_Datos]) => {
-            datosConsultas.fetchGen()
-            .then(([rowsGen, fieldData_Gen]) => {
+            datosConsultas.fetchCants()
+            .then((metaData) => {
                 console.table(rowsDatos);
                 console.table(rows_Programas);
-                console.table(rowsGen);
+                //console.table(rowsGen);
                 response.render('consultas_Resultados', {
                     tituloDeHeader: "Consulta - Resultados",
                     tituloBarra: "Resultados de consulta",
-                    intervalos: intervalos,
-                    listaProg : listaProg,
+                    //metadata
+                    cantProg : metaData.TotProg,
+                    cantCiclos : metaData.TotCicl,
+                    cantCol : metaData.TotCol,
+                    cantPart : metaData.TotPart,
+                    ciclos : {ini : metaData.cicloIni, fin : metaData.cicloFin},
+                    listaProg : metaData.listaProg,
+                    //bools
                     estadoConsulta: bools.estadoConsulta,
                     mostrarSexEdad: bools.mostrarSexEdad,
                     mostrarCalif: bools.mostrarCalif,
-                    datos: rowsDatos,
-                    consultaGen: rowsGen,
-                    programas: rows_Programas,
-                    col_Datos: fieldData_Datos,
-                    col_Gen: fieldData_Gen,
                     califOava: bools.califOava,
+                    //datos
+                    datos: rowsDatos,                    
+                    programas: rows_Programas,
+                    //datos generales
+                    //consultaGen: rowsGen,
+                    //datos por grupos/terapeutas
                     programasResultados: programasResultados,
+                    //utils
                     backArrow: {display: 'block', link: '/consultas'},
                     forwArrow: arrows[1]
                 });

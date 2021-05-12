@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $(document).ready(function(){
         $('select').formSelect();
+        $('.js-example-basic-single').select2();
       });
 
 M.AutoInit();
