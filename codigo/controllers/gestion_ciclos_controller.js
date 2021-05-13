@@ -66,9 +66,11 @@ exports.postAgrCiclo= (request,response,next) => {
                 let idCiclo = idUltimoCiclo[0].idCiclo;
                 for (let p in request.body.prograsSel){
                     let idPrograma = request.body.prograsSel[p];
+                    let psize = Object.keys(request.body.prograsSel).length;
                     for (let t in request.body.terapAsig){
                         let idProgAsig = request.body.terapAsig[t][0].idPrograma;
                         let login = request.body.terapAsig[t][0].login.toString();
+                        let tsize = Object.keys(request.body.terapAsig).length;
                         if (idPrograma === idProgAsig){
                             let numeroGrupo =  parseInt(t) + 1;
                             let grupo = new Grupo(numeroGrupo, idPrograma, idCiclo);
@@ -82,32 +84,33 @@ exports.postAgrCiclo= (request,response,next) => {
                                             .then(() => {
                                                 console.log("Asignacion al grupo:")
                                                 console.log(idGrupo);
-                                                console.log("holis");
-                                                if (){
-                                                    console.log("ola final");
-                                                    return response.redirect('/gestionAdmin/gestionCiclos'); 
+                                                let auxp = parseInt(p,10) + 1;
+                                                let auxt = parseInt(t,10) + 1;
+                                                if (auxp === psize && auxt === tsize){
+                                                    request.session.error = undefined;
+                                                    request.session.bandera =true;
                                                 }
                                             }).catch( err => {
-                                                console.log(err);
-                                                response.redirect('/gestionAdmin/');    
+                                                console.log(err); 
+                                                request.session.error = "El ciclo no se pudo registrar correctamente.";
+                                                request.session.bandera =true;  
                                             }); 
                                     })
                                     .catch(err => console.log(err));          
                                 }).catch( err => {
-                                    console.log(err);
-                                    response.redirect('/gestionAdmin/');    
+                                    console.log(err); 
+
                                 });
                         }
                     }
                 }
-                
             }).catch( err => {
-                console.log(err);
-                response.redirect('/gestionAdmin/');    
+                console.log(err);  
+
             });        
         }).catch( err => {
             console.log(err);
-            response.redirect('/gestionAdmin/');    
+
         });
 };
 
