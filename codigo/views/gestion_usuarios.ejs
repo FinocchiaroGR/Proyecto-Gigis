@@ -41,11 +41,18 @@
       </div>
     </div>
 </div>    
+<input type="hidden" id="error" value="<%= error %>">
+<input type="hidden" id="bandera" value="<%= bandera%>">
 
-<% if (error !== false && bandera == true) { %>
-  <a id = "toastNuevoUsuario" onclick="M.toast({html: '<%- error %>', length:7500, classes: 'black'})" class="btn" style="visibility: hidden"></a> 
-<% } %>   
-<% if (error === false && bandera == true){ %>
-  <a id = "toastNuevoUsuario" onclick="M.toast({html: 'El usuario fue registrado correctamente.',  length:6500, classes: 'grey'})" class="btn" style="visibility: hidden"></a>  
-<% } %> 
 <%- include('include/footer.ejs') %>
+
+<script>
+  let error = document.getElementById('error').value;
+  let bandera = document.getElementById('bandera').value;
+  if (error !== 'false' && bandera == 'true'){
+    M.toast({html: '<%- error %>', length:7500, classes: 'black'})
+  }
+  if (error === 'false' && bandera == 'true'){
+    M.toast({html: 'El usuario fue registrado correctamente.',  length:6500, classes: 'grey'})
+  }
+</script>
