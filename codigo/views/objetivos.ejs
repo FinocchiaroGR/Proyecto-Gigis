@@ -46,18 +46,20 @@
 <ul class="collapsible"> 
     <% let i = 1; %>
     <% for (objetivo of objetivos) { %>  
-        <li>
-            <div class="collapsible-header">
-                <%= i%>.- <%= objetivo.descripcion %>
-                <span class="badge">
-                    <!-- Modal Editar -->
-                    <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
-                    <!-- Modal Eliminar -->
-                    <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
-                </span>
-            </div>
-        </li>
-        <% i++; %>
+        <% if (objetivo.estatus === 1) { %>
+            <li>
+                <div class="collapsible-header">
+                    <%= i%>.- <%= objetivo.descripcion %>
+                    <span class="badge">
+                        <!-- Modal Editar -->
+                        <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
+                        <!-- Modal Eliminar -->
+                        <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
+                    </span>
+                </div>
+            </li>
+            <% i++; %>
+        <% } %>
     <% } %>
 </ul>
 

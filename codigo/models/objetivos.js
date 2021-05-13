@@ -30,7 +30,7 @@ module.exports = class Objetivo {
     }
 
     static eliminar(idObjetivo){
-        return db.execute('DELETE FROM objetivos WHERE idObjetivo=?', [idObjetivo])
+        return db.execute('UPDATE objetivos SET estatus=0 WHERE idObjetivo=?', [idObjetivo])
     }
 }
 

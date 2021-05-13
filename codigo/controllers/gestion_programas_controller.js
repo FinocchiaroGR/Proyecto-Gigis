@@ -27,7 +27,6 @@ exports.nivelObjetivos = (request, response, next) => {
 };
 
 exports.registrarObjetivo = (request, response, next) => {
-  console.log(request.body);
   const nuevo = new Objetivo(request.body.idNivel, request.body.descripcion);
   nuevo.save()
     .then(() => {
