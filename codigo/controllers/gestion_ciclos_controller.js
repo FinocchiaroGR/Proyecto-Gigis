@@ -70,19 +70,23 @@ exports.postAgrCiclo= (request,response,next) => {
                         let idProgAsig = request.body.terapAsig[t][0].idPrograma;
                         let login = request.body.terapAsig[t][0].login.toString();
                         if (idPrograma === idProgAsig){
-                            let numeroGrupo = t + 1;
+                            let numeroGrupo =  parseInt(t) + 1;
                             let grupo = new Grupo(numeroGrupo, idPrograma, idCiclo);
                             grupo.save()
                                 .then(() => {
                                     Grupo.fetchIdUltimoGrupo(idPrograma, idCiclo, numeroGrupo)
                                     .then(([idUltimoGrupo, fieldData1]) => {
-                                       let idGrupo =  idUltimoGrupo[0].idGrupo;  
-                                       const asignacion = new Grupo_Terapeuta(idGrupo, login);
+                                    let idGrupo =  idUltimoGrupo[0].idGrupo;  
+                                    const asignacion = new Grupo_Terapeuta(idGrupo, login);
                                         asignacion.save()
                                             .then(() => {
                                                 console.log("Asignacion al grupo:")
                                                 console.log(idGrupo);
-                                                console.log("grupo guardado");
+                                                console.log("holis");
+                                                if (){
+                                                    console.log("ola final");
+                                                    return response.redirect('/gestionAdmin/gestionCiclos'); 
+                                                }
                                             }).catch( err => {
                                                 console.log(err);
                                                 response.redirect('/gestionAdmin/');    
@@ -96,7 +100,7 @@ exports.postAgrCiclo= (request,response,next) => {
                         }
                     }
                 }
-                response.redirect('/gestionAdmin/gestionCiclos'); 
+                
             }).catch( err => {
                 console.log(err);
                 response.redirect('/gestionAdmin/');    
