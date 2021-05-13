@@ -21,15 +21,25 @@ const mes = [
     'Noviembre',
     'Diciembre'
 ];
-const grupos = [{numero: '1'}, {numero: '2'}] 
 
-exports.getInsGrupo = (request,response,next) => {
+exports.getInscribir = (request,response,next) => {
+    const error = request.session.error === undefined ? 'false' : request.session.error;
+    const bandera = 'true';
+    request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
     response.render('gc_inscribir', {
+        error: error,
+        bandera: bandera,
         tituloDeHeader: "Inscribir participantes",
         tituloBarra: "Inscribir participantes en Lectura",
         backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
         forwArrow: arrows[1]
     });
+    request.session.error = undefined;
+    request.session.bandera =undefined;
+};
+
+exports.postInscribir = (request,response,next) => {
+    
 };
 
 exports.getAgrCiclo = (request,response,next) => {
@@ -39,11 +49,10 @@ exports.getAgrCiclo = (request,response,next) => {
         .then(([terapeutas, fieldData1]) => {
             Ciclo.fetchFechaFinalUltimoCiclo()
             .then(([fechaLimite, fieldData1]) => {
-                response.render('agregar_ciclo', {
+                response.render('gc_agregar_ciclo', {
                     fechaLimite: fechaLimite,
                     programas: programas,
                     terapeutas: terapeutas,
-                    grupos: grupos,
                     tituloDeHeader: "Nuevo ciclo",
                     tituloBarra: "Nuevo ciclo",
                     backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
@@ -66,11 +75,9 @@ exports.postAgrCiclo= (request,response,next) => {
                 let idCiclo = idUltimoCiclo[0].idCiclo;
                 for (let p in request.body.prograsSel){
                     let idPrograma = request.body.prograsSel[p];
-                    let psize = Object.keys(request.body.prograsSel).length;
                     for (let t in request.body.terapAsig){
                         let idProgAsig = request.body.terapAsig[t][0].idPrograma;
                         let login = request.body.terapAsig[t][0].login.toString();
-                        let tsize = Object.keys(request.body.terapAsig).length;
                         if (idPrograma === idProgAsig){
                             let numeroGrupo =  parseInt(t) + 1;
                             let grupo = new Grupo(numeroGrupo, idPrograma, idCiclo);
@@ -84,22 +91,14 @@ exports.postAgrCiclo= (request,response,next) => {
                                             .then(() => {
                                                 console.log("Asignacion al grupo:")
                                                 console.log(idGrupo);
-                                                let auxp = parseInt(p,10) + 1;
-                                                let auxt = parseInt(t,10) + 1;
-                                                if (auxp === psize && auxt === tsize){
-                                                    request.session.error = undefined;
-                                                    request.session.bandera =true;
-                                                }
                                             }).catch( err => {
                                                 console.log(err); 
                                                 request.session.error = "El ciclo no se pudo registrar correctamente.";
-                                                request.session.bandera =true;  
                                             }); 
                                     })
                                     .catch(err => console.log(err));          
                                 }).catch( err => {
                                     console.log(err); 
-
                                 });
                         }
                     }
@@ -107,10 +106,10 @@ exports.postAgrCiclo= (request,response,next) => {
             }).catch( err => {
                 console.log(err);  
 
-            });        
+            });     
         }).catch( err => {
             console.log(err);
-
+            request.session.error = "El ciclo no se pudo registrar correctamente.";
         });
 };
 
@@ -127,6 +126,7 @@ exports.getPerfilCiclo = (request,response,next) => {
 };
 
 exports.get = (request,response,next) => {
+    const estado = request.session.estadogc === undefined ? 'vacio' : request.session.estadogc;
     Ciclo.fetchAll()
         .then(([ciclos, fieldData1]) => {
             Ciclo.fetchCiclosAnioActual()
@@ -134,6 +134,7 @@ exports.get = (request,response,next) => {
                     Ciclo.fetchAniosPasados()
                         .then(([a_pasados, fieldData1]) => {
                             response.render('gestion_ciclos', {
+                                estado: estado,
                                 ciclos: ciclos,
                                 a_pasados:a_pasados,
                                 ciclos_aactual: ciclos_aactual,
