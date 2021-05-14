@@ -102,9 +102,17 @@
     </div>
 </form><!-- Fin Modal Structure Eliminar Objetivo-->
 
+<input type="hidden" id="registroExitosoObj" value="<%=registro_exitoso%>">
+
 <%- include('include/footer.ejs') %>
 
 <script>
+    let registro_exitoso = document.getElementById('registroExitosoObj').value;
+
+    if (registro_exitoso !== 'false'){
+        M.toast({html: registro_exitoso ,  length:6500, classes: 'grey'})
+    }
+
     const obtenerIdObj = (idObjetivo) => {
         html = '<input type="hidden" name="idObjetivo" value="' + idObjetivo + '">'
         document.getElementById('idObjetivo').innerHTML = html;

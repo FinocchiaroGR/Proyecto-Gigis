@@ -5,6 +5,7 @@ const Nivel = require('../models/niveles');
 const arrows = Arrow.fetchAll();
 
 exports.nivelObjetivos = (request, response, next) => {
+  const registro_exitoso = request.session.registro_exitoso === undefined ? false : request.session.registro_exitoso;
   Nivel.fetchNombrePrograma(request.params.nivel_id)
     .then(([programa,fieldData]) => {
       Objetivo.objetivosPorNivel(request.params.nivel_id)
@@ -15,6 +16,7 @@ exports.nivelObjetivos = (request, response, next) => {
           tituloBarra: tituloBarra,
           idNivel: request.params.nivel_id,
           objetivos: objetivos,
+          registro_exitoso: registro_exitoso,
           backArrow: { display: 'block', link: '/gestionAdmin/gestionProgramas' },
           forwArrow: arrows[1],
         });
@@ -31,6 +33,7 @@ exports.registrarObjetivo = (request, response, next) => {
     .then(([existe,fieldData]) => {
       Objetivo.activar(existe[0].descripcion)
         .then(() => {
+          request.session.registro_exitoso = 'El objetivo se registró correctamente';
           response.redirect('./' + request.body.idNivel);
         }).catch((err) => {
           console.log(err);
@@ -39,24 +42,19 @@ exports.registrarObjetivo = (request, response, next) => {
       const nuevo = new Objetivo(request.body.idNivel, request.body.descripcion);
       nuevo.save()
         .then(() => {
+          request.session.registro_exitoso = 'El objetivo se registró correctamente';
           response.redirect('./' + request.body.idNivel);
         }).catch((err) => {
           console.log(err);
         });
     });
-  /*const nuevo = new Objetivo(request.body.idNivel, request.body.descripcion);
-  nuevo.save()
-    .then(() => {
-      response.redirect('./' + request.body.idNivel);
-    }).catch((err) => {
-      console.log(err);
-    });*/
 };
 
 exports.editarObjetivo  = (request, response, next) => {
   
   Objetivo.actualizarObjetivo(request.body.idNivel, request.body.idObjetivo,request.body.descripcion)
     .then(() => {
+      request.session.registro_exitoso = 'El objetivo se actualizó correctamente';
       response.redirect('./' + request.body.idNivel);
     }).catch((err) => {
       console.log(err);
@@ -66,6 +64,7 @@ exports.editarObjetivo  = (request, response, next) => {
 exports.eliminarObjetivo  = (request, response, next) => {
   Objetivo.eliminar(request.body.idObjetivo)
     .then(() => {
+      request.session.registro_exitoso = 'El objetivo se eliminó correctamente';
       response.redirect('./' + request.body.idNivel);
     }).catch((err) => {
       console.log(err);
