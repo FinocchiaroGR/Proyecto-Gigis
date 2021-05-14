@@ -27,13 +27,30 @@ exports.nivelObjetivos = (request, response, next) => {
 };
 
 exports.registrarObjetivo = (request, response, next) => {
-  const nuevo = new Objetivo(request.body.idNivel, request.body.descripcion);
+  Objetivo.existe(request.body.descripcion)
+    .then(([existe,fieldData]) => {
+      Objetivo.activar(existe[0].descripcion)
+        .then(() => {
+          response.redirect('./' + request.body.idNivel);
+        }).catch((err) => {
+          console.log(err);
+        });
+    }).catch((err) => {
+      const nuevo = new Objetivo(request.body.idNivel, request.body.descripcion);
+      nuevo.save()
+        .then(() => {
+          response.redirect('./' + request.body.idNivel);
+        }).catch((err) => {
+          console.log(err);
+        });
+    });
+  /*const nuevo = new Objetivo(request.body.idNivel, request.body.descripcion);
   nuevo.save()
     .then(() => {
       response.redirect('./' + request.body.idNivel);
     }).catch((err) => {
       console.log(err);
-    });
+    });*/
 };
 
 exports.editarObjetivo  = (request, response, next) => {
