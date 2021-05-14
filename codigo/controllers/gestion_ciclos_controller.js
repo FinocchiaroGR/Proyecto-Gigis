@@ -73,15 +73,22 @@ exports.getAgrCiclo = (request,response,next) => {
         .then(([terapeutas, fieldData1]) => {
             Ciclo.fetchFechaFinalUltimoCiclo()
             .then(([fechaLimite, fieldData1]) => {
-                response.render('gc_agregar_ciclo', {
-                    fechaLimite: fechaLimite,
-                    programas: programas,
-                    terapeutas: terapeutas,
-                    tituloDeHeader: "Nuevo ciclo",
-                    tituloBarra: "Nuevo ciclo",
-                    backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-                    forwArrow: arrows[1]
-                });
+                Grupo.fetchIdUltimoGrupo()
+                    .then(([idUltimoGrupo, fieldData1]) => {
+                    request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
+                    console.log("id last grup");
+                    console.log(request.session.idlastgrupo);
+                    response.render('gc_agregar_ciclo', {
+                        fechaLimite: fechaLimite,
+                        programas: programas,
+                        terapeutas: terapeutas,
+                        tituloDeHeader: "Nuevo ciclo",
+                        tituloBarra: "Nuevo ciclo",
+                        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+                        forwArrow: arrows[1]
+                    });
+                    })
+                    .catch(err => console.log(err)); 
             })
             .catch(err => console.log(err));
         })
@@ -92,6 +99,7 @@ exports.getAgrCiclo = (request,response,next) => {
 
 exports.postAgrCiclo= (request,response,next) => {
     let idCiclo = parseInt(request.session.idlastciclo) + 1;
+    let idGrupo =  parseInt(request.session.idlastgrupo); 
     const ciclo = new Ciclo(idCiclo,request.body.fechaInicial, request.body.fechaFinal);
     ciclo.save()
         .then(() => {
@@ -102,25 +110,14 @@ exports.postAgrCiclo= (request,response,next) => {
                     let login = request.body.terapAsig[t][0].login.toString();
                     if (idPrograma === idProgAsig){
                         let numeroGrupo =  parseInt(t) + 1;
-                        let grupo = new Grupo(numeroGrupo, idPrograma, idCiclo);
+                        idGrupo += 1;  
+                        let grupo = new Grupo(idGrupo,numeroGrupo, idPrograma, idCiclo,login);
                         grupo.save()
                             .then(() => {
-                                Grupo.fetchIdUltimoGrupo(idPrograma, idCiclo, numeroGrupo)
-                                .then(([idUltimoGrupo, fieldData1]) => {
-                                let idGrupo =  idUltimoGrupo[0].idGrupo;  
-                                const asignacion = new Grupo_Terapeuta(idGrupo, login);
-                                    asignacion.save()
-                                        .then(() => {
-                                            console.log("Asignacion al grupo:")
-                                            console.log(idGrupo);
-                                        }).catch( err => {
-                                            console.log(err); 
-                                            request.session.error = "El ciclo no se pudo registrar correctamente.";
-                                        }); 
-                                })
-                                .catch(err => console.log(err));          
+                                request.session.error = undefined;                                   
                             }).catch( err => {
                                 console.log(err); 
+                                request.session.error = "No se pudieron asignar los grupos correctamente.";
                             });
                     }
                 }

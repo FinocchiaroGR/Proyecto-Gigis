@@ -2,18 +2,25 @@ const db = require('../util/database');
 
 module.exports = class Grupo {
   //Constructor de la clase. Sirve para crear un nuevo objeto, y en él se definen las propiedades del modelo
-  constructor(numeroGrupo, idPrograma, idCiclo) {
+  constructor(idGrupo,numeroGrupo, idPrograma, idCiclo, login) {
+    this.idGrupo = idGrupo;
     this.numeroGrupo = numeroGrupo;
     this.idPrograma = idPrograma;
     this.idCiclo = idCiclo;
+    this.login = login;
   }
 
   //Este método servirá para guardar de manera persistente el nuevo objeto.
   save() {
     return db.execute(
-      'INSERT INTO grupos (numeroGrupo, idPrograma, idCiclo) VALUES (?,?,?)',
-      [this.numeroGrupo, this.idPrograma, this.idCiclo]
-    );
+      'INSERT INTO grupos (idGrupo, numeroGrupo, idPrograma, idCiclo) VALUES (?,?,?,?)',
+      [this.idGrupo,this.numeroGrupo, this.idPrograma, this.idCiclo]
+    ).then(() => {
+      return db.execute('INSERT INTO grupos_terapeutas (idGrupo, login) VALUES (?, ?)',
+      [this.idGrupo,this.login])
+    }).catch(err => {
+        console.log(err);
+    });
   }
 
   //Este método servirá para devolver los objetos del almacenamiento persistente.
@@ -38,10 +45,9 @@ module.exports = class Grupo {
     );
   }
 
-  static fetchIdUltimoGrupo(idPrograma, idCiclo, numeroGrupo) {
+  static fetchIdUltimoGrupo() {
     return db.execute(
-      'SELECT idGrupo FROM grupos WHERE idPrograma = ? AND idCiclo = ? AND numeroGrupo = ?',
-      [idPrograma, idCiclo, numeroGrupo]
+      'SELECT MAX(idGrupo) AS idlastgrupo FROM grupos'
     );
   }
 
