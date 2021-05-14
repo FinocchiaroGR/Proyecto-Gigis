@@ -1,14 +1,13 @@
 <%- include('include/head.ejs') %>
 <%- include('include/titleBar.ejs') %>
 <%- include('include/sideNavBar.ejs') %>   
-<h4>Programas</h4>
 <div class="row">
     <div class="col s8 m10">
         <input type="text" id="b" class="b" style="visibility: hidden;">   
     </div>
     <div class="col">
         <div class="input-field">
-            <a class="waves-effect waves-light btn-small light-green accent-4" href="./agregar-ciclo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <br><a class="waves-effect waves-light btn-small light-green accent-4" href="./agregar-ciclo"><i class="material-icons left">add_circle</i>Agregar</a>
         </div>
     </div>
     <div class="col s12">
@@ -16,6 +15,12 @@
     </div>
 
 
-       
-</div>
-<%- include('include/footer.ejs') %>
+    <input type="hidden" id="estado" value="<%= estado %>">   
+  <%- include('include/footer.ejs') %>
+  
+  <script>
+    let estado = document.getElementById('estado').value;
+    if (estado !== 'false' && estado !== 'vacio'){
+        M.toast({html: '<%- estado %>', length:7500, classes: 'black'})
+    }
+  </script>

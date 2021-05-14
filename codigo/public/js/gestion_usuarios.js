@@ -33,8 +33,6 @@ $(document).ready(function(){
 })
 });
 
-// Avisar que se creo correctamente el usuario
-document.getElementById("toastNuevoUsuario").click();
 
 function camposTerapeuta(opcion){
   if (opcion.value === '2'){

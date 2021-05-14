@@ -2,16 +2,17 @@ const db = require('../util/database');
 
 module.exports = class Ciclo {
   //Constructor de la clase. Sirve para crear un nuevo objeto, y en él se definen las propiedades del modelo
-  constructor(fechaInicial, fechaFinal) {
+  constructor(idCiclo, fechaInicial, fechaFinal) {
     this.fechaInicial = fechaInicial;
     this.fechaFinal = fechaFinal;
+    this.idCiclo = idCiclo;
   }
 
   //Este método servirá para guardar de manera persistente el nuevo objeto.
   save() {
     return db.execute(
-      'INSERT INTO ciclos (fechaInicial, fechaFinal) VALUES (?,?)',
-      [this.fechaInicial, this.fechaFinal]
+      'INSERT INTO ciclos (idCiclo,fechaInicial, fechaFinal) VALUES (?,?,?)',
+      [this.idCiclo,this.fechaInicial, this.fechaFinal]
     );
   }
 
@@ -79,13 +80,22 @@ module.exports = class Ciclo {
     );
   }
 
-  static fetchIdUltimoCiclo(fechaCiclo){
+  static fetchIdPorFechaFinal(fechaCiclo){
     return db.execute(
       'SELECT idCiclo FROM ciclos WHERE fechaFinal = ?',
       [fechaCiclo]
     );
   }
 
+  static fetchUnoPorId(idCiclo){
+    return db.execute('SELECT * FROM ciclos WHERE idCiclo = ?', 
+    [idCiclo]);
+  }
+
+  static fetchIdUltimo(){
+    return db.execute('SELECT MAX(idCiclo) AS idCiclo FROM ciclos');
+  }
+  
 
 
 };
