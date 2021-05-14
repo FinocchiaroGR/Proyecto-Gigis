@@ -190,3 +190,14 @@ exports.buscarPrograma  = (request, response, next) => {
       console.log(err);
     });
 }
+
+exports.buscarObjetivo  = (request, response, next) => {
+  Objetivo.fetch(request.body.criterio,request.body.nivel)
+    .then(([objetivos,fieldData2]) => {
+      return response.status(200).json({
+        objetivos: objetivos
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+}

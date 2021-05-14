@@ -21,6 +21,10 @@ module.exports = class Objetivo {
         return db.execute ('SELECT * FROM objetivos')
     }
 
+    static fetch(criterio, idNivel) {
+        return db.execute('SELECT * FROM objetivos WHERE idNivel = ? AND descripcion LIKE ?' , [idNivel, '%'+criterio+'%']);
+    }
+
     static objetivosPorNivel(idNivel) {
         return db.execute ('SELECT * FROM objetivos WHERE idNivel=?',[idNivel])
     }

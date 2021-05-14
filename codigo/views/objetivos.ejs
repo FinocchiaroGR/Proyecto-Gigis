@@ -7,8 +7,8 @@
         <div class="row">
             <div class="input-field col s12" >
             <i class="material-icons prefix">search</i>
-            <input type="text" id="autocomplete-input" class="autocomplete">
-            <label for="autocomplete-input">Objetivo</label>
+            <input type="text" id="buscarObjetivo" class="autocomplete" oninput="buscarObjetivo()">
+            <label for="buscarObjetivo">Objetivo</label>
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
     </form>
 </div>
 <p><strong>Objetivos</strong></p>
-<ul class="collapsible"> 
+<ul class="collapsible" id="lista-objetivos"> 
     <% let i = 1; %>
     <% for (objetivo of objetivos) { %>  
         <% if (objetivo.estatus === 1) { %>
@@ -101,12 +101,54 @@
         </div>
     </div>
 </form><!-- Fin Modal Structure Eliminar Objetivo-->
-
+<input type="hidden" id="nivelObjetivos" value="<%=idNivel%>">
 <input type="hidden" id="registroExitosoObj" value="<%=registro_exitoso%>">
 
 <%- include('include/footer.ejs') %>
 
 <script>
+    const buscarObjetivo = () => {
+    let data = {
+        criterio: document.getElementById('buscarObjetivo').value,
+        nivel: document.getElementById('nivelObjetivos').value
+    }
+    console.log(data)
+    fetch('/gestionAdmin/gestionProgramas/buscar-objetivo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            //'csrf-token': csrf
+        },
+        body: JSON.stringify(data)
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+      //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+      //...
+      let html = '';
+      let i = 1;
+      for (let objetivo of data.objetivos){
+          if(objetivo.estatus === 1){
+            html += '<li>'+
+                '<div class="collapsible-header">' +
+                   i + '.- ' + objetivo.descripcion +
+                    '<span class="badge">' +
+                        '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>'+
+                        '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>' +
+                    '</span>'+
+                '</div>'+
+            '</li>';
+          } 
+        i++;
+      }
+      document.getElementById('lista-objetivos').innerHTML = html;
+      M.AutoInit();
+
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
     let registro_exitoso = document.getElementById('registroExitosoObj').value;
 
     if (registro_exitoso !== 'false'){

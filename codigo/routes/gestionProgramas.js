@@ -17,13 +17,7 @@ const fileStorage = multer.diskStorage({
     },
 });
 
-
-//En el registro, pasamos la constante de configuración y
-//usamos single porque es un sólo archivo el que vamos a subir, 
-//pero hay diferentes opciones si se quieren subir varios archivos. 
-//'archivo' es el nombre del input tipo file de la forma
 subrouter.use(multer({ storage: fileStorage}).single('imagen')); 
-
 subrouter.use(bodyParser.urlencoded({ extended: false }));
 subrouter.use(express.static(path.join(__dirname,'..', 'public')));
 
@@ -37,6 +31,8 @@ subrouter.post('/objetivos/agregar-objetivo', isAuth, gestionPrograController.re
 subrouter.post('/objetivos/editar-objetivo', isAuth, gestionPrograController.editarObjetivo);
 
 subrouter.post('/objetivos/eliminar-objetivo', isAuth, gestionPrograController.eliminarObjetivo);
+
+subrouter.post('/buscar-objetivo', gestionPrograController.buscarObjetivo);
 
 subrouter.get('/', isAuth, gestionPrograController.get);
 
