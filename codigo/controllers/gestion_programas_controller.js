@@ -173,3 +173,20 @@ exports.agregarNivel = (request, response, next) => {
       console.log(err);
     });
 }
+
+exports.buscarPrograma  = (request, response, next) => {
+  Programa.fetch(request.body.criterio)
+    .then(([programas,fieldData]) => {
+      Nivel.fetchAll()
+        .then(([niveles,fieldData2]) => {
+          return response.status(200).json({
+            programas:programas,
+            niveles: niveles
+          });
+        }).catch((err) => {
+          console.log(err);
+        });
+    }).catch((err) => {
+      console.log(err);
+    });
+}

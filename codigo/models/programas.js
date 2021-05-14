@@ -22,6 +22,10 @@ module.exports = class Programas {
         return db.execute('SELECT * FROM programas ORDER BY nombrePrograma ASC');
     }
 
+    static fetch(criterio) {
+        return db.execute('SELECT * FROM programas WHERE nombrePrograma LIKE ?' , ['%'+criterio+'%']);
+    }
+
     static fetchIdPrograma(nombrePrograma) {
         return db.execute('SELECT idPrograma FROM programas WHERE nombrePrograma LIKE ?', 
             [nombrePrograma]
