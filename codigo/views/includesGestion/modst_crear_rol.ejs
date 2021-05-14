@@ -1,84 +1,33 @@
-<form>
+<form action="/gestionAdmin/gestionUsuarios/crear-roll" method="POST">
   <div class="modal-content">
         <h3>Crear rol</h3>
         <ul>
           <li><strong><br>Nombre del nuevo rol</strong></li>
           <li>
             <div class="input">
-              <input id="nombre-rol" type="text" class="validate"  placeholder="Rol">
+              <input id="nombreRol" name="nombreRol"  type="text" class="validate"  placeholder="Rol" required>
             </div>
           </li>
-          <li><strong><br>Permisos</strong></li>
           <li>
             <table class="highlight">
               <thead>
                 <tr>
-                    <th data-field="admin">Administrador</th>
-                    <th data-field="gestor">Gestor</th>
-                    <th data-field="terapeuta">Terapeuta</th>
+                  <th data-field="Permisos">Permisos</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Generar reportes</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Registrar programa</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Cosultar datos de participante</span>
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Resgistrar usuarios</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Modificar datos de programa</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Registrar puntajes de participante</span>
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Crear rol</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" />
-                      <span>Inscribir participantes a programas</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      
-                      <span></span>
-                    </label>
-                  </td>
-                </tr>
+                <% var i = 1; %>
+                <% for(let funciones of func) { %>
+                  <tr>
+                    <td>
+                      <label>
+                        <input type="checkbox" name="Funcion_<%= i %>"/>
+                        <span><%= funciones.requisitoFuncional %></span>
+                      </label>
+                    </td>
+                  </tr>
+                  <% i++; %>
+                <% } %>
               </tbody>
             </table>
           </li>
@@ -86,7 +35,6 @@
     </div>
     <div class="modal-footer">
       <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Registrar</button>
-    <label style="visibility:hidden">**</label>
     </div>
 </form>
   

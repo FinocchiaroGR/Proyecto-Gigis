@@ -36,5 +36,7 @@ const { isatty } = require('tty');
 
 subrouter.get('/', isAuth, gestionUserController.get);                  //Quitar isAuth para registrar sus usuarios
 subrouter.post('/', isAuth, gestionUserController.postNuevoUsuario);    //Quitar isAuth para registrar sus usuarios
-                                                                        //y tambien revisar router de gestion administrativa
+
+subrouter.post('/crear-roll', gestionUserController.postNuevoRoll);
+
 module.exports = subrouter;
