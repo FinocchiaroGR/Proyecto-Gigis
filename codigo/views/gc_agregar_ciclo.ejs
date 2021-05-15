@@ -18,7 +18,7 @@
         </div>
         <div class="col right">
             <div class="input-field">
-               <a class="waves-effect waves-light btn-small light-green accent-4 right" href = "/gestionAdmin/gestionCiclos/inscribir" onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>
+               <a class="waves-effect waves-light btn-small light-green accent-4 right"  onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>
             </div>
         </div>
     </div>
@@ -90,11 +90,9 @@
         let aux = [ {login: terapeuta.id.split(idP)[1], idPrograma: idP},];
         if (isChecked){
             terapAsig.push(aux);
-            console.log(terapAsig);
         }else{
             let pos = terapAsig.indexOf( idP);
             terapAsig.splice(pos, 1);
-            console.log(terapAsig);
     }
 
     }
@@ -114,7 +112,11 @@
             headers: {'Content-Type':'application/json'},
             body:JSON.stringify(data)
         }).then(result => {
-            return result.json();
+          return result.json();
+        }).then(ciclo => {
+            console.log(ciclo.ciclo.idCiclo);
+            let liga = "/gestionAdmin/gestionCiclos/inscribir/"+ciclo.ciclo.idCiclo;
+            window.location= liga;
         });
 
         

@@ -51,4 +51,10 @@ module.exports = class Grupo {
     );
   }
 
+  static fetchGPorIdCiclo(idCiclo) {
+    return db.execute(
+      'SELECT U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno, U.login, G.idPrograma, G.idGrupo FROM grupos G, grupos_terapeutas GT, usuarios_roles UR, usuarios U WHERE GT.idGrupo = G.idGrupo AND UR.login = U.login AND GT.login = U.login AND GT.login = UR.login AND UR.idRol = 2 AND G.idCiclo = ?',
+      [idCiclo]);
+  }
+
 };

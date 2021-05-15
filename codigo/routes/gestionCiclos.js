@@ -8,7 +8,7 @@ subrouter.use(express.static(path.join(__dirname,'..', 'public')));
 const gestionCicloController = require('../controllers/gestion_ciclos_controller');
 const isAuth = require('../util/is-auth.js');
 
-subrouter.get('/inscribir', isAuth, gestionCicloController.getInscribir);
+subrouter.get('/inscribir/:idCiclo', isAuth, gestionCicloController.getInscribir);
 
 subrouter.post('/inscribir', isAuth, gestionCicloController.postInscribir);
 

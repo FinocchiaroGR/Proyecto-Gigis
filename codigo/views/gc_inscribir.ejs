@@ -3,79 +3,31 @@
 <%- include('include/sideNavBar.ejs') %> 
 
 <div class="row">
-    <div class="col s12 m4">
-        <div class="input-field" >
-            <i class="material-icons prefix">search</i>
-            <input type="text" id="autocomplete-input" class="autocomplete">
-            <label for="autocomplete-input">Buscar participante</label>
-        </div>
-    </div>
-    <div class="col">
-        <div class="input-field">
-           <a class="waves-effect waves-light btn-small light-green accent-4" href="./gestion-perfil-ciclo"><i class="material-icons left">add_circle</i>Inscribir</a>
-        </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col s12 m12">
-            <table class="highlight">
-              <thead>
-                <tr>
-                    <th data-field="nombreP">Participantes</th>
-                    <th data-field="seleccion"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td  style="cursor: pointer;">Emilia Salinas Cruz</a></td>
-                  <td>
-                      <label>
-                          <input type="checkbox" />
-                          <span>.</span>
-                      </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td  style="cursor: pointer;">Juan Zavaleta</a></td>
-                  <td>
-                      <label>
-                          <input type="checkbox" />
-                          <span>.</span>
-                      </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td  style="cursor: pointer;">Valerio Ríos</a></td>
-                  <td>
-                      <label>
-                          <input type="checkbox" />
-                          <span>.</span>
-                      </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td  style="cursor: pointer;">Maria Fernanda Cruz Méndez</a></td>
-                  <td>
-                      <label>
-                          <input type="checkbox" />
-                          <span>.</span>
-                      </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td  style="cursor: pointer;">Gerardo Ortega Bolaños</a></td>
-                  <td>
-                      <label>
-                          <input type="checkbox" />
-                          <span>.</span>
-                      </label>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-     </div> 
-  </div>
+  <p><strong>Programas disponibles</strong></p>
+  <ul class="collapsible" id="lista-programas"> 
+    <% for (let programa of programas) { %>  
+        <li>
+            <div class="collapsible-header">
+                <%= programa.nombrePrograma %>
+                <span class="badge">
+                    <!-- Modal Editar -->
+                    <i class="material-icons left">expand_more</i>
+                </span>
+            </div>
+            <div class="collapsible-body">
+                <div class="collection">
+                    <% for (let terapeuta of terapeutas) { %>
+                      <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
+                        <a value="<%=terapeuta.idGrupo%>" class="collection-item">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                      <% } %>
+                    <% } %>
+                </div>
+            </div>
+        </li>
+    <% } %>
+  </ul>
+  <a  href= "/gestionAdmin/gestionCiclos" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right">Finalizar inscripción</a>
+</div>
 
   <input type="hidden" id="error" value="<%= error %>">
   <input type="hidden" id="bandera" value="<%= bandera %>">    

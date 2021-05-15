@@ -4,7 +4,7 @@
     <% for (let ciclo of ciclos_aactual) { %>
         <li>
             <div class="collapsible-header">
-                <a href="./<%= ciclo.fechaInicial.getMonth() %><%= ciclo.fechaInicial.getFullYear() %>" class = "black-text">
+                <a href="./inscribir/<%= ciclo.idCiclo %>" class = "black-text">
                     <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
                 </a>
                 <span class="badge">
