@@ -142,3 +142,27 @@ exports.postNuevoRoll = (request, response, next) => {
             });
     }
 };
+
+exports.postModRoll = (request, response, next) => {
+    console.log("Petición asíncrona reciba");
+    console.log(request.body.idRol);
+
+    Func.fetchAll()
+        .then(([funciones]) =>{
+            Rol_Func.fetchByIdRol(request.body.idRol)
+                .then(([funcionesCh]) => {
+                    return response.status(200).json({
+                        funciones : funciones,
+                        funcionesCh : funcionesCh
+                    });
+                })
+                .catch((err) => {
+                    console.log('aqui2 '+err);
+                    request.session.error = 'Error de comunicacion con el servidor';
+                });
+        })
+        .catch((err) => {
+            console.log('aqui3 ' +err);
+            request.session.error = 'Error de comunicacion con el servidor';
+        });
+};

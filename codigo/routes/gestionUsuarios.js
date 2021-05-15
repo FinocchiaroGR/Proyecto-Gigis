@@ -38,5 +38,6 @@ subrouter.get('/', isAuth, gestionUserController.get);                  //Quitar
 subrouter.post('/', isAuth, gestionUserController.postNuevoUsuario);    //Quitar isAuth para registrar sus usuarios
 
 subrouter.post('/crear-roll', gestionUserController.postNuevoRoll);
+subrouter.post('/modificar-roll', gestionUserController.postModRoll);
 
 module.exports = subrouter;

@@ -20,4 +20,10 @@ module.exports = class Rol_Funcion {
   static fetchAll() {
     return db.execute('SELECT * FROM roles_funciones');
   }
+
+  static fetchByIdRol(idRol) {
+    return db.execute('SELECT `idfuncion`, `idRol` FROM `roles_funciones` WHERE `idRol` = ?',
+    [idRol]
+    );
+  }
 }
