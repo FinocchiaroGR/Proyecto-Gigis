@@ -8,7 +8,7 @@ const isAuth = require('../util/is-auth.js');
 
 router.get('/login', usuariosController.getlogin);
 router.post('/login', usuariosController.postlogin);
-
 router.get('/logout',usuariosController.logout);
+router.get('/password', usuariosController.cambiarContraseña);
 
 module.exports = router;

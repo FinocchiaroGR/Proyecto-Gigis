@@ -1,5 +1,8 @@
 const Usuario = require('../models/usuarios');
+const Arrow = require('../models/arrow');
 const bcrypt = require('bcryptjs');
+const arrows = Arrow.fetchAll();
+
 
 exports.logout = (request, response, next) => {
     request.session.destroy(() => {
@@ -43,4 +46,13 @@ exports.postlogin = (request, response, next) => {
             request.session.error = 'Usuario y/o contraseña incorrectos';
             response.redirect('login');
         });
+};
+
+exports.cambiarContraseña = (request, response, next) => {
+    response.render('cambiar_contraseña', {
+        tituloDeHeader: 'Cambiar contraseña',
+        tituloBarra: 'Cambiar Contraseña',
+        backArrow: { display: 'none', link: '/programas' },
+        forwArrow: arrows[0]
+    });
 };
