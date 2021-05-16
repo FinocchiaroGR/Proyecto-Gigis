@@ -96,12 +96,14 @@
             M.AutoInit();
         }else{
             tsize = Object.keys(terapAsig).length;
+            let count = 0;
             for(let t= 0; t < tsize; t++){
-                if(terapAsig[0][0].idPrograma === parseInt(elemento.id)){
-                    let loginv = terapAsig[0][0].login;
+                if(terapAsig[t-count][0].idPrograma === parseInt(elemento.id)){
+                    let loginv = terapAsig[t-count][0].login;
                     document.getElementById(''+elemento.id+loginv).checked = false;
-                    terapAsig.splice(0, 1); 
+                    terapAsig.splice(t-count, 1); 
                     countT-=1;
+                    count+=1;
                 }
             }
             countP-=1;

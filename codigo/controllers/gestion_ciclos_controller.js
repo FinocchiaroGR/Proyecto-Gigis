@@ -161,7 +161,6 @@ exports.get = (request,response,next) => {
     Ciclo.fetchIdUltimo()
         .then(([idUltimoCiclo, fieldData1]) => {
             request.session.idlastciclo = idUltimoCiclo[0].idCiclo;
-            console.log(request.session.idlastciclo);
             Ciclo.fetchAll()
             .then(([ciclos, fieldData1]) => {
                 Ciclo.fetchCiclosAnioActual()
