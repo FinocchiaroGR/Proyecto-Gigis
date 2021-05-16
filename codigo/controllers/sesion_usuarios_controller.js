@@ -56,3 +56,8 @@ exports.cambiarContraseña = (request, response, next) => {
         forwArrow: arrows[0]
     });
 };
+
+exports.postCambiarContraseña = (request, response, next) => {
+    console.log(request.body);
+    response.redirect('/usuarios/password')
+};

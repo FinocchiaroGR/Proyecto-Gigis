@@ -193,3 +193,8 @@ box-shadow: 0 1px 0 0 #e53935 !important;
 .info-grupo{
     position: relative;
 }
+
+#cambiar-contraseña {
+    position: relative;
+    top: 1.5em;
+}
