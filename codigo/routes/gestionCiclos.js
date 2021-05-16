@@ -18,7 +18,7 @@ subrouter.post('/agregar-ciclo', isAuth, gestionCicloController.postAgrCiclo);
 
 subrouter.get('/agregar-ciclo', isAuth, gestionCicloController.getAgrCiclo);
 
-subrouter.get('/gestion-perfil-ciclo', isAuth, gestionCicloController.getPerfilCiclo);
+subrouter.post('/perfil-ciclo', isAuth, gestionCicloController.postPerfilCiclo);
 
 subrouter.get('/', isAuth, gestionCicloController.get);
 
