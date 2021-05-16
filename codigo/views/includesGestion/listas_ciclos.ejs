@@ -4,7 +4,7 @@
     <% for (let ciclo of ciclos_aactual) { %>
         <li>
             <div class="collapsible-header">
-                <a href="./<%= ciclo.fechaInicial.getMonth() %><%= ciclo.fechaInicial.getFullYear() %>" class = "black-text">
+                <a onclick="verPerfilCiclo(<%= ciclo.idCiclo %>)" class = "black-text" style="cursor: pointer;">
                     <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
                 </a>
                 <span class="badge">
@@ -24,7 +24,7 @@
                     <div class="collection">
                         <% for (let ciclo of ciclos) { %>
                             <% if (ciclo.fechaInicial.getFullYear() === p.anio) { %>
-                                <a href="./<%= ciclo.fechaInicial.getMonth() %><%= ciclo.fechaInicial.getFullYear() %>" class="collection-item"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
+                                <a onclick="verPerfilCiclo(<%= ciclo.idCiclo %>)" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
                             <% } %>        
                         <% } %>
                     </div>
@@ -32,3 +32,22 @@
             </li>       
     <% } %>
 </ul>
+
+
+<script>
+    const verPerfilCiclo = (idcicloparam) => {
+        let data = {
+            idcicloparam: idcicloparam,
+        };
+
+        fetch('/gestionAdmin/gestionCiclos/perfil-ciclo',{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body:JSON.stringify(data),
+        }).then(result => {
+            window.location = '/gestionAdmin/gestionCiclos/inscribir/'+ idcicloparam ;
+        })
+
+        
+    }
+</script>

@@ -2,9 +2,9 @@ const Arrow = require('../models/arrow');
 const Ciclo = require('../models/ciclos');
 const Programa = require('../models/programas')
 const Usuario = require('../models/usuarios');
+const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
 const Grupo_Terapeuta = require('../models/grupos_terapeutas');
-const inputsCiclos = require('../models/inputsCiclos');
 
 const arrows = Arrow.fetchAll();
 const mes = [
@@ -39,27 +39,44 @@ const abvMes = [
 
 exports.getInscribir = (request,response,next) => {
     const error = request.session.error === undefined ? 'false' : request.session.error;
-    const bandera = 'true';
+    const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
     let idlastCiclo = parseInt(request.session.idlastciclo) + 1;
-    const idparam =  request.session.idcicloparam === undefined ? idlastCiclo : request.session.idcicloraram;
-    console.log(idparam);
-    Ciclo.fetchUnoPorId(idparam)
+    const idciclop =  request.session.idcicloparam === undefined ? idlastCiclo : request.session.idcicloparam;
+    Ciclo.fetchUnoPorId(idciclop)
     .then(([ciclo, fieldData1]) => {
         let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
         let encabezado = 'Ciclo ' + meses + ' '+ ciclo[0].fechaInicial.getFullYear();
-        response.render('gc_inscribir', {
-            error: error,
-            bandera: bandera,
-            tituloDeHeader: "Inscripciones",
-            tituloBarra: encabezado,
-            backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-            forwArrow: arrows[1]
-        })
+        Grupo.fetchGPorIdCiclo(idciclop)
+            .then(([terapeutas, fieldData1]) => {
+                Programa.fetchPorIdCiclo(idciclop)
+                    .then(([programas, fieldData1]) => {
+                        response.render('gc_inscribir', {
+                            error: error,
+                            bandera: bandera,
+                            terapeutas: terapeutas,
+                            programas: programas,
+                            tituloDeHeader: "Inscripciones",
+                            tituloBarra: encabezado,
+                            backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+                            forwArrow: arrows[1]
+                        })
+                    })
+                    .catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
     }).catch((err) => console.log(err)); 
     
     request.session.error = undefined;
     request.session.bandera =undefined;
+};
+
+exports.getInsPar = (request,response,next) => {
+    Participante.fetchActivos()
+        .then(([participantes, fieldData1]) => {
+            return response.status(200).json({participantes: participantes});
+        })
+        .catch((err) => console.log(err));
 };
 
 exports.postInscribir = (request,response,next) => {
@@ -114,7 +131,7 @@ exports.postAgrCiclo= (request,response,next) => {
                         let grupo = new Grupo(idGrupo,numeroGrupo, idPrograma, idCiclo,login);
                         grupo.save()
                             .then(() => {
-                                request.session.error = undefined;                                   
+                                                                  
                             }).catch( err => {
                                 console.log(err); 
                                 request.session.error = "No se pudieron asignar los grupos correctamente.";
@@ -122,22 +139,23 @@ exports.postAgrCiclo= (request,response,next) => {
                     }
                 }
             }
+            request.session.error = undefined; 
+            request.session.bandera =true;
+            return response.status(300).json({ciclo: ciclo});
         }).catch( err => {
-            console.log(err);
+            request.session.bandera =true;
             request.session.error = "El ciclo no se pudo registrar correctamente.";
+            return response.status(300).json({message: ""});
         });
 };
 
 
+exports.postPerfilCiclo = (request,response,next) => {
+    request.session.idcicloparam = parseInt(request.body.idcicloparam); 
+    request.session.error = undefined; 
+    request.session.bandera =undefined;
+    return response.status(300).json();
 
-exports.getPerfilCiclo = (request,response,next) => {
-    response.render('gestion_perfil_ciclo', {
-        programas: programas,
-        tituloDeHeader: "Ciclo EM-21",
-        tituloBarra: "Ciclo enero - marzo 2021",
-        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-        forwArrow: arrows[1]
-    });
 };
 
 exports.get = (request,response,next) => {

@@ -59,5 +59,13 @@ module.exports = class Programas {
     static editarProgramaSinTitulo(idPrograma, dirImagen) {
         return db.execute('UPDATE programas SET dirImagen=? WHERE idPrograma=?', [dirImagen, idPrograma])
     }
+
+    static fetchPorIdCiclo(idCiclo) {
+        return db.execute(
+        'SELECT P.nombrePrograma, P.idPrograma FROM Programas P, Grupos G WHERE P.idPrograma = G.idPrograma AND G.idCiclo = ? GROUP BY (idPrograma)',
+        [idCiclo]
+        );
+    }
+
 }
 
