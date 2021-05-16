@@ -18,7 +18,7 @@
         </div>
         <div class="col right">
             <div class="input-field">
-               <a class="waves-effect waves-light btn-small light-green accent-4 right"  onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>
+               <a id="botonRegCiclo" class="waves-effect waves-light btn-small light-green accent-4 right disabled"  onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>
             </div>
         </div>
     </div>
@@ -31,6 +31,7 @@
         <% for (let programa of programas) { %>  
             <li>
                 <div class="collapsible-header">
+                    <i style = "visibility:hidden" id = "iconoExpand<%= programa.idPrograma %>" class="material-icons left">expand_more</i>
                     <%= programa.nombrePrograma %>
                     <span class="badge">
                         <label>
@@ -38,11 +39,12 @@
                             <span></span>
                         </label>
                     </span>
+                    
                 </div>
                 <div class="collapsible-body">
                     <div class="collection" id="<%= programa.idPrograma %>at" style = "display:none">
                         <% for (let terapeuta of terapeutas) { %> 
-                            <a href="#" class="collection-item"><%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %> 
+                            <a class="collection-item"><%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %> 
                                 <span class="badge">
                                     <label>
                                         <input name ="<%= programa.idPrograma %><%= terapeuta.login %>" id="<%= programa.idPrograma %><%= terapeuta.login %>" type="checkbox" onChange="selTe(this)"/>
@@ -59,9 +61,21 @@
      </div> 
   <input type="text" id="fechaLimite" value="<%= fechaLimite[0].fechaFinal %>" style="visibility:hidden;">
 </div>
+</div>  
+</div>
+</main>
 
-
-<%- include('include/footer.ejs') %>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+<script type="text/javascript" src="/js/consultas.js"></script>
+<script type="text/javascript" src="/js/programas.js"></script>
+<script type="text/javascript" src="/js/gestion_usuarios.js"></script>
+<script type="text/javascript" src="/js/gestion_ciclos.js"></script>
+<script type="text/javascript" src="/js/gestion_programas.js"></script>
+</body>
+</html>
 
 <script>
     // Registro de ciclos 
@@ -70,13 +84,14 @@
     const  mostrarOps=(elemento) => {
        let isChecked = document.getElementById(elemento.id).checked;
        let id2 = elemento.id + 'at';
-        console.log(elemento.id) 
         if (isChecked){
             document.getElementById(id2).style.display = "block";
+            document.getElementById("iconoExpand"+elemento.id).style.visibility = "visible";
             prograsSel.push(parseInt(elemento.id));
             console.log(prograsSel);
         }else{
             document.getElementById(id2).style.display = "none";
+            document.getElementById("iconoExpand"+elemento.id).style.visibility = "hidden";
             let pos = listaProg.indexOf(elemento.id);
             prograsSel.splice(pos, 1);
             console.log(prograsSel);
@@ -90,6 +105,7 @@
         let aux = [ {login: terapeuta.id.split(idP)[1], idPrograma: idP},];
         if (isChecked){
             terapAsig.push(aux);
+            document.getElementById("botonRegCiclo").className = "waves-effect waves-light btn-small light-green accent-4 right";
         }else{
             let pos = terapAsig.indexOf( idP);
             terapAsig.splice(pos, 1);

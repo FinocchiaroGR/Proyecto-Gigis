@@ -59,7 +59,6 @@ inter_es = {
 	weekdaysAbbrev: ["D", "L", "M", "M", "J", "V", "S"]
 };
 
-
 // Create default dates
 let date = new Date(document.getElementById("fechaLimite").value);
 // set default date for #from (1 week from today)
@@ -120,12 +119,6 @@ var setMinTo = function(vad) {
 
 $("select").formSelect();
 
-function toastRegCiclo(){   
-	M.toast({
-			  html: 'Se registró correctamente el ciclo.',
-			  displayLenght: 5000
-			});
-  }
 
 
 

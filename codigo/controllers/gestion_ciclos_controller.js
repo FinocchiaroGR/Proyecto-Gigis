@@ -42,9 +42,7 @@ exports.getInscribir = (request,response,next) => {
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
     let idlastCiclo = parseInt(request.session.idlastciclo) + 1;
-    console.log(request.session.idcicloparam);
     const idciclop =  request.session.idcicloparam === undefined ? idlastCiclo : request.session.idcicloparam;
-    console.log(idciclop);
     Ciclo.fetchUnoPorId(idciclop)
     .then(([ciclo, fieldData1]) => {
         let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
@@ -154,8 +152,6 @@ exports.postAgrCiclo= (request,response,next) => {
 
 exports.postPerfilCiclo = (request,response,next) => {
     request.session.idcicloparam = parseInt(request.body.idcicloparam); 
-    console.log("idporParam");
-    console.log(request.session.idcicloparam);
     request.session.error = undefined; 
     request.session.bandera =undefined;
     return response.status(300).json();
