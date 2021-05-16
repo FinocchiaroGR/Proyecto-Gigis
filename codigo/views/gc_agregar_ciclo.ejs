@@ -18,7 +18,7 @@
         </div>
         <div class="col right">
             <div class="input-field" id = "btnRegCiclo">
-               <a class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>
+               <a id="botonRegCiclo" class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
         <% for (let programa of programas) { %>  
             <li>
                 <div class="collapsible-header">
-                    <i style = "visibility:hidden" id = "iconoExpand<%= programa.idPrograma %>" class="material-icons left">expand_more</i>
+                    <i id = "iconoExpand<%= programa.idPrograma %>" class="material-icons left grey-text text-lighten-2">expand_more</i>
                     <%= programa.nombrePrograma %>
                     <span class="badge">
                         <label>
@@ -81,20 +81,28 @@
     // Registro de ciclos 
     let prograsSel=[], terapAsig=[];
     // Aparecer boton de asignar terapeutas
+    let countP=0, countT=0;
+    let btnDesactivado = '<a class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>';    
+    let btnActivado = '<a class="waves-effect waves-light btn-small light-green accent-4 right" onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>';
     const  mostrarOps=(elemento) => {
        let isChecked = document.getElementById(elemento.id).checked;
        let id2 = elemento.id + 'at';
         if (isChecked){
+            countP+=1;
             document.getElementById(id2).style.display = "block";
-            document.getElementById("iconoExpand"+elemento.id).style.visibility = "visible";
+            document.getElementById("iconoExpand"+elemento.id).className = "material-icons left black-text";
             prograsSel.push(parseInt(elemento.id));
-            console.log(prograsSel);
+            document.getElementById("btnRegCiclo").innerHTML  = countT !== 0 ? btnActivado: btnDesactivado;
+            M.AutoInit();
         }else{
+            countP-=1;
             document.getElementById(id2).style.display = "none";
-            document.getElementById("iconoExpand"+elemento.id).style.visibility = "hidden";
+            document.getElementById("iconoExpand"+elemento.id).className = "material-icons left grey-text text-lighten-2";
             let pos = listaProg.indexOf(elemento.id);
             prograsSel.splice(pos, 1);
-            console.log(prograsSel);
+            document.getElementById("btnRegCiclo").innerHTML  = countP === 0 ? btnDesactivado: countT === 0 ? btnDesactivado: btnActivado;
+            M.AutoInit();
+
         }
     
     }
@@ -104,12 +112,16 @@
         console.log(idP);
         let aux = [ {login: terapeuta.id.split(idP)[1], idPrograma: idP},];
         if (isChecked){
+            countT+=1;
             terapAsig.push(aux);
-            let html = '<a id="botonRegCiclo" class="waves-effect waves-light btn-small light-green accent-4 right" onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>';
-            document.getElementById("btnRegCiclo").innerHTML = html;
+            document.getElementById("btnRegCiclo").innerHTML = btnActivado;
+            M.AutoInit();
         }else{
+            countT-=1;
             let pos = terapAsig.indexOf( idP);
             terapAsig.splice(pos, 1);
+            document.getElementById("btnRegCiclo").innerHTML  = countT === 0 ? btnDesactivado: countP === 0 ? btnDesactivado: btnActivado;
+            M.AutoInit();
     }
 
     }
