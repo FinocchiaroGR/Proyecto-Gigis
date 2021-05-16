@@ -42,4 +42,10 @@ module.exports = class Participante {
         return db.execute('SELECT * FROM participantes');
 
     }
+
+    static fetchActivos() {
+        return db.execute(
+          'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A"'
+          );
+      }
 }

@@ -2,6 +2,7 @@ const Arrow = require('../models/arrow');
 const Ciclo = require('../models/ciclos');
 const Programa = require('../models/programas')
 const Usuario = require('../models/usuarios');
+const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
 const Grupo_Terapeuta = require('../models/grupos_terapeutas');
 
@@ -69,6 +70,14 @@ exports.getInscribir = (request,response,next) => {
     
     request.session.error = undefined;
     request.session.bandera =undefined;
+};
+
+exports.getInsPar = (request,response,next) => {
+    Participante.fetchActivos()
+        .then(([participantes, fieldData1]) => {
+            return response.status(200).json({participantes: participantes});
+        })
+        .catch((err) => console.log(err));
 };
 
 exports.postInscribir = (request,response,next) => {

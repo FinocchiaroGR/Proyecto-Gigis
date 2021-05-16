@@ -3,30 +3,32 @@
 <%- include('include/sideNavBar.ejs') %> 
 
 <div class="row">
-  <p><strong>Programas disponibles</strong></p>
-  <ul class="collapsible" id="lista-programas"> 
-    <% for (let programa of programas) { %>  
-        <li>
-            <div class="collapsible-header">
-                <%= programa.nombrePrograma %>
-                <span class="badge">
-                    <!-- Modal Editar -->
-                    <i class="material-icons left">expand_more</i>
-                </span>
-            </div>
-            <div class="collapsible-body">
-                <div class="collection">
-                    <% for (let terapeuta of terapeutas) { %>
-                      <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
-                        <a value="<%=terapeuta.idGrupo%>" class="collection-item">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+  <div id= "contenido">
+    <br><h5><strong>Programas disponibles</strong></h5><br>
+    <ul class="collapsible" id="lista-programas"> 
+      <% for (let programa of programas) { %>  
+          <li>
+              <div class="collapsible-header">
+                  <%= programa.nombrePrograma %>
+                  <span class="badge">
+                      <!-- Modal Editar -->
+                      <i class="material-icons left">expand_more</i>
+                  </span>
+              </div>
+              <div class="collapsible-body">
+                  <div class="collection">
+                      <% for (let terapeuta of terapeutas) { %>
+                        <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
+                          <a value="<%=terapeuta.idGrupo%>" id="idGrupo" class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                        <% } %>
                       <% } %>
-                    <% } %>
-                </div>
-            </div>
-        </li>
-    <% } %>
-  </ul>
-  <a  href= "/gestionAdmin/gestionCiclos" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right">Finalizar inscripción</a>
+                  </div>
+              </div>
+          </li>
+      <% } %>
+    </ul>
+    <a  href= "/gestionAdmin/gestionCiclos" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right">Finalizar inscripción</a>
+  </div>
 </div>
 
   <input type="hidden" id="error" value="<%= error %>">
@@ -43,4 +45,52 @@
     
     M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
   }
+
+  const listaParticipantes = (nombre, apellido, programa) => {
+    let idGrupo = document.getElementById("idGrupo").value;
+    fetch('/gestionAdmin/gestionCiclos/participantes', {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        console.log("Respuesta de la petición asíncrona");
+        console.log(data);
+        let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5><br>'+
+        '<div class="row">'+
+          '<div class="col s12 m6 l6 ">'+
+            '<table >'+
+              '<thead>'+
+                '<tr>'+
+                  '<th>Participantes</th>'+
+                  '<th>Inscribir</th>'+
+                '</tr>'+
+              '</thead>'+
+              '</tbody>';
+              for (participante of data.participantes) {
+                html += '<tr>'+
+                    '<td>' + participante.nombreUsuario+' ' + participante.apellidoPaterno+' ' + participante.apellidoMaterno+' ' + '</td>'+
+                    '<td>'+
+                      '<a  onclick="registroObjetivos('+ +')" href="#rObjetivos-'+participante.login+'">'+
+                        '<i class="material-icons left">chevron_right</i>'+
+                      '</a>'+
+                    '</td>'+
+                  '<tr>';
+              }
+              '</tbody>'+
+            '</table>'+
+            '<br /><br />'
+          '</div>'+
+          '<div class="col s12 m6 l6 asignar-ojetivos">'+
+            '<div id="objetivos-participante-grupo-'+idGrupo+'">'+
+            '</div>'+
+          '</div>'+
+        '</div>';        
+        document.getElementById('contenido').innerHTML = html;
+    }).catch(err => {
+        console.log(err);
+    });
+};
+
+
 </script>

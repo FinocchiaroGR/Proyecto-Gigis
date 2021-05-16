@@ -12,6 +12,8 @@ subrouter.get('/inscribir/:idCiclo', isAuth, gestionCicloController.getInscribir
 
 subrouter.post('/inscribir', isAuth, gestionCicloController.postInscribir);
 
+subrouter.get('/participantes', isAuth, gestionCicloController.getInsPar);
+
 subrouter.post('/agregar-ciclo', isAuth, gestionCicloController.postAgrCiclo);
 
 subrouter.get('/agregar-ciclo', isAuth, gestionCicloController.getAgrCiclo);

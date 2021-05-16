@@ -113,9 +113,9 @@
             body:JSON.stringify(data)
         }).then(result => {
           return result.json();
-        }).then(ciclo => {
-            console.log(ciclo.ciclo.idCiclo);
-            let liga = "/gestionAdmin/gestionCiclos/inscribir/"+ciclo.ciclo.idCiclo;
+        }).then(data => {
+            console.log(data.ciclo.idCiclo);
+            let liga = "/gestionAdmin/gestionCiclos/inscribir/"+data.ciclo.idCiclo;
             window.location= liga;
         });
 
