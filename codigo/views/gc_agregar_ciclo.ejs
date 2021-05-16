@@ -86,6 +86,7 @@
     let btnActivado = '<a class="waves-effect waves-light btn-small light-green accent-4 right" onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>';
     const  mostrarOps=(elemento) => {
        let isChecked = document.getElementById(elemento.id).checked;
+       console.log(isChecked);
        let id2 = elemento.id + 'at';
         if (isChecked){
             countP+=1;
@@ -95,6 +96,17 @@
             document.getElementById("btnRegCiclo").innerHTML  = countT !== 0 ? btnActivado: btnDesactivado;
             M.AutoInit();
         }else{
+            tsize = Object.keys(terapAsig).length;
+            for(let t= 0; t < tsize; t++){
+                console.log(t);
+                if(terapAsig[0][0].idPrograma === parseInt(elemento.id)){
+                    let loginv = terapAsig[0][0].login;
+                    console.log(loginv);
+                    document.getElementById(''+elemento.id+loginv).checked = false;
+                    terapAsig.splice(0, 1); 
+                    countT-=1;
+                }
+            }
             countP-=1;
             document.getElementById(id2).style.display = "none";
             document.getElementById("iconoExpand"+elemento.id).className = "material-icons left grey-text text-lighten-2";
@@ -109,7 +121,6 @@
     const selTe=(terapeuta) => {
         isChecked = document.getElementById(terapeuta.id).checked;
         let idP = parseInt(terapeuta.id);
-        console.log(idP);
         let aux = [ {login: terapeuta.id.split(idP)[1], idPrograma: idP},];
         if (isChecked){
             countT+=1;

@@ -93,8 +93,6 @@ exports.getAgrCiclo = (request,response,next) => {
                 Grupo.fetchIdUltimoGrupo()
                     .then(([idUltimoGrupo, fieldData1]) => {
                     request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
-                    console.log("id last grup");
-                    console.log(request.session.idlastgrupo);
                     response.render('gc_agregar_ciclo', {
                         fechaLimite: fechaLimite,
                         programas: programas,
