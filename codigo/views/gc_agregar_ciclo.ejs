@@ -17,8 +17,8 @@
           <label for="to">Elige la fecha de finalización</label>
         </div>
         <div class="col right">
-            <div class="input-field">
-               <a id="botonRegCiclo" class="waves-effect waves-light btn-small light-green accent-4 right disabled"  onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>
+            <div class="input-field" id = "btnRegCiclo">
+               <a class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>
             </div>
         </div>
     </div>
@@ -105,7 +105,8 @@
         let aux = [ {login: terapeuta.id.split(idP)[1], idPrograma: idP},];
         if (isChecked){
             terapAsig.push(aux);
-            document.getElementById("botonRegCiclo").className = "waves-effect waves-light btn-small light-green accent-4 right";
+            let html = '<a id="botonRegCiclo" class="waves-effect waves-light btn-small light-green accent-4 right" onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>';
+            document.getElementById("btnRegCiclo").innerHTML = html;
         }else{
             let pos = terapAsig.indexOf( idP);
             terapAsig.splice(pos, 1);

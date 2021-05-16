@@ -13,6 +13,11 @@ $(document).ready(function(){
     $('select').formSelect();
   });
 
+  //Botones tooltips
+  $(document).ready(function(){
+    $('.tooltipped').tooltip();
+  });
+
   //DATE PICKER 
 // Spanish overwrite
 inter_es = {
