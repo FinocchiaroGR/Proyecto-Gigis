@@ -116,6 +116,8 @@ exports.postAgrCiclo= (request,response,next) => {
     let idCiclo = parseInt(request.session.idlastciclo) + 1;
     let idGrupo =  parseInt(request.session.idlastgrupo); 
     const ciclo = new Ciclo(idCiclo,request.body.fechaInicial, request.body.fechaFinal);
+    let psize = Object.keys(request.body.prograsSel).length-1;
+    let tsize = Object.keys(request.body.terapAsig).length-1;
     ciclo.save()
         .then(() => {
             for (let p in request.body.prograsSel){
@@ -129,7 +131,9 @@ exports.postAgrCiclo= (request,response,next) => {
                         let grupo = new Grupo(idGrupo,numeroGrupo, idPrograma, idCiclo,login);
                         grupo.save()
                             .then(() => {
-                                                                  
+                                if(tsize=== parseInt(t) && psize === parseInt(p)){
+                                    return response.status(300).json({ciclo: ciclo});
+                                }                               
                             }).catch( err => {
                                 console.log(err); 
                                 request.session.error = "No se pudieron asignar los grupos correctamente.";
@@ -139,7 +143,6 @@ exports.postAgrCiclo= (request,response,next) => {
             }
             request.session.error = undefined; 
             request.session.bandera =true;
-            return response.status(300).json({ciclo: ciclo});
         }).catch( err => {
             request.session.bandera =true;
             request.session.error = "El ciclo no se pudo registrar correctamente.";
