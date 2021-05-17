@@ -100,7 +100,7 @@
 const buscar = (idGrupo) => {
     let criterio = document.getElementById("buscarP").value;
     console.log(criterio);
-    fetch('/gestionAdmin/gestionCiclos/'+criterio, {
+    fetch('/gestionAdmin/gestionCiclos/buscar/'+criterio, {
         method: 'GET'
     }).then(result => {
         return result.json(); //Regresa otra promesa

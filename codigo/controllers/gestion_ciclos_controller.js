@@ -141,13 +141,14 @@ exports.postAgrCiclo= (request,response,next) => {
                         let grupo = new Grupo(idGrupo,numeroGrupo, idPrograma, idCiclo,login);
                         grupo.save()
                             .then(() => {
-                                if(tsize=== parseInt(t) && psize === parseInt(p)){
-                                    return response.status(300).json({ciclo: ciclo});
-                                }                               
+                                                               
                             }).catch( err => {
                                 console.log(err); 
                                 request.session.error = "No se pudieron asignar los grupos correctamente.";
                             });
+                    }
+                    if(tsize=== parseInt(t) && psize === parseInt(p)){
+                        return response.status(300).json({ciclo: ciclo});
                     }
                 }
             }
