@@ -17,12 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
         moveLeft.prev(1);
     }
 
+    M.AutoInit();
     $(document).ready(function(){
         $('select').formSelect();
         $('.js-example-basic-single').select2();
+        console.log('Prueba Jq');
       });
 
-M.AutoInit();
 
 var listaProg = [];
 
