@@ -3,20 +3,19 @@
 <%- include('include/sideNavBar.ejs') %>
 
 <div class="row valign-wrapper" id="cambiar-contraseña">
-    <div class="col s6 offset-s3">
-    
-    <form action="#">
+  <div class="col s6 offset-s3">
+    <form action="/usuarios/cambiar-pass" method="POST">
 
       <div class="input-field">
         <i class="material-icons prefix">lock</i>
-        <input type="text" id="contraseña-antigua" name="contraseña antigua" required>
+        <input type="text" id="contraseña-antigua" name="antigua" required>
         <label for="contraseña-antigua">Contraseña Antigua</label>
       </div>
       <br>
 
       <div class="input-field">
         <i class="material-icons prefix">lock</i>
-        <input type="text" id="contraseña-nueva" name="contraseña-nueva" required>
+        <input type="text" id="contraseña-nueva" name="nueva" required>
         <label for="contraseña-nueva">Nueva Contraseña</label>
       </div>
       <br>
@@ -32,8 +31,17 @@
       </button>
       
     </form>
-    </div>
-
+  </div>
 </div>
 
+<input type="hidden" id="errorPassword" value="<%=error%>">
 <%- include('include/footer.ejs') %>
+
+<script>
+  let error = document.getElementById('errorPassword').value;
+
+  if (error !== 'false'){
+    M.toast({html: error , length:10000, classes: 'black'});
+  }
+ 
+</script>

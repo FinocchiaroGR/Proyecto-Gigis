@@ -54,4 +54,16 @@ module.exports = class Usuario {
     return db.execute('SELECT * FROM usuarios WHERE login = ?', [login]);
   }
 
+  static actualizarPassword(password, login) {
+    return bcrypt.hash(password, 12)
+    .then( (password) => {
+        return db.execute(
+          'UPDATE usuarios SET password=? WHERE login=?',
+          [password, login]
+        );
+    }).catch( err => {
+        console.log(err); 
+    });
+  }
+
 }
