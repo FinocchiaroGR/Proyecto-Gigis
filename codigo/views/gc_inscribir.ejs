@@ -19,7 +19,7 @@
                   <div class="collection">
                       <% for (let terapeuta of terapeutas) { %>
                         <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
-                          <a value="<%=terapeuta.idGrupo%>" id="idGrupo" class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                          <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
                         <% } %>
                       <% } %>
                   </div>
@@ -46,8 +46,7 @@
     M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
   }
 
-  const listaParticipantes = (nombre, apellido, programa) => {
-    let idGrupo = document.getElementById("idGrupo").value;
+  const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
     fetch('/gestionAdmin/gestionCiclos/participantes', {
         method: 'GET'
     }).then(result => {
@@ -59,7 +58,11 @@
         let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5><br>'+
         '<div class="row">'+
           '<div class="col s12 m6 l6 ">'+
-            '<table >'+
+            '<div class="input-field">'+
+                '<i class="material-icons prefix">search</i>'+
+                '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
+            '</div>'+
+            '<table id = "tablita">'+
               '<thead>'+
                 '<tr>'+
                   '<th>Participantes</th>'+
@@ -68,8 +71,10 @@
               '</thead>'+
               '</tbody>';
               for (participante of data.participantes) {
+                let apellidoP =  participante.apellidoPaterno === 'null '? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
+                let apellidoM =  participante.apellidoMaterno === 'null '? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
                 html += '<tr>'+
-                    '<td>' + participante.nombreUsuario+' ' + participante.apellidoPaterno+' ' + participante.apellidoMaterno+' ' + '</td>'+
+                    '<td>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
                     '<td>'+
                       '<a  onclick="registroObjetivos('+ +')" href="#rObjetivos-'+participante.login+'" style="cursor: pointer;">'+
                         '<i class="material-icons left">chevron_right</i>'+
@@ -87,6 +92,45 @@
           '</div>'+
         '</div>';        
         document.getElementById('contenido').innerHTML = html;
+    }).catch(err => {
+        console.log(err);
+    });
+};
+
+const buscar = (idGrupo) => {
+    let criterio = document.getElementById("buscarP").value;
+    console.log(criterio);
+    fetch('/gestionAdmin/gestionCiclos/'+criterio, {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        console.log("Respuesta de la petición asíncrona");
+        let html = 
+            '<table id = "tablita">'+
+              '<thead>'+
+                '<tr>'+
+                  '<th>Participantes</th>'+
+                  '<th>Inscribir</th>'+
+                '</tr>'+
+              '</thead>'+
+              '</tbody>';
+              for (p of data.participante) {
+                let apellidoP =  p.apellidoPaterno === 'null '? '&nbsp;':  p.apellidoPaterno === 'null'? '&nbsp;': p.apellidoPaterno;
+                let apellidoM =  p.apellidoMaterno === 'null '? '&nbsp;': p.apellidoMaterno === 'null'? '&nbsp;': p.apellidoMaterno;
+                html += '<tr>'+
+                    '<td>' + p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
+                    '<td>'+
+                      '<a  onclick="registroObjetivos('+ +')" href="#rObjetivos-'+p.login+'" style="cursor: pointer;">'+
+                        '<i class="material-icons left">chevron_right</i>'+
+                      '</a>'+
+                    '</td>'+
+                  '<tr>';
+              }
+              '</tbody>'+
+            '</table>';      
+        document.getElementById('tablita').innerHTML = html;
     }).catch(err => {
         console.log(err);
     });

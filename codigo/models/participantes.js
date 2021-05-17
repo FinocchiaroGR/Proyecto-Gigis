@@ -48,4 +48,11 @@ module.exports = class Participante {
           'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A"'
           );
       }
+    
+      static fetchPorCriterio(criterio) {
+        return db.execute(
+          'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A" AND (nombreUsuario LIKE ? OR apellidoPaterno LIKE ? OR apellidoMaterno LIKE ?)',
+          ['%'+criterio+'%','%'+criterio+'%','%'+criterio+'%']
+          );
+      }
 }

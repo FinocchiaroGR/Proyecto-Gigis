@@ -79,6 +79,16 @@ exports.getInsPar = (request,response,next) => {
         .catch((err) => console.log(err));
 };
 
+exports.getBuscarPar = (request,response,next) => {
+    Participante.fetchPorCriterio(request.params.criterio)
+        .then(([participante, fieldData]) => {
+            return response.status(200).json({participante:participante});
+        })
+        .catch(err => {
+            console.log(err)
+        });
+};
+
 exports.postInscribir = (request,response,next) => {
     
 };
