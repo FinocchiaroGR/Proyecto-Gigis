@@ -40,7 +40,7 @@ BEGIN
     --Asignar login como llave primaria
     ALTER TABLE datosPart_temp
     ADD CONSTRAINT pk_login_partTemp
-    PRIMARY KEY (login));
+    PRIMARY KEY (login);
 
     --Merge de la tabla de datos con las calificaciones
     DECLARE progCont INT DEFAULT 0;
@@ -63,7 +63,6 @@ BEGIN
 
     DROP TEMPORARY TABLE datosPart_temp;
 END
-
 $$
 
 DELIMITER ;             
@@ -103,12 +102,12 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
     
     CREATE TEMPORARY TABLE datosPart_temp AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad 
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
       AND C.sexo = Sexo
-      AND C.idPrograma IN (SELECT idProg FROM listProg_temp)
+      AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
     GROUP BY C.login;
 END
 $$
@@ -128,11 +127,11 @@ CREATE PROCEDURE crearTablaTempDatos2 (
 ) 
 BEGIN
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad 
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
-      AND C.idPrograma IN (SELECT idProg FROM listProg_temp)
+      AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
     GROUP BY C.login;
 END
 $$
@@ -151,11 +150,11 @@ CREATE PROCEDURE crearTablaTempDatos3 (
 ) 
 BEGIN
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad 
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.sexo = Sexo
-      AND C.idPrograma IN (SELECT idProg FROM listProg_temp)
+      AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
     GROUP BY C.login;
 END
 $$
@@ -173,10 +172,10 @@ CREATE PROCEDURE crearTablaTempDatos4 (
 )  
 BEGIN
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad 
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
-      AND C.idPrograma IN (SELECT idProg FROM listProg_temp)
+      AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
     GROUP BY C.login;
 END
 $$
@@ -214,9 +213,11 @@ CREATE PROCEDURE mergeTablaAva_datos (
     IN `Programa` INT
 )
 BEGIN
+    SET @sql = CONCAT('Avance_P',Programa,'_C',Ciclo);
+
     SELECT * FROM  datosPart_temp t1
     LEFT OUTER JOIN 
-        (SELECT login, Avance AS CONCAT('Avance_P',Programa,'_C',Ciclo)
+        (SELECT login, Avance AS @sql
         FROM
             CalifDatos
         WHERE
@@ -226,3 +227,17 @@ END
 $$
 
 DELIMITER ;
+
+CALL getProgs('1,2');
+CALL crearTablaTempDatos1(10, 11, 2, 18, 'M', '1,2');
+
+CALL getProgs('1,2');
+CALL crearTablaTempDatos1(10, 11, 2, 18, 'M', '1,2');
+ALTER TABLE datosPart_temp
+    ADD CONSTRAINT pk_login_partTemp
+    PRIMARY KEY (login);
+DECLARE varTemp VARCHAR(20) DEFAULT CONCAT('Avance_P',1,'_C',10);
+SELECT login, 
+  Avance AS varTemp 
+  FROM CalifDatos 
+  WHERE idCiclo = 10 AND idPrograma = 1;
