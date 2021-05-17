@@ -1,0 +1,47 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>
+
+<div class="row valign-wrapper" id="cambiar-contraseña">
+  <div class="col s6 offset-s3">
+    <form action="/usuarios/cambiar-pass" method="POST">
+
+      <div class="input-field">
+        <i class="material-icons prefix">lock</i>
+        <input type="text" id="contraseña-antigua" name="antigua" required>
+        <label for="contraseña-antigua">Contraseña Antigua</label>
+      </div>
+      <br>
+
+      <div class="input-field">
+        <i class="material-icons prefix">lock</i>
+        <input type="text" id="contraseña-nueva" name="nueva" required>
+        <label for="contraseña-nueva">Nueva Contraseña</label>
+      </div>
+      <br>
+
+      <div class="input-field">
+        <i class="material-icons prefix">lock</i>
+        <input type="text" id="confirmacion" name="confirmacion" required>
+        <label for="confirmacion">Confirmación</label>
+      </div>
+      <br>
+      
+      <button class="btn-formulario btn waves-effect blue lighten-1" >Guardar<i class="material-icons right">send</i>
+      </button>
+      
+    </form>
+  </div>
+</div>
+
+<input type="hidden" id="errorPassword" value="<%=error%>">
+<%- include('include/footer.ejs') %>
+
+<script>
+  let error = document.getElementById('errorPassword').value;
+
+  if (error !== 'false'){
+    M.toast({html: error , length:10000, classes: 'black'});
+  }
+ 
+</script>
