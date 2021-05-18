@@ -144,25 +144,64 @@ exports.postNuevoRoll = (request, response, next) => {
 };
 
 exports.postModRoll = (request, response, next) => {
-    console.log("Petición asíncrona reciba");
-    console.log(request.body.idRol);
+    console.log("Petición asíncrona");
 
-    Func.fetchAll()
-        .then(([funciones]) =>{
-            Rol_Func.fetchByIdRol(request.body.idRol)
-                .then(([funcionesCh]) => {
-                    return response.status(200).json({
-                        funciones : funciones,
-                        funcionesCh : funcionesCh
-                    });
-                })
-                .catch((err) => {
-                    console.log('aqui2 '+err);
-                    request.session.error = 'Error de comunicacion con el servidor';
-                });
+    Rol_Func.fetchJoin(request.body.idRol)
+        .then(([funciones]) => {
+            return response.status(200).json({
+                funciones : funciones,
+                idRol : request.body.idRol
+            });
         })
         .catch((err) => {
-            console.log('aqui3 ' +err);
+            console.log(err);
             request.session.error = 'Error de comunicacion con el servidor';
+        });
+};
+
+exports.postUpdateRoll = (request, response, next) => {
+    const idRol = request.body.idRol;
+    console.log(request.body.idRol);
+
+    let funciones = [
+        request.body.Funcion_1 === undefined ? null : 1,
+        request.body.Funcion_2 === undefined ? null : 2,
+        request.body.Funcion_3 === undefined ? null : 3,
+        request.body.Funcion_4 === undefined ? null : 4,
+        request.body.Funcion_5 === undefined ? null : 5,
+        request.body.Funcion_6 === undefined ? null : 6,
+        request.body.Funcion_7 === undefined ? null : 7,
+        request.body.Funcion_8 === undefined ? null : 8,
+        request.body.Funcion_9 === undefined ? null : 9,
+        request.body.Funcion_10 === undefined ? null : 10,
+        request.body.Funcion_11 === undefined ? null : 11,
+        request.body.Funcion_12 === undefined ? null : 12,
+        request.body.Funcion_13 === undefined ? null : 13,
+        request.body.Funcion_14 === undefined ? null : 14,
+        request.body.Funcion_15 === undefined ? null : 15,
+        request.body.Funcion_16 === undefined ? null : 16,
+        request.body.Funcion_17 === undefined ? null : 17
+    ]
+    console.log(funciones);
+
+    Rol_Func.deleteById(idRol)
+        .then(() => {
+            for (let idfuncion of funciones){
+                if (idfuncion != null){
+                    const add = new Rol_Func(idRol, idfuncion);
+                    add.save()
+                        .then(() => {
+                            response.redirect('/gestionAdmin/gestionUsuarios');
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
+            }
+        })
+        .catch( err => {
+            request.session.error = 'Error de comunicacion con el servidor';
+            console.log(err);
+            response.redirect('/gestionAdmin/gestionUsuarios');
         });
 };

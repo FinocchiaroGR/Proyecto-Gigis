@@ -56,12 +56,10 @@ function generarContra(){
   document.getElementById("contra").value = correo.value.split('@')[0]+ new Date().getMilliseconds()+ especiales[indice];
 }
 
+
 const modRol = (idRol) => {
-  console.log(idRol);
 
     let data = {idRol: idRol};
-            console.log(data);
-            //función que manda la petición asíncrona
             fetch('/gestionAdmin/gestionUsuarios/modificar-roll', {
                 method: 'POST',
                 headers: {
@@ -70,60 +68,59 @@ const modRol = (idRol) => {
                 body: JSON.stringify(data)
             }).then(result => {
                 return result.json();
+                
             }).then(data => {
-                console.log("Respuesta de la petición asíncrona");
+                console.log("Starting...");
                 console.log(data);
 
-                console.log('data.funcionesCh[0].idfuncion: '+ data.funcionesCh[0].idfuncion);
-                console.log('data.funcionesCh[0].idRol: '+ data.funcionesCh[0].idRol);
-                console.log('data.funciones[0].requisitoFuncional: '+ data.funciones[0].requisitoFuncional);
-                console.log('data.funciones[0].idFuncion: '+ data.funciones[0].idFuncion);
-                console.log('data.funcionesCh[100].idfuncion: '+ data.funcionesCh[100].idfuncion);
+                  let html =  '<div id="childDiv">' +
+                                '<form action="/gestionAdmin/gestionUsuarios/update-roll" method="POST">' +
+                                  '<table class="highlight">' +
+                                    '<thead>' +
+                                      '<tr>' +
+                                        '<th data-field="Permisos">Permisos</th>' +
+                                      '</tr>' +
+                                    '</thead>' +
+                                  '<tbody>';
 
-                  let html =  '<form method="POST">' +
-                                '<table class="highlight">' +
-                                  '<thead>' +
-                                    '<tr>' +
-                                      '<th data-field="Permisos">Permisos</th>'
-                                    '</tr>' +
-                                  '</thead>' +
-                                '<tbody>';
-                for (let i = 0; i <= 16; i++) { 
-                  if (data.funcionesCh[i].idfuncion != undefined){
+                for (let funcion of data.funciones) {
+                  if (funcion.foo == 1) {
                     html += 
                                   '<tr>' +
                                     '<td>' +
                                       '<label>' +
-                                        '<input type="checkbox" checked="checked" name="Funcion_' + i + '"/>' +
-                                        '<span>' + data.funciones[i].requisitoFuncional + '</span>' +
+                                        '<input type="checkbox" checked="checked" name="Funcion_'+ funcion.idFuncion + '"/>' +
+                                        '<span>' + funcion.requisitoFuncional + '</span>' +
                                       '</label>' +
                                     '</td>' +
                                   '</tr>';
-                  }
-                  else{
-                    html += 
+                    }
+                    else {
+                      html += 
                                   '<tr>' +
                                     '<td>' +
                                       '<label>' +
-                                        '<input type="checkbox" name="Funcion_' + i + '"/>' +
-                                        '<span>' + data.funciones[i].requisitoFuncional + '</span>' +
+                                        '<input type="checkbox" name="Funcion_' + funcion.idFuncion + '"/>' +
+                                        '<span>' + funcion.requisitoFuncional + '</span>' +
                                       '</label>' +
                                     '</td>' +
                                   '</tr>';
+                    }
                   }
-                  
-                }
-                html +=         '</tbody>' +
-                              '</table>' +
-                              '<div class="modal-footer">' +
-                                '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar Rol</button>' +
-                              '</div>' +
-                            '</form>';
+
+                  html +=         '</tbody>' +
+                                '</table>' +
+                                '<input type="hidden" name="idRol" value="' + data.idRol + '">' +
+                                '<div class="modal-footer">' +
+                                  '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar Rol</button>' +
+                                '</div>' +
+                              '</form>' +
+                            '</div>';
+                  console.log('data.idRol: ' + data.idRol);
                             
-                  
+                  document.getElementById('despliega_Funciones').removeChild(document.getElementById("childDiv"));
                   document.getElementById('despliega_Funciones').innerHTML = html;
-                  // M.toast({html: 'La mascota fue eliminada de la lista'})
             }).catch(err => {
-                console.log('aqui '+err);
+                console.log(err);
             });
 };
