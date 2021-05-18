@@ -1,6 +1,7 @@
 const Arrow = require('../models/arrow');
 const Ciclo = require('../models/ciclos');
-const Programa = require('../models/programas')
+const Programa = require('../models/programas');
+const Nivel = require('../models/niveles');
 const Usuario = require('../models/usuarios');
 const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
@@ -83,6 +84,25 @@ exports.getBuscarPar = (request,response,next) => {
     Participante.fetchPorCriterio(request.params.criterio)
         .then(([participante, fieldData]) => {
             return response.status(200).json({participante:participante});
+        })
+        .catch(err => {
+            console.log(err)
+        });
+};
+
+exports.postSelectNivel = (request,response,next) => {
+    Nivel.fetchPorIdGrupo(request.body.idGrupo)
+        .then(([niveles, fieldData]) => {
+            Usuario.fetchNombre(request.body.login)
+                .then(([usuarios, fieldData]) => {
+                    return response.status(200).json({
+                        niveles: niveles, 
+                        usuarios: usuarios
+                    });
+                })
+                .catch(err => {
+                    console.log(err)
+                });
         })
         .catch(err => {
             console.log(err)

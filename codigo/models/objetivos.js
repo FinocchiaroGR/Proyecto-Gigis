@@ -44,5 +44,9 @@ module.exports = class Objetivo {
     static activar(descripcion){
         return db.execute('UPDATE objetivos SET estatus=1 WHERE descripcion LIKE ?', [descripcion])
     }
+
+    static objetivosActivosPorNivel(idNivel) {
+        return db.execute ('SELECT * FROM objetivos WHERE idNivel=? AND estatus = 1',[idNivel])
+    }
 }
 

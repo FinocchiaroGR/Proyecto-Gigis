@@ -23,4 +23,9 @@ module.exports = class Nivel {
     static fetchNombrePrograma(idNivel) {
         return db.execute('SELECT nombrePrograma, nombreNivel, P.idPrograma FROM niveles N, programas P WHERE P.idPrograma=N.idPrograma AND idNivel=?',[idNivel])
     }
+
+    static fetchPorIdGrupo(idGrupo) {
+        return db.execute('SELECT * FROM niveles WHERE idPrograma  IN (SELECT idPrograma FROM grupos WHERE idGrupo = 2)',
+        [idGrupo])
+    }
 }

@@ -33,7 +33,7 @@
                 </div>        
                 <div class="col s11">
                   <div class="file-field input-field">
-                    <div class="btn tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar la imagen" >
+                    <div class="waves-effect waves-light btn-small white black-text tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar la imagen">
                       <i class="material-icons left ">file_upload</i>Subir
                       <input disabled type="file" name="imagen" id="subirImagen-<%=programa.idPrograma%>">
                     </div>
@@ -47,8 +47,9 @@
           </ul>
         </div>
         <div class="modal-footer">
+          <button  type = "submit"  class="modal-action waves-effect btn-flat grey lighten-1">Actualizar</button>
+          <label style="visibility:hidden">**</label>
           <br>
-          <button  type = "submit" class="modal-action waves-effect waves-light-blue lighten-1 btn">Actualizar<i class="material-icons right">send</i></button>
         </div>
       </form>
     </div><!-- Fin Modal Structure Editar Programa-->
@@ -69,7 +70,9 @@
           </ul>
         </div>
         <div class="modal-footer">
-          <button  type = "submit" class="modal-action waves-effect waves-light-blue lighten-1 btn">Agregar<i class="material-icons right">send</i></button>
+          <button  type = "submit"  class="modal-action waves-effect btn-flat grey lighten-1">Agregar</button>
+          <label style="visibility:hidden">**</label>
+          <br>
         </div>
       </form>
     </div><!-- Fin Modal Structure Agregar Nivel-->
