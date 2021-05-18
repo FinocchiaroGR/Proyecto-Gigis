@@ -36,5 +36,14 @@ module.exports = class Participante_Grupo_Objetivo {
         return db.execute('UPDATE participantes_grupos_objetivo SET puntajeInicial=?, puntajeFinal=? WHERE login=? AND idGrupo=? AND idObjetivo=?',[pInicial,pFinal,login,idGrupo,idObjetivo]);
     }
 
+    static fetchLoginIncritos(idGrupo) {
+        return db.execute('SELECT login FROM participantes_grupos_objetivo WHERE idGrupo = ? GROUP BY(login)',
+        [idGrupo]);
+    }
+
+    static fetchIncritos(idGrupo, login) {
+        return db.execute('SELECT * FROM participantes_grupos_objetivo WHERE idGrupo = ? AND login = ?',
+        [idGrupo, login]);
+    }
 
 }

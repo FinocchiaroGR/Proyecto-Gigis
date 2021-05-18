@@ -8,3 +8,20 @@
     font-size:x-large;
     padding-bottom: 4px;
 }
+
+
+.asignar-nivel {
+  padding-left: 2em;
+  position: sticky;
+  top: 0;
+  border-left:1px solid black;
+  
+}
+
+.asignar-objetivos {
+  padding-left: 2em;
+  position: sticky;
+  top: 0;
+  border-left:1px solid black;
+  
+}
