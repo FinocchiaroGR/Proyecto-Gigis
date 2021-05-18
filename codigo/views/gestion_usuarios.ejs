@@ -26,7 +26,14 @@
           </div>
         </div>
       </div>
-    </div>
+        <div class="col">
+          <div class="row">
+            <div class="input-field col s12">
+              <!-- Modal Modiciar rol -->
+              <a class="btn-small  modal-trigger light-green accent-4" href="#modificarRol"><i class="material-icons left">create</i>Modificar rol</a>
+            </div>
+          </div>
+        </div>
     <!-- Inicia Modal Structure agregar usuario-->
     <div id="agregarUsuario" class="modal">
       <%- include('includesGestion/modst_agregar_usuario.ejs') %>  
@@ -35,24 +42,26 @@
     <div id="crearRol" class="modal">
       <%- include('includesGestion/modst_crear_rol.ejs') %>
     </div><!-- Fin Modal Structure crear Rol-->
+    <!-- Modal Structure Modificar Rol-->
+    <div id="modificarRol" class="modal">
+      <%- include('includesGestion/modst_modificar_rol.ejs') %>
+    </div><!-- Fin Modal Structure modificar Rol-->
     <div class="row">
       <div class="col s12 m12">
         <%- include('includesGestion/lista_usuarios.ejs') %>
       </div>
     </div>
 </div>    
-<input type="hidden" id="error" value="<%= error %>">
 <input type="hidden" id="bandera" value="<%= bandera%>">
 
 <%- include('include/footer.ejs') %>
 
 <script>
-  let error = document.getElementById('error').value;
   let bandera = document.getElementById('bandera').value;
-  if (error !== 'false' && bandera == 'true'){
-    M.toast({html: '<%- error %>', length:7500, classes: 'black'})
+  if (bandera == 'true'){
+    M.toast({html: '<%- mensaje %>', length:7500, classes: 'black'})
   }
-  if (error === 'false' && bandera == 'true'){
-    M.toast({html: 'El usuario fue registrado correctamente.',  length:6500, classes: 'grey'})
+  if (bandera == 'false'){
+    M.toast({html: '<%- mensaje %>',  length:6500, classes: 'grey'})
   }
 </script>

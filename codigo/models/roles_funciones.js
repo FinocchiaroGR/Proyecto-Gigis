@@ -20,4 +20,22 @@ module.exports = class Rol_Funcion {
   static fetchAll() {
     return db.execute('SELECT * FROM roles_funciones');
   }
+
+  static fetchByIdRol(idRol) {
+    return db.execute('SELECT `idfuncion` FROM `roles_funciones` WHERE `idRol` = ?',
+    [idRol]
+    );
+  }
+
+  static fetchJoin(idRol) {
+    return db.execute('select F.*, case when RF.idfuncion is null then 0 else 1 end as foo FROM funciones F LEFT JOIN roles_funciones RF ON RF.idfuncion = F.idFuncion AND RF.idRol = ?',
+    [idRol]
+    );
+  }
+
+  static deleteById(idRol) {
+    return db.execute('DELETE FROM roles_funciones WHERE idRol = ?',
+    [idRol]
+    );
+  }
 }

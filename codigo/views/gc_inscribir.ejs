@@ -55,13 +55,17 @@
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
         console.log("Respuesta de la petición asíncrona");
         console.log(data);
-        let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5><br>'+
+        let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
         '<div class="row">'+
           '<div class="col s12 m6 l6 ">'+
             '<div class="input-field">'+
                 '<i class="material-icons prefix">search</i>'+
                 '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
             '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="row">'+
+          '<div class="col s12 m6 l6 ">'+
             '<table id = "tablita">'+
               '<thead>'+
                 '<tr>'+
@@ -76,22 +80,25 @@
                 html += '<tr>'+
                     '<td>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
                     '<td>'+
-                      '<a  onclick="registroObjetivos('+ +')" href="#rObjetivos-'+participante.login+'" style="cursor: pointer;">'+
+                      '<a  onclick="registroObjetivos(&apos;'+participante.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                         '<i class="material-icons left">chevron_right</i>'+
                       '</a>'+
                     '</td>'+
                   '<tr>';
               }
-              '</tbody>'+
-            '</table>'+
-            '<br /><br />'
-          '</div>'+
-          '<div class="col s12 m6 l6 asignar-ojetivos">'+
-            '<div id="objetivos-participante-grupo-'+idGrupo+'">'+
-            '</div>'+
-          '</div>'+
-        '</div>';        
+        html +=   '</tbody>'+
+                    '</table>'+
+                    '<br><br>'+
+                  '</div>'+
+                  '<div class="col s12 m6 l6 asignar-ojetivos">'+
+                    '<div id="niveles-participante-'+idGrupo+'">'+
+                    '</div>'+
+                    '<div id="objetivos-participante-grupo-'+idGrupo+'">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>';        
         document.getElementById('contenido').innerHTML = html;
+        M.AutoInit();
     }).catch(err => {
         console.log(err);
     });
@@ -122,7 +129,7 @@ const buscar = (idGrupo) => {
                 html += '<tr>'+
                     '<td>' + p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
                     '<td>'+
-                      '<a  onclick="registroObjetivos('+ +')" href="#rObjetivos-'+p.login+'" style="cursor: pointer;">'+
+                      '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                         '<i class="material-icons left">chevron_right</i>'+
                       '</a>'+
                     '</td>'+
@@ -131,10 +138,64 @@ const buscar = (idGrupo) => {
               '</tbody>'+
             '</table>';      
         document.getElementById('tablita').innerHTML = html;
+        M.AutoInit();
+
     }).catch(err => {
         console.log(err);
     });
 };
+
+const registroObjetivos = (login, idGrupo) => {
+  let data = {
+    idGrupo: idGrupo,
+    login: login
+  };
+  console.log(data);
+  //función que manda la petición asíncrona
+  fetch('/gestionAdmin/gestionCiclos/select-nivel', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+          //'csrf-token': csrf
+      },
+      body: JSON.stringify(data)
+  }).then(result => {
+      return result.json(); //Regresa otra promesa
+  }).then(data => {
+    //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+    //...
+    console.log(data)
+    let html = '';
+    //Header 
+    html = '<div class="row">' +
+            '<h6>Inscribir a: ' + data.usuarios[0].nombreUsuario +' '+data.usuarios[0].apellidoPaterno + ' ' + data.usuarios[0].apellidoMaterno  + '</h6>';
+    //Registro nivel
+    
+      html +=   
+                  '<div >' +
+                    '<p>Selecciona el nivel del participante.</p>' +
+                  '</div>' +  
+                  '<div>' +
+                    '<select id = "nivelAsig-' + login + '" onchange="mostrarObj(this)">';
+                      for(nivel of data.niveles){
+                        html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
+                      }
+      html +=       '</select>' +
+                  '</div>' +  
+                '</div>';
+                
+                
+    let id = 'niveles-participante-' + idGrupo;
+    document.getElementById(id).innerHTML = html;
+    M.AutoInit();
+
+    
+  }).catch(err => {
+    console.log(err);
+  });
+  }
+
+
 
 
 </script>
