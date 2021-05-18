@@ -46,8 +46,8 @@ module.exports = class Usuario {
   }
 
   //Este método servirá para devolver el nombre de los usuarios
-  static fetchNombre (login) {
-    return db.execute('SELECT nombreUsuario, apellidoPaterno FROM usuarios WHERE login like ?', [login]);
+  static fetchNombre(login) {
+    return db.execute('SELECT nombreUsuario, apellidoPaterno, apellidoMaterno FROM usuarios WHERE login like ?', [login]);
   }
 
   static fetchOne(login) {

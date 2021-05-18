@@ -16,6 +16,8 @@ subrouter.get('/participantes', isAuth, gestionCicloController.getInsPar);
 
 subrouter.get('/buscar/:criterio', isAuth, gestionCicloController.getBuscarPar);
 
+subrouter.post('/select-nivel', isAuth, gestionCicloController.postSelectNivel);
+
 subrouter.post('/agregar-ciclo', isAuth, gestionCicloController.postAgrCiclo);
 
 subrouter.get('/agregar-ciclo', isAuth, gestionCicloController.getAgrCiclo);
