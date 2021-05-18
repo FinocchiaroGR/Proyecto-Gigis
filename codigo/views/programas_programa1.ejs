@@ -31,7 +31,13 @@
                  </a>
               </td>
               <td>  <%=participante.nombreNivel%>  </td>
-              <td></td>
+              <td>
+                <% for (let calificacion of calificaciones) { %>
+                  <% if (participante.login === calificacion.login) { %>
+                    <%=calificacion.calificaciones%>
+                  <% } %>
+                <% } %>
+              </td>
             
           
               <% loginParticipante = participante.login;%>
@@ -53,6 +59,7 @@
 
 <script>
   const registroPuntajes = (idGrupo, login) => {
+
     let data = {
       grupo_id: idGrupo,
       login_participante: login
@@ -180,5 +187,6 @@
       console.log(err);
     });
   };
+
 </script>
 <%- include('include/footer.ejs') %>

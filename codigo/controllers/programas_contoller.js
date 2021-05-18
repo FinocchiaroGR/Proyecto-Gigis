@@ -13,14 +13,20 @@ exports.getProgramas = (request, response, next) => {
       .then(([grupos, fieldData1]) => {
         Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(idPrograma)
           .then(([participantes,fieldData2]) => {
-            response.render('programas_programa1', {
-              tituloDeHeader: programa[0].nombrePrograma,
-              tituloBarra: programa[0].nombrePrograma,
-              grupos: grupos,
-              participantes: participantes,
-              backArrow: { display: 'block', link: '/programas' },
-              forwArrow: arrows[1]
-            });
+            Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
+              .then(([calificaciones, fieldData3]) => {
+                response.render('programas_programa1', {
+                  tituloDeHeader: programa[0].nombrePrograma,
+                  tituloBarra: programa[0].nombrePrograma,
+                  grupos: grupos,
+                  participantes: participantes,
+                  calificaciones: calificaciones,
+                  backArrow: { display: 'block', link: '/programas' },
+                  forwArrow: arrows[1]
+                });
+              }).catch((err) => {
+                console.log(err);
+              })
           }).catch((err) => {
             console.log(err);
           })
@@ -55,7 +61,9 @@ exports.objetivosParticipantes = (request, response, next) => {
 
 exports.registroPuntajes = (request, response, next) => {
   for (participante of request.body){
-    Participante_Grupo_Objetivo.ActualizarPuntajes(participante.login, participante.idGrupo, participante.idObjetivo, participante.pInicial, participante.pFinal)
+    let puntaje_final = participante.pFinal === '0' ? null : participante.pFinal;
+    let puntaje_inicial = participante.pInicial === '0' ? null : participante.pInicial;
+    Participante_Grupo_Objetivo.ActualizarPuntajes(participante.login, participante.idGrupo, participante.idObjetivo, puntaje_inicial, puntaje_final)
       .then(() =>{
 
       }).catch((err) => {

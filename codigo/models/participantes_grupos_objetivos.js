@@ -36,5 +36,8 @@ module.exports = class Participante_Grupo_Objetivo {
         return db.execute('UPDATE participantes_grupos_objetivo SET puntajeInicial=?, puntajeFinal=? WHERE login=? AND idGrupo=? AND idObjetivo=?',[pInicial,pFinal,login,idGrupo,idObjetivo]);
     }
 
+    static calificacionesPorPrograma(idPrograma) {
+        return db.execute('SELECT *, AVG(puntajeFinal) AS calificaciones FROM participantes_grupos_objetivo PGO WHERE EXISTS (SELECT * FROM participantes_grupos_objetivo PGO1 , grupos G, ciclos C WHERE PGO1.idGrupo=G.idGrupo AND G.idCiclo=C.idCiclo AND PGO.login=PGO1.login AND PGO.idGrupo = PGO1.idGrupo AND PGO.idNivel = PGO1.idNivel AND PGO.idObjetivo= PGO1.idObjetivo  AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE AND G.idPrograma=? AND puntajeFinal>0) GROUP BY login ORDER BY PGO.login ASC', [idPrograma])
+    }
 
 }
