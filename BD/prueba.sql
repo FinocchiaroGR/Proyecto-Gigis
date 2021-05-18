@@ -14,8 +14,6 @@ CREATE OR REPLACE PROCEDURE crearConsultaCalif (
 )
 BEGIN
     #Crear tabla de programas TEMP
-    #SET @Programas = '\'1\',\'2\',\'4\',\'8\'';
-    #CALL getProgs(@Programas);
     CALL getProgs(Programas);
 
     #Crear tabla temporal de datos
@@ -198,7 +196,6 @@ BEGIN
             ' (SELECT login, CalifInicial AS `CalifInicial_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),'`, CalifFinal AS `CalifFinal_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),'` FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),')',
             ' t2 ON (t1.login = t2.login)'
         );
-    SELECT @sql;
     PREPARE stmt FROM @sql ;
     EXECUTE stmt ;
     DEALLOCATE PREPARE stmt;
@@ -221,7 +218,6 @@ BEGIN
             ' (SELECT login, Avance AS `Avance_P', CAST(Programa AS CHAR),'_C', CAST(Ciclo AS CHAR),'` FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),')',
             ' t2 ON (t1.login = t2.login)'
         ) ;
-    SELECT @sql;
     PREPARE stmt FROM @sql ;
     EXECUTE stmt ;
     DEALLOCATE PREPARE stmt;
@@ -234,39 +230,57 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE cosultaGeneral(IN `Num` INT)
+CREATE OR REPLACE PROCEDURE cosultaGeneral(
+    IN `Ciclo_ini` INT, 
+    IN `Num` INT,
+    IN `Calif_Ava` BOOLEAN,
+    In `Programas` VARCHAR(255)
+)
 BEGIN
+    CALL getProgs(Programas);
 
     SET @progCont := 0; 
     SET @cicloCont := 0;
-    SET @x = -1;
-    SET @sql = 'SELECT COUNT(*)'; 
-    REPEAT  
-        IF Calif_Ava = TRUE THEN
-            CALL mergeTablaCalif_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x);
+    SET @sql = 'SELECT COUNT(*) AS `ContTotal`'; 
+    SET @numProg = 'SELECT COUNT(*) FROM listProg_temp';
+    SET @x = 0;
+    REPEAT
+        SET @x = @x + 1;
+        IF Calif_Ava = TRUE THEN 
+            SET @sql = CONCAT(@sql,
+                            ', AVG(califFin_P',
+                            CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+                            '_C',
+                            CAST((Ciclo_ini + @cicloCont) AS CHAR),
+                            ') AS `Prom_Calif_P',
+                            CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+                            '_C',
+                            CAST((Ciclo_ini + @cicloCont) AS CHAR),
+                            '`');
         ELSE
-            CALL mergeTablaAva_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x);
+            SET @sql = CONCAT(@sql,
+                            ', AVG(Avance_P',
+                            CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+                            '_C',
+                            CAST((Ciclo_ini + @cicloCont) AS CHAR),
+                            ') AS `Prom_Avance_P',
+                            CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+                            '_C',
+                            CAST((Ciclo_ini + @cicloCont) AS CHAR),
+                            '`');
         END IF;
+        
 
-        if(((@progCont+1) % numProg) = 0) THEN 
+        IF(((@progCont+1) % @numProg) = 0) THEN 
             SET @progCont := 0; 
             SET @cicloCont := @cicloCont +1;
         ELSE
             SET @progCont := @progCont +1;
         END IF;
-        SET @x = @x + 1;
-    UNTIL @x >= ((Ciclo_fin-Ciclo_ini+1)*numProg) 
+    UNTIL @x >= Num 
     END REPEAT;
 
-    SET @sql = CONCAT(
-            'CREATE TEMPORARY TABLE `datosPart_temp', CAST(Num AS CHAR), '` AS',
-            ' SELECT t1.*, t2.Avance_P', CAST(Programa AS CHAR), '_C', CAST(Ciclo AS CHAR),' FROM',
-            ' (SELECT * FROM  datosPart_temp', IF(Num=1,'',Num-1), ') t1',
-            ' LEFT OUTER JOIN',
-            ' (SELECT login, Avance AS `Avance_P', CAST(Programa AS CHAR),'_C', CAST(Ciclo AS CHAR),'` FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),')',
-            ' t2 ON (t1.login = t2.login)'
-        ) ;
-    SELECT @sql;
+    SET @sql = CONCAT(@sql,' FROM ultimaconsulta');
     PREPARE stmt FROM @sql ;
     EXECUTE stmt ;
     DEALLOCATE PREPARE stmt;
@@ -275,8 +289,19 @@ $$
 
 DELIMITER ;
 
+SELECT
+    COUNT(*) AS `ContTotal`,
+    AVG(Avance_P1_C10) AS `Prom_Avance_P1_C10`,
+    AVG(Avance_P2_C10) AS `Prom_Avance_P2_C10`,
+    AVG(Avance_P4_C10) AS `Prom_Avance_P4_C10`,
+    AVG(Avance_P1_C11) AS `Prom_Avance_P1_C11`,
+    AVG(Avance_P2_C11) AS `Prom_Avance_P2_C11`,
+    AVG(Avance_P4_C11) AS `Prom_Avance_P4_C11`
+FROM
+    ultimaconsulta;
+-------------------------
 CALL crearConsultaCalif (TRUE, TRUE, FALSE, 10, 11, 2, 18, 'M',3,'1,2,4')
-
+Call cosultaGeneral(10,6,FALSE,'1,2,4')
 CALL getProgs('1,2');
 CALL crearTablaTempDatos1(10, 11, 2, 18, 'M', '1,2');
 
