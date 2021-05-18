@@ -6,6 +6,7 @@ const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
 const { fetchId } = require('../models/roles');
+const { response } = require('express');
 
 const arrows = Arrow.fetchAll();
 
@@ -218,4 +219,8 @@ exports.postUpdateRoll = (request, response) => {
             response.redirect('/gestionAdmin/gestionUsuarios');
             console.log(err);
         });
+};
+
+exports.getModUser = (request, response) => {
+    
 };
