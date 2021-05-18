@@ -230,6 +230,51 @@ $$
 
 DELIMITER ;
 
+-----------------------------------------------------------------------------------------------
+
+DELIMITER $$
+
+CREATE OR REPLACE PROCEDURE cosultaGeneral(IN `Num` INT)
+BEGIN
+
+    SET @progCont := 0; 
+    SET @cicloCont := 0;
+    SET @x = -1;
+    SET @sql = 'SELECT COUNT(*)'; 
+    REPEAT  
+        IF Calif_Ava = TRUE THEN
+            CALL mergeTablaCalif_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x);
+        ELSE
+            CALL mergeTablaAva_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x);
+        END IF;
+
+        if(((@progCont+1) % numProg) = 0) THEN 
+            SET @progCont := 0; 
+            SET @cicloCont := @cicloCont +1;
+        ELSE
+            SET @progCont := @progCont +1;
+        END IF;
+        SET @x = @x + 1;
+    UNTIL @x >= ((Ciclo_fin-Ciclo_ini+1)*numProg) 
+    END REPEAT;
+
+    SET @sql = CONCAT(
+            'CREATE TEMPORARY TABLE `datosPart_temp', CAST(Num AS CHAR), '` AS',
+            ' SELECT t1.*, t2.Avance_P', CAST(Programa AS CHAR), '_C', CAST(Ciclo AS CHAR),' FROM',
+            ' (SELECT * FROM  datosPart_temp', IF(Num=1,'',Num-1), ') t1',
+            ' LEFT OUTER JOIN',
+            ' (SELECT login, Avance AS `Avance_P', CAST(Programa AS CHAR),'_C', CAST(Ciclo AS CHAR),'` FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),')',
+            ' t2 ON (t1.login = t2.login)'
+        ) ;
+    SELECT @sql;
+    PREPARE stmt FROM @sql ;
+    EXECUTE stmt ;
+    DEALLOCATE PREPARE stmt;
+END 
+$$
+
+DELIMITER ;
+
 CALL crearConsultaCalif (TRUE, TRUE, FALSE, 10, 11, 2, 18, 'M',3,'1,2,4')
 
 CALL getProgs('1,2');

@@ -199,13 +199,13 @@ exports.getResultados = ((request, response, next) => {
     let bools = datosConsultas.getBools();
     Programas.fetchAll()
     .then(([rows_Programas, fieldData_Prog]) => {
+        console.table(rows_Programas);
         datosConsultas.fetch3()
         .then(([rowsDatos, fieldData_Datos]) => {
+            console.table(rowsDatos);
             datosConsultas.fetchCants()
             .then((metaData) => {
-                console.table(rowsDatos);
-                console.table(rows_Programas);
-                //console.table(rowsGen);
+                console.table(metaData);
                 response.render('consultas_Resultados', {
                     tituloDeHeader: "Consulta - Resultados",
                     tituloBarra: "Resultados de consulta",
@@ -238,15 +238,15 @@ exports.getResultados = ((request, response, next) => {
                 response.status(201);
             }).catch( err => {
                 console.log(err);
-                response.redirect('/consultas');
+                response.redirect('/');
             });
         }).catch( err => {
             console.log(err);
-            response.redirect('/consultas');
+            response.redirect('/');
         });
     }).catch( err => {
         console.log(err);
-        response.redirect('/consultas');
+        response.redirect('/');
     });
 });
 

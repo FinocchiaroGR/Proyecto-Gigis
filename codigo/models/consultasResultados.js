@@ -429,6 +429,43 @@ module.exports = class DatosConsultas {
     this.varsUltimaConsulta = vars;
     return db.execute(texto,vars);
   }
+  
+  fetch3(){
+        //CALL crearConsultaCalif ( Filtrar_edad BOOL, Filtrar_sexo BOOL, Calif_Ava BOOL, Ciclo_ini INT, Ciclo_fin INT, 
+        //                          Edad_ini INT, Edad_fin INT, Sexo CHAR, cantProg INT, Programas CHAR[255] )
+        let texto = 'CALL crearConsultaCalif (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        let vars = [this.filtrarEdad,this.filtrarSexo,!this.califOava];
+        if(this.intervaloCiclo){
+            vars.push(parseInt(this.cicloIni));
+            vars.push(parseInt(this.cicloFin));
+        } else {
+            vars.push(parseInt(this.cicloIni));
+            vars.push(parseInt(this.cicloIni));
+        }
+        this.edadIni = this.edadIni === undefined ? 0 : parseInt(this.edadIni);
+        this.edadFin = this.edadFin === undefined ? 200 : parseInt(this.edadFin);
+        if(this.intervaloEdad){
+            vars.push(this.edadIni);
+            vars.push(this.edadFin);
+        } else {
+            vars.push(this.edadIni);
+            vars.push(this.edadIni);
+        }
+        if(this.valueSexo){
+            vars.push('H');
+        } else {
+            vars.push('M');
+        }
+        vars.push(this.listaProgam.length);
+        vars.push(this.listaProgam.toString());
+        console.log(vars);
+        return db.execute(texto,vars)
+        .then(() => {
+            return db.execute('SELECT * FROM ultimaConsulta',[]);
+        }).catch( err => {
+            console.log(err);
+        });
+  }
 
   fetchCants(){
     let TotCol = 0;
@@ -446,8 +483,7 @@ module.exports = class DatosConsultas {
         listaProg : this.listaProgam, 
         TotPart : 0
     }
-    let texto = 'SELECT COUNT(*) AS `TotPart` FROM (SELECT * FROM `ultimaConsulta` GROUP BY login) t';
-    db.execute(texto,[])
+    return db.execute('SELECT COUNT(*) AS `TotPart` FROM ultimaConsulta',[])
     .then(([rows, fieldData]) => {
         data.TotPart = rows[0].TotPart;
         if(data.TotPart === 0){
@@ -457,35 +493,6 @@ module.exports = class DatosConsultas {
     }).catch( err => {
         console.log(err);
     });
-  }
-  
-  fetch3(){
-        //CALL crearConsultaCalif ( Filtrar_edad BOOL, Filtrar_sexo BOOL, Calif_Ava BOOL, Ciclo_ini INT, Ciclo_fin INT, 
-        //                          Edad_ini INT, Edad_fin INT, Sexo CHAR, cantProg INT, Programas CHAR[255] )
-        let texto = 'CALL crearConsultaCalif (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        let vars = [this.filtrarEdad,this.filtrarSexo,!this.califOava];
-        if(this.intervaloCiclo){
-            vars.push(this.cicloIni);
-            vars.push(this.cicloFin);
-        } else {
-            vars.push(this.cicloIni);
-            vars.push(this.cicloIni);
-        }
-        if(this.intervaloEdad){
-            vars.push(this.edadIni);
-            vars.push(this.edadFin);
-        } else {
-            vars.push(this.edadIni);
-            vars.push(this.edadIni);
-        }
-        if(this.valueSexo){
-            vars.push('H');
-        } else {
-            vars.push('M');
-        }
-        vars.push(this.listaProgam.length);
-        vars.push(this.listaProgam.toString());
-        return db.execute(texto,vars);
   }
 
   static prepConsulta(){
