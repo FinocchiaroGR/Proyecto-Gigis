@@ -55,3 +55,72 @@ function generarContra(){
   let correo = document.getElementById("correo");
   document.getElementById("contra").value = correo.value.split('@')[0]+ new Date().getMilliseconds()+ especiales[indice];
 }
+
+
+const modRol = (idRol) => {
+
+    let data = {idRol: idRol};
+            fetch('/gestionAdmin/gestionUsuarios/modificar-roll', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(result => {
+                return result.json();
+                
+            }).then(data => {
+                console.log("Starting...");
+                console.log(data);
+
+                  let html =  '<div id="childDiv">' +
+                                '<form action="/gestionAdmin/gestionUsuarios/update-roll" method="POST">' +
+                                  '<table class="highlight">' +
+                                    '<thead>' +
+                                      '<tr>' +
+                                        '<th data-field="Permisos">Permisos</th>' +
+                                      '</tr>' +
+                                    '</thead>' +
+                                  '<tbody>';
+
+                for (let funcion of data.funciones) {
+                  if (funcion.foo == 1) {
+                    html += 
+                                  '<tr>' +
+                                    '<td>' +
+                                      '<label>' +
+                                        '<input type="checkbox" checked="checked" name="Funcion_'+ funcion.idFuncion + '"/>' +
+                                        '<span>' + funcion.requisitoFuncional + '</span>' +
+                                      '</label>' +
+                                    '</td>' +
+                                  '</tr>';
+                    }
+                    else {
+                      html += 
+                                  '<tr>' +
+                                    '<td>' +
+                                      '<label>' +
+                                        '<input type="checkbox" name="Funcion_' + funcion.idFuncion + '"/>' +
+                                        '<span>' + funcion.requisitoFuncional + '</span>' +
+                                      '</label>' +
+                                    '</td>' +
+                                  '</tr>';
+                    }
+                  }
+
+                  html +=         '</tbody>' +
+                                '</table>' +
+                                '<input type="hidden" name="idRol" value="' + data.idRol + '">' +
+                                '<div class="modal-footer">' +
+                                  '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar Rol</button>' +
+                                '</div>' +
+                              '</form>' +
+                            '</div>';
+                  console.log('data.idRol: ' + data.idRol);
+                            
+                  document.getElementById('despliega_Funciones').removeChild(document.getElementById("childDiv"));
+                  document.getElementById('despliega_Funciones').innerHTML = html;
+            }).catch(err => {
+                console.log(err);
+            });
+};

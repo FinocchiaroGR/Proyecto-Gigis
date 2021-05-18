@@ -1,0 +1,26 @@
+<div class="modal-content">
+    <h3>Modicar rol</h3>
+    <ul>
+        <li><strong><br>Roles</strong></li>
+        <li>
+            <div class="input-field m4">
+                <select onchange="modRol(this.value)">
+                    <option value="" disabled selected>Elige un rol</option>
+                    <% for (let rol of roles) { %>
+                        <% if (rol.idRol != 1) { %>
+                            <option value="<%= rol.idRol %>"><%= rol.nombre %></option>
+                        <% } %>
+                    <% } %>
+                </select>
+            </div>
+        </li>
+        <li>
+            <div id="despliega_Funciones"><div id="childDiv"></div></div>
+        </li>
+    </ul>
+    <br>
+    <br>
+</div>
+
+
+    
