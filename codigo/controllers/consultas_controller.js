@@ -199,7 +199,7 @@ exports.getResultados = ((request, response, next) => {
     let bools = datosConsultas.getBools();
     Programas.fetchAll()
     .then(([rows_Programas, fieldData_Prog]) => {
-        datosConsultas.fetch2()
+        datosConsultas.fetch3()
         .then(([rowsDatos, fieldData_Datos]) => {
             datosConsultas.fetchCants()
             .then((metaData) => {
@@ -222,7 +222,8 @@ exports.getResultados = ((request, response, next) => {
                     mostrarCalif: bools.mostrarCalif,
                     califOava: bools.califOava,
                     //datos
-                    datos: rowsDatos,                    
+                    datos: rowsDatos,
+                    col_Datos: fieldData_Datos,                    
                     programas: rows_Programas,
                     //datos generales
                     //consultaGen: rowsGen,
@@ -287,6 +288,9 @@ exports.postResultadosPrograma = ((request, response, next) => {
 });
 
 exports.getConsultas = ((request, response, next) => {
+
+    DatosConsultas.prepConsulta();
+
     Ciclo.fetchFechaCiclo(0)
     .then(([rows_Fechas, fieldData_Fechas]) => {
         Ciclo.fetchCantPorAno(0)
