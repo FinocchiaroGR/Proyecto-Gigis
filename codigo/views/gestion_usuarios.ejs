@@ -52,18 +52,16 @@
       </div>
     </div>
 </div>    
-<input type="hidden" id="error" value="<%= error %>">
 <input type="hidden" id="bandera" value="<%= bandera%>">
 
 <%- include('include/footer.ejs') %>
 
 <script>
-  let error = document.getElementById('error').value;
   let bandera = document.getElementById('bandera').value;
-  if (error !== 'false' && bandera == 'true'){
-    M.toast({html: '<%- error %>', length:7500, classes: 'black'})
+  if (bandera == 'true'){
+    M.toast({html: '<%- mensaje %>', length:7500, classes: 'black'})
   }
-  if (error === 'false' && bandera == 'true'){
-    M.toast({html: 'El usuario fue registrado correctamente.',  length:6500, classes: 'grey'})
+  if (bandera == 'false'){
+    M.toast({html: '<%- mensaje %>',  length:6500, classes: 'grey'})
   }
 </script>

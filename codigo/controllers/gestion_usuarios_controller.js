@@ -9,20 +9,20 @@ const { fetchId } = require('../models/roles');
 
 const arrows = Arrow.fetchAll();
 
-exports.get = (request, response, next) => {
-    const error = request.session.error === undefined ? false : request.session.error;
-    const bandera = request.session.bandera === undefined ? false : request.session.bandera;
+exports.get = (request, response) => {
+    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
     Usuario.fetchListaSin('participante')
-        .then(([usuarios, fieldData1]) => {
+        .then(([usuarios]) => {
             Rol.fetchAll()
-                .then(([roles, fieldData2]) => {
+                .then(([roles]) => {
                     Func.fetchAll()
                         .then(([func]) => {
                             response.render('gestion_usuarios', {
                                 usuarios: usuarios, 
                                 roles: roles,
                                 func: func,
-                                error: error,
+                                mensaje: mensaje,
                                 bandera: bandera,
                                 tituloDeHeader: "Gestión de usuarios",
                                 tituloBarra: "Usuarios",
@@ -32,17 +32,17 @@ exports.get = (request, response, next) => {
                         })
                         .catch((err) => {
                             console.log(err);
-                            Request.session.error = 'Error de comunicacion con el Servidor'
+                            request.session.mensaje = 'Error de comunicacion con el Servidor'
                     });
                 })
                 .catch((err) => console.log(err));
         })
         .catch((err) => console.log(err));
-    request.session.error = undefined;
-    request.session.bandera =undefined;
+    request.session.mensaje = undefined;
+    request.session.bandera = undefined;
 };
     
-exports.postNuevoUsuario = (request,response,next) => {
+exports.postNuevoUsuario = (request,response) => {
     let apellidoP = request.body.apellidoP === ''? null :  request.body.apellidoP;
     let apellidoM = request.body.apellidoM === ''? null :  request.body.apellidoM;
     const usuario = new Usuario(request.body.correo, request.body.contra, request.body.nombre, apellidoP, apellidoM);
@@ -68,18 +68,18 @@ exports.postNuevoUsuario = (request,response,next) => {
                         response.redirect('/gestionAdmin/');    
                     });
             }
-            request.session.error = undefined;
-            request.session.bandera = true; 
+            request.session.mensaje = 'El usuario fue creado correctamente';
+            request.session.bandera = false; 
             response.redirect('/gestionAdmin/gestionUsuarios/');
         }).catch( err => {
             console.log(err);
-            request.session.error = "Ya existe un usuario registrado con el correo que ingresaste.";
-            request.session.bandera =true; 
+            request.session.mensaje = "Ya existe un usuario registrado con el correo que ingresaste.";
+            request.session.bandera = true; 
             response.redirect('/gestionAdmin/gestionUsuarios');    
         });
 };
 
-exports.postNuevoRoll = (request, response, next) => {
+exports.postNuevoRoll = (request, response) => {
     let error = true;
     let funciones = [
         request.body.Funcion_1 === undefined ? null : 1,
@@ -100,15 +100,17 @@ exports.postNuevoRoll = (request, response, next) => {
         request.body.Funcion_16 === undefined ? null : 16,
         request.body.Funcion_17 === undefined ? null : 17
     ]
+    let i = funciones.length;
     for (let funcion of funciones){
         if (funcion != null){
             error = false;
         }
     }
     if(error == true){
-        request.session.error = 'No hay funciones registradas';
-        console.log(request.session.error);
+        request.session.mensaje = 'No hay funciones registradas';
+        request.session.bandera = true; 
         response.redirect('/gestionAdmin/gestionUsuarios');
+        console.log(request.session.mensaje);
     }
     else
     {
@@ -123,27 +125,33 @@ exports.postNuevoRoll = (request, response, next) => {
                                 const add = new Rol_Func(idRol[0].idRol, idfuncion);
                                 add.save()
                                     .catch(err => {
+                                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                                        request.session.bandera = true; 
+                                        response.redirect('/gestionAdmin/gestionUsuarios');
                                         console.log(err);
                                     });
                             }
                         }
+                        request.session.mensaje = 'El rol fue creado correctamente';
+                        request.session.bandera = false;
+                        response.redirect('/gestionAdmin/gestionUsuarios');
                     })
                     .catch( err => {
-                        request.session.error = 'Error de comunicacion con el servidor';
+                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                        request.session.bandera = true;
                         console.log(err);
-                        response.redirect('/gestionAdmin/gestionUsuarios');
                     });
-                response.redirect('/gestionAdmin/gestionUsuarios');
             })
             .catch( err => {
-                request.session.error = 'Error de comunicacion con el servidor';
-                console.log(err);
+                request.session.mensaje = 'Error de comunicacion con el servidor';
+                request.session.bandera = true; 
                 response.redirect('/gestionAdmin/gestionUsuarios');
+                console.log(err);
             });
     }
 };
 
-exports.postModRoll = (request, response, next) => {
+exports.postModRoll = (request, response) => {
     console.log("Petición asíncrona");
 
     Rol_Func.fetchJoin(request.body.idRol)
@@ -154,12 +162,14 @@ exports.postModRoll = (request, response, next) => {
             });
         })
         .catch((err) => {
-            console.log(err);
-            request.session.error = 'Error de comunicacion con el servidor';
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/gestionAdmin/gestionUsuarios');
+            console.log(err); 
         });
 };
 
-exports.postUpdateRoll = (request, response, next) => {
+exports.postUpdateRoll = (request, response) => {
     const idRol = request.body.idRol;
     console.log(request.body.idRol);
 
@@ -182,7 +192,7 @@ exports.postUpdateRoll = (request, response, next) => {
         request.body.Funcion_16 === undefined ? null : 16,
         request.body.Funcion_17 === undefined ? null : 17
     ]
-    console.log(funciones);
+    let i = funciones.length;
 
     Rol_Func.deleteById(idRol)
         .then(() => {
@@ -190,18 +200,22 @@ exports.postUpdateRoll = (request, response, next) => {
                 if (idfuncion != null){
                     const add = new Rol_Func(idRol, idfuncion);
                     add.save()
-                        .then(() => {
+                        .catch( err => {
+                            request.session.mensaje = 'Error de comunicacion con el servidor';
+                            request.session.bandera = true;
                             response.redirect('/gestionAdmin/gestionUsuarios');
-                        })
-                        .catch(err => {
                             console.log(err);
                         });
                 }
             }
+            request.session.mensaje = 'El rol fue actualizado correctamente';
+            request.session.bandera = false; 
+            response.redirect('/gestionAdmin/gestionUsuarios');
         })
         .catch( err => {
-            request.session.error = 'Error de comunicacion con el servidor';
-            console.log(err);
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
             response.redirect('/gestionAdmin/gestionUsuarios');
+            console.log(err);
         });
 };
