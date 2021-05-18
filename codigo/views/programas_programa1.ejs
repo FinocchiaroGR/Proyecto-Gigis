@@ -3,10 +3,11 @@
 <%-include('include/sideNavBar.ejs') %> 
 
 <% let loginParticipante = ''; %>
-<% for (grupo of grupos) { %>
+<% while (grupos) {
+  let headParticipantes = participantes; %>
   <div class="row">
     <div class="col s12 m6 ">
-      <h5>Terapeuta: <%= grupo.nombreUsuario%> <%= grupo.apellidoPaterno%></h5>
+      <h5>Terapeuta: <%= grupos.data.nombreUsuario%> <%= grupos.data.apellidoPaterno%></h5>
     </div>
     <div class="col s12 m6">
     </div>
@@ -22,41 +23,44 @@
           </tr>
         </thead>
         </tbody>
-        <% for (participante of participantes) { %>
-          <% if (participante.login !== loginParticipante && participante.idGrupo === grupo.idGrupo) { %>
+        <% while (participantes) { 
+          let headCalificaciones = calificaciones;%>
+          <% if (participantes.data.login !== loginParticipante && participantes.data.idGrupo === grupos.data.idGrupo) { %>
             <tr>
               <td>
-                <a  onclick="registroPuntajes(<%=grupo.idGrupo%>,'<%=participante.login%>')" href="#rPuntaje-<%=participante.login%>">
-                  <%=participante.nombreUsuario%>  <%=participante.apellidoPaterno%>    <%=participante.apellidoMaterno%>  
-                 </a>
+                <a  onclick="registroPuntajes(<%=grupos.data.idGrupo%>,'<%=participantes.data.login%>')" href="#rPuntaje-<%=participantes.data.login%>">
+                  <%=participantes.data.nombreUsuario%>  <%=participantes.data.apellidoPaterno%>    <%=participantes.data.apellidoMaterno%>  
+                </a>
               </td>
-              <td>  <%=participante.nombreNivel%>  </td>
+              <td>  <%=participantes.data.nombreNivel%>  </td>
               <td>
-                <% for (let calificacion of calificaciones) { %>
-                  <% if (participante.login === calificacion.login) { %>
-                    <%=calificacion.calificaciones%>
+                <% while (calificaciones) { %>
+                  <% if (calificaciones.data.login === participantes.data.login) { %>
+                    <%=calificaciones.data.calificaciones%>
                   <% } %>
+                  <% calificaciones = calificaciones.next; %>
                 <% } %>
               </td>
-            
-          
-              <% loginParticipante = participante.login;%>
+              <% loginParticipante = participantes.data.login;%>
             <% } %>
+            <% participantes = participantes.next; 
+               calificaciones = headCalificaciones;%>
           <% } %>
         </tbody>
       </table>
       <br /><br />
     </div>
     <div class="col s12 m6 l6 asignar-puntaje">
-      <div id="objetivos-participante-grupo-<%=grupo.idGrupo%>">
-
+      <div id="objetivos-participante-grupo-<%=grupos.data.idGrupo%>">
       </div>
     </div>
   </div>
-
+  <% grupos = grupos.next; 
+     participantes = headParticipantes; %>
 <% } %>
   
-
+<input type="hidden" id="idPrograma" value="<%=programa%>">
+ 
 <script>
   const registroPuntajes = (idGrupo, login) => {
 
@@ -64,7 +68,6 @@
       grupo_id: idGrupo,
       login_participante: login
     };
-    console.log(data);
     //función que manda la petición asíncrona
     fetch('/programas/objetivos-participante', {
         method: 'POST',
@@ -76,9 +79,6 @@
     }).then(result => {
         return result.json(); //Regresa otra promesa
     }).then(data => {
-      //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-      //...
-      console.log(data)
       let html = '';
       let numeroObj = 1;
       //Header puntajes
@@ -142,7 +142,6 @@
       M.AutoInit();
 
       document.getElementById("guardarPuntajes").onclick = () => {
-        console.log('Guardar puntajes');
         const objetivos = [];
         numeroObj = 1;
         function PGO(login, idGrupo, idObjetivo, pInicial, pFinal){
@@ -157,23 +156,24 @@
           const idFinal = 'puntajeFinal-' + numeroObj;
           const puntajeInicial = document.getElementById(idInicio).value;
           const puntajeFinal = document.getElementById(idFinal).value;
-          
           const participante = new PGO(data.participante, data.grupo, objetivo.idObjetivo, puntajeInicial, puntajeFinal );
           objetivos.push(participante); 
           numeroObj++;
         }
-        console.log(objetivos);
+        let obj = {
+          programa: document.getElementById('idPrograma').value,
+          objetivos: objetivos
+        } 
         fetch('/programas/registro-puntajes',{
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
               //'csrf-token': csrf
           },
-          body: JSON.stringify(objetivos)
+          body: JSON.stringify(obj)
         }).then(result => {
           return result.json();
         }).then (objetivos => {
-          console.log(objetivos)
           let html = '';
           let mensaje = 'Se actualizaron los puntajes de ' + objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno;
           let id = 'objetivos-participante-grupo-' + objetivos.grupo; 

@@ -4,6 +4,7 @@ const Arrow = require('../models/arrow');
 const Participante_Grupo_Objetivo = require('../models/participantes_grupos_objetivos');
 const Usuario = require('../models/usuarios')
 const arrows = Arrow.fetchAll();
+const arrayToLinkedlist = require('array-to-linkedlist');
 
 exports.getProgramas = (request, response, next) => {
   const idPrograma = request.params.id_programa;
@@ -15,12 +16,16 @@ exports.getProgramas = (request, response, next) => {
           .then(([participantes,fieldData2]) => {
             Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
               .then(([calificaciones, fieldData3]) => {
+                const listaGrupos = arrayToLinkedlist(grupos);
+                const listaParticipantes = arrayToLinkedlist(participantes);
+                const listaCalificaciones = arrayToLinkedlist(calificaciones);
                 response.render('programas_programa1', {
                   tituloDeHeader: programa[0].nombrePrograma,
                   tituloBarra: programa[0].nombrePrograma,
-                  grupos: grupos,
-                  participantes: participantes,
-                  calificaciones: calificaciones,
+                  programa: idPrograma,
+                  grupos: listaGrupos,
+                  participantes: listaParticipantes,
+                  calificaciones: listaCalificaciones,
                   backArrow: { display: 'block', link: '/programas' },
                   forwArrow: arrows[1]
                 });
@@ -60,22 +65,21 @@ exports.objetivosParticipantes = (request, response, next) => {
 };
 
 exports.registroPuntajes = (request, response, next) => {
-  for (participante of request.body){
+  for (participante of request.body.objetivos){
     let puntaje_final = participante.pFinal === '0' ? null : participante.pFinal;
     let puntaje_inicial = participante.pInicial === '0' ? null : participante.pInicial;
     Participante_Grupo_Objetivo.ActualizarPuntajes(participante.login, participante.idGrupo, participante.idObjetivo, puntaje_inicial, puntaje_final)
       .then(() =>{
-
       }).catch((err) => {
         console.log(err);
         return response.status(500).json({message: "Internal Server Error"});
     })
   }
-  Usuario.fetchNombre(request.body[0].login)
+  Usuario.fetchNombre(request.body.objetivos[0].login)
     .then(([nombre,fieldData]) => {
       return response.status(200).json({
         nombre: nombre,
-        grupo: request.body[0].idGrupo
+        grupo: request.body.objetivos[0].idGrupo
       });
     }).catch((err) => {
           console.log(err);
@@ -101,3 +105,5 @@ exports.get = (request, response, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+ 
