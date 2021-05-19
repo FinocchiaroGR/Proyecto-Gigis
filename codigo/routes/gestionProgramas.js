@@ -32,16 +32,16 @@ subrouter.post('/objetivos/editar-objetivo', isAuth, gestionPrograController.edi
 
 subrouter.post('/objetivos/eliminar-objetivo', isAuth, gestionPrograController.eliminarObjetivo);
 
-subrouter.post('/buscar-objetivo', gestionPrograController.buscarObjetivo);
+subrouter.post('/buscar-objetivo',isAuth, gestionPrograController.buscarObjetivo);
 
 subrouter.get('/', isAuth, gestionPrograController.get);
 
 subrouter.post('/', isAuth, gestionPrograController.postNuevoPrograma);
 
-subrouter.post('/editarPrograma', gestionPrograController.editarPrograma);
+subrouter.post('/editarPrograma',isAuth, gestionPrograController.editarPrograma);
 
-subrouter.post('/buscar-programa', gestionPrograController.buscarPrograma);
+subrouter.post('/buscar-programa',isAuth, gestionPrograController.buscarPrograma);
 
-subrouter.post('/agregarNivel', gestionPrograController.agregarNivel);
+subrouter.post('/agregarNivel',isAuth, gestionPrograController.agregarNivel);
 
 module.exports = subrouter;
