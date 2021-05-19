@@ -27,17 +27,17 @@
                 <h3>Nuevo objetivo</h3>
                 <input type="hidden" name="idNivel" value="<%=idNivel%>">
             <ul>
-                <li><strong><br>Descripción</strong></li>
+                <li><strong><br>Descripción *</strong></li>
                 <li>
                 <div class="input">
-                    <input name="descripcion" type="text" class="validate"  placeholder="Descripción">
+                    <input name="descripcion" type="text" class="validate"  placeholder="Descripción" required>
                 </div>
                 </li>
             </ul>
         </div>
         <div class="modal-footer">
             <br>
-            <button  type = "submit" class="modal-action waves-effect waves-light-blue lighten-1 btn">Agregar<i class="material-icons right">send</i></button>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Agregar<i class="material-icons right">send</i></button>
         </div>
         </div><!--Fin Modal Structure agregar programa-->
     </form>

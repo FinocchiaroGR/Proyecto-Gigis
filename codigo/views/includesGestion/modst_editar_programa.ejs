@@ -17,7 +17,7 @@
                 </div>        
                 <div class="col s11">
                   <div class="input tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar el nombre">
-                    <input disabled name="nombrePrograma" type="text" class="validate"  placeholder="Nombre" id="cambiarNombre-<%=programa.idPrograma%>">
+                    <input disabled name="nombrePrograma" type="text" class="validate"  placeholder="Nombre" id="cambiarNombre-<%=programa.idPrograma%>" required>
                   </div>
                 </div>
               </div>
@@ -35,7 +35,7 @@
                   <div class="file-field input-field">
                     <div class="waves-effect waves-light btn-small white black-text tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar la imagen">
                       <i class="material-icons left ">file_upload</i>Subir
-                      <input disabled type="file" name="imagen" id="subirImagen-<%=programa.idPrograma%>">
+                      <input disabled type="file" name="imagen" id="subirImagen-<%=programa.idPrograma%>" required>
                     </div>
                     <div class="file-path-wrapper">
                       <input class="file-path validate" type="text">
@@ -61,10 +61,10 @@
           <h3>Agregar Nivel</h3>
           <input type="hidden" name="idPrograma" value="<%=programa.idPrograma%>">
           <ul>
-            <li><strong><br>Nombre del nivel nuevo</strong></li>
+            <li><strong><br>Nombre del nivel nuevo *</strong></li>
             <li>
               <div class="input">
-                <input name="nombreNivel" type="text" class="validate"  placeholder="Nombre">
+                <input name="nombreNivel" type="text" class="validate"  placeholder="Nombre" required>
               </div>
             </li>
           </ul>

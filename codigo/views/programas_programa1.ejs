@@ -36,7 +36,7 @@
               <td>
                 <% while (calificaciones) { %>
                   <% if (calificaciones.data.login === participantes.data.login) { %>
-                    <%=calificaciones.data.calificaciones%>
+                    <%= Math.round(calificaciones.data.calificaciones * 100)/100 %>
                   <% } %>
                   <% calificaciones = calificaciones.next; %>
                 <% } %>
