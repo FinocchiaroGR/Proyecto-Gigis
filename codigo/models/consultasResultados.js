@@ -469,15 +469,18 @@ module.exports = class DatosConsultas {
 
   fetchCants(){
     let TotCol = 0;
+    let cicloFin = 0;
     if(this.intervaloCiclo){
         TotCol = (this.cicloFin - this.cicloIni+1)*this.listaProgam.length;
+        cicloFin = this.cicloFin;
     } else {
         TotCol = this.listaProgam.length;
+        cicloFin = this.cicloIni;
     }
     let data = {
         TotCol : TotCol,
         cicloIni : this.cicloIni,
-        cicloFin : this.cicloFin,
+        cicloFin : cicloFin,
         TotProg : this.listaProgam.length,
         TotCicl : this.cicloFin - this.cicloIni+1,
         listaProg : this.listaProgam, 
@@ -498,50 +501,52 @@ module.exports = class DatosConsultas {
   static prepConsulta(){
     this.ultimaConsulta = '';
     this.varsUltimaConsulta = [];
-    db.execute('DROP TABLE IF EXISTS ultimaConsulta',[]);
+    db.execute('DROP TABLE IF EXISTS ultimaConsulta',[])
+    .then(() => {
+        db.execute('DROP TEMPORARY TABLE IF EXISTS listprog_temp',[]);
+    }).catch( err => {
+        console.log(err);
+    });
   }
 
   fetchGen(){
-    let texto = 'SELECT COUNT(*)';
+    /*
+    //CALL cosultaGeneral ( Ciclo_ini INT, Num INT, Calif_Ava BOOL, Programas VARCHAR(255) )
+    let texto = 'CALL cosultaGeneral (?, ?, ?, ?)';
+    let TotCol = 0;
+    if(this.intervaloCiclo){
+        TotCol = (this.cicloFin - this.cicloIni+1)*this.listaProgam.length;
+    } else {
+        TotCol = this.listaProgam.length;
+    }
+    let vars = [this.cicloIni,TotCol,!this.califOava,this.listaProgam.toString()];
+    console.log(vars);
+    return db.execute(texto,vars)*/
+    let texto = 'SELECT COUNT(*) AS `ContTotal`';
     let cantJoins = 0;
     if(this.intervaloCiclo){
         cantJoins = (this.cicloFin - this.cicloIni+1)*this.listaProgam.length;
-        console.log('Ini - ' + this.cicloIni + '_ Fin - ' + this.cicloFin);
+        //console.log('Ini - ' + this.cicloIni + '_ Fin - ' + this.cicloFin);
     } else {
         cantJoins = this.listaProgam.length;
-        console.log('Ini - ' + this.cicloIni + '_ Fin - ' + this.cicloIni);
+        //console.log('Ini - ' + this.cicloIni + '_ Fin - ' + this.cicloIni);
     }
-    for(let acumJoins = 0; acumJoins < cantJoins; acumJoins++){
-        if(this.estadoConsulta){
-            for(let i = 0; i <= acumJoins; i++){
-                if(this.califOava){
-                    texto += ', AVG(Avance_P' + this.listaProgam[0] + '_ciclo' + (parseInt(this.cicloIni) + i) + ') AS `Prom_Avance_P' + this.listaProgam[0] +'_ciclo' + (parseInt(this.cicloIni) + i) + '`';
-                } else {
-                    texto += ', AVG(califFin_P' + this.listaProgam[0] + '_ciclo' + (parseInt(this.cicloIni) + i) + ') AS `Prom_Calif_P' + this.listaProgam[0] +'_ciclo' + (parseInt(this.cicloIni) + i) + '`';
-                }
+    let cicloCont = 0, progCont = 0;
+    for(let i = 0; i<cantJoins; i++) { 
+            if(this.califOava){
+                texto += ', AVG(Avance_P' + this.listaProgam[progCont] + '_C' + (parseInt(this.cicloIni) + cicloCont) + ') AS `Prom_Avance_P' + this.listaProgam[progCont] +'_C' + (parseInt(this.cicloIni) + cicloCont) + '`';
+            } else {
+                texto += ', AVG(CalifFinal_P' + this.listaProgam[progCont] + '_C' + (parseInt(this.cicloIni) + cicloCont) + ') AS `Prom_Calif_P' + this.listaProgam[progCont] +'_C' + (parseInt(this.cicloIni) + cicloCont) + '`';
             }
+        if(((progCont+1) % this.listaProgam.length) === 0){
+            progCont = 0; 
+            cicloCont++;
         } else {
-            let k=0;
-            let j=0;
-            for(let i = 0; i <= acumJoins; i++){
-                if(this.califOava){
-                    texto += ', AVG(Avance_P' + this.listaProgam[k] + '_ciclo' + (parseInt(this.cicloIni) + j) + ') AS `Prom_Avance_P' + this.listaProgam[0] +'_ciclo' + (parseInt(this.cicloIni) + j) + '`';
-                } else {
-                    texto += ', AVG(califFin_P' + this.listaProgam[k] + '_ciclo' + (parseInt(this.cicloIni) + j) + ') AS `Prom_Calif_P' + this.listaProgam[0] +'_ciclo' + (parseInt(this.cicloIni) + j) + '`';
-                }
-                if(((k+1) % this.listaProgam.length) === 0){
-                    k = 0;
-                    j++;
-                }else{
-                    k++;
-                }
-                console.log(k);
-            }
-            
+            progCont++;
         }
     }
-    texto +=' FROM ('+ this.ultimaConsulta +') t';
-    let vars = this.varsUltimaConsulta;
-    return db.execute(texto,vars);
+    texto +=' FROM ultimaConsulta';
+    console.log(texto);
+    return db.execute(texto,[]);
   }
 };

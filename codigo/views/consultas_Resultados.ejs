@@ -18,10 +18,10 @@
                     <% if(estadoConsulta) { %>
                         <div class="col s12">
                             <h5 class="flow-text center-align">Resultados de la consulta en <%= programas[listaProg[0]-1].nombrePrograma %></h5>
-                            <p class="flow-text">Total de resultados: <%= datos.length %></p>
+                            <p class="flow-text">Total de resultados: <%= cantPart %></p>
                             <% let contPromGen = 1, acumPromGen = 0, cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
-                                <p class="flow-text">Promedio Ciclo-<%= parseInt(ciclos.cicloIni)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10 %></p>
+                                <p class="flow-text">Promedio Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10 %></p>
                                 <% acumPromGen += Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10; %>
                                 <% contPromGen++; %>
                                 <% if(((progCont+1) % cantProg) === 0){ %>
@@ -43,15 +43,15 @@
                                 <% } %>
                             %</p>
                             <div class="progress col s10 offset-s1">
-                                <div class="determinate" style="width: <% if(intervalos.cant === 1) {%><%= Math.round((consultaGen[0][col_Gen[1]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100) %><% } else { %><%=  Math.round((consultaGen[0][col_Gen[col_Gen.length-1]['name']] - consultaGen[0][col_Gen[1]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) %><% } %>%;"></div>
+                                <div class="determinate" style="width: <% if(cantCol === 1) {%><%= Math.round((consultaGen[0][col_Gen[1]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100) %><% } else { %><%=  Math.round((consultaGen[0][col_Gen[col_Gen.length-1]['name']] - consultaGen[0][col_Gen[1]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) %><% } %>%;"></div>
                             </div>
                         </div>
                     <% } else { %>
                         <div class="col s12">
                             <p class="flow-text">Total de resultados: <%= datos.length %></p>
                             <% let cicloCont = 0, progCont = 0; %>
-                            <% for(let i = 0; i<intervalos.cant; i++) { %>
-                                <p class="flow-text">Promedio <%= programas[listaProg[progCont]-1].nombrePrograma %> Ciclo-<%= parseInt(intervalos.cicloIni)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[i+1]['name']] ) * 10) / 10 %></p>
+                            <% for(let i = 0; i<cantCol; i++) { %>
+                                <p class="flow-text">Promedio <%= programas[listaProg[progCont]-1].nombrePrograma %> Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[i+1]['name']] ) * 10) / 10 %></p>
                                 <% if(((progCont+1) % listaProg.length) === 0){ %>
                                     <% progCont = 0; cicloCont++; %>
                                 <% }else{ %>

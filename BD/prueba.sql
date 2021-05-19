@@ -102,7 +102,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
     
     CREATE TEMPORARY TABLE datosPart_temp AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion, C.idPrograma, C.idCiclo AS `Edad`
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
@@ -127,7 +127,7 @@ CREATE OR REPLACE PROCEDURE crearTablaTempDatos2 (
 ) 
 BEGIN
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion, C.idPrograma, C.idCiclo AS `Edad`
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
@@ -150,7 +150,7 @@ CREATE OR REPLACE PROCEDURE crearTablaTempDatos3 (
 ) 
 BEGIN
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion, C.idPrograma, C.idCiclo AS `Edad`
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.sexo = Sexo
@@ -172,7 +172,7 @@ CREATE OR REPLACE PROCEDURE crearTablaTempDatos4 (
 )  
 BEGIN
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion, C.idPrograma, C.idCiclo AS `Edad`
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
@@ -237,8 +237,8 @@ CREATE OR REPLACE PROCEDURE cosultaGeneral(
     In `Programas` VARCHAR(255)
 )
 BEGIN
-    CALL getProgs(Programas);
-
+    #CALL getProgs(Programas);
+    
     SET @progCont := 0; 
     SET @cicloCont := 0;
     SET @sql = 'SELECT COUNT(*) AS `ContTotal`'; 
@@ -248,7 +248,7 @@ BEGIN
         SET @x = @x + 1;
         IF Calif_Ava = TRUE THEN 
             SET @sql = CONCAT(@sql,
-                            ', AVG(califFin_P',
+                            ', AVG(CalifFinal_P',
                             CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
                             '_C',
                             CAST((Ciclo_ini + @cicloCont) AS CHAR),
@@ -299,6 +299,82 @@ SELECT
     AVG(Avance_P4_C11) AS `Prom_Avance_P4_C11`
 FROM
     ultimaconsulta;
+#Call cosultaGeneral(10,6,FALSE,'1,2,4');
+CALL getProgs('1,2,4');
+SET @progCont := 0;
+SET @cicloCont := 0;
+SET @sql = 'SELECT COUNT(*) AS `ContTotal`'; 
+SET @sql = CONCAT(@sql,
+       ', AVG(Avance_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       ') AS `Prom_Avance_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       '`');
+SET @progCont := @progCont +1;
+	SET @sql = CONCAT(@sql,
+       ', AVG(Avance_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       ') AS `Prom_Avance_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       '`');
+SET @progCont := @progCont +1;
+	SET @sql = CONCAT(@sql,
+       ', AVG(Avance_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       ') AS `Prom_Avance_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       '`');
+SELECT @sql;
+#Call cosultaGeneral(10,6,FALSE,'1,2,4');
+CALL getProgs('1,2,4');
+SET @progCont := 0;
+SET @cicloCont := 0;
+SET @sql = 'SELECT COUNT(*) AS `ContTotal`'; 
+SET @sql = CONCAT(@sql,
+       ', AVG(califFin_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       ') AS `Prom_Calif_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       '`');
+SET @progCont := @progCont +1;
+	SET @sql = CONCAT(@sql,
+       ', AVG(califFin_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       ') AS `Prom_Calif_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       '`');
+SET @progCont := @progCont +1;
+	SET @sql = CONCAT(@sql,
+       ', AVG(califFin_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       ') AS `Prom_Calif_P',
+       CAST((SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1) AS CHAR),
+       '_C',
+       CAST((10 + @cicloCont) AS CHAR),
+       '`');
+SELECT @sql;
 -------------------------
 CALL crearConsultaCalif (TRUE, TRUE, FALSE, 10, 11, 2, 18, 'M',3,'1,2,4')
 Call cosultaGeneral(10,6,FALSE,'1,2,4')

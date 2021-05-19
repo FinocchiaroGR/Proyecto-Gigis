@@ -13,11 +13,11 @@
 
           <% if(mostrarCalif) { %>
 
-            <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.cicloIni %> </td>
+            <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini %> </td>
 
             <% let cicloCont = 0, progCont = 0; %>
             <% for(let i = 0; i<cantCol; i++) { %>
-              <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= (parseInt(ciclos.cicloIni)+parseInt(cicloCont)) %> </td>
+              <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini+cicloCont %> </td>
               
               <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
@@ -40,14 +40,14 @@
 
           <% if(mostrarSexEdad) { %>
             <td><%= datos[i].sexo %></td>
-            <td><%= datos[i].Edad_Matriculacion %></td>
+            <td><%= datos[i].Edad %></td>
           <% } %>
 
           <% if(mostrarCalif) { %>
-            <td><%= Math.round((datos[i][col_Datos[6]['name']]) * 10) / 10 %> </td>
+            <td><%= Math.round((datos[i][col_Datos[9]['name']]) * 10) / 10 %> </td>
 
             <% let acumProm=0,contProm = 0,flag=0;%>
-            <% for(let j = 7; j<cantCol-2; j+=2) { //7 porque es la primera calif Final %>
+            <% for(let j = 10; j<col_Gen.length; j+=2) { //7 porque es la primera calif Final %>
 
               <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
 
@@ -86,7 +86,7 @@
 
               <% let cicloCont = 0, progCont = 0;%>
               <% for(let i = 0; i<cantCol; i++) { %>
-                <td>Calificación <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= parseInt(ciclos.cicloIni)+cicloCont %> </td>
+                <td>Calificación <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
                
                 <% if(((progCont+1) % cantProg) === 0){%>
                   <% progCont = 0; cicloCont++;%>
@@ -98,7 +98,7 @@
 
               <% let cicloCont = 0, progCont = 0;%>
               <% for(let i = 0; i<cantCol; i++) { %>
-                <td>Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= parseInt(ciclos.cicloIni)+cicloCont %> </td>
+                <td>Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
                 
                 <% if(((progCont+1) % cantProg) === 0){%>
                   <% progCont = 0; cicloCont++;%>
@@ -116,15 +116,15 @@
             <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
             <% if(mostrarSexEdad) { %>
               <td><%= datos[i].sexo %></td>
-              <td><%= datos[i].Edad_Matriculacion %></td>
+              <td><%= datos[i].Edad %></td>
             <% } %>
-            <% if(mostrarCalif) { %>
-              <% if(!califOava) { %>
-                <% for(let j = 7; j<cantCol-2; j+=2) { %>
+            <% if(mostrarCalif) { %><!--Prueba de que se imprimen califs-->
+              <% if(!califOava) { %><!--Prueba de que se imprimen calificaciones-->
+                <% for(let j = 10; j<col_Gen.length; j+=2) { %><!--calif final <%= j %>-->
                   <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
                 <% } %>
-              <% } else { %>
-                <% for(let j = 6; j<cantCol-2; j++) { %>
+              <% } else { %><!--Prueba de que se imprimen avances-->
+                <% for(let j = 9; j<col_Gen.length; j++) { %><!--avances <%= j %>-->
                   <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> %</td>
                 <% } %>
               <% } %>

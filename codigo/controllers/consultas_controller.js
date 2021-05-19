@@ -205,37 +205,51 @@ exports.getResultados = ((request, response, next) => {
             console.table(rowsDatos);
             datosConsultas.fetchCants()
             .then((metaData) => {
-                console.table(metaData);
-                response.render('consultas_Resultados', {
-                    tituloDeHeader: "Consulta - Resultados",
-                    tituloBarra: "Resultados de consulta",
-                    //metadata
-                    cantProg : metaData.TotProg,
-                    cantCiclos : metaData.TotCicl,
-                    cantCol : metaData.TotCol,
-                    cantPart : metaData.TotPart,
-                    ciclos : {ini : metaData.cicloIni, fin : metaData.cicloFin},
-                    listaProg : metaData.listaProg,
-                    //bools
-                    estadoConsulta: bools.estadoConsulta,
-                    mostrarSexEdad: bools.mostrarSexEdad,
-                    mostrarCalif: bools.mostrarCalif,
-                    califOava: bools.califOava,
-                    //datos
-                    datos: rowsDatos,
-                    col_Datos: fieldData_Datos,                    
-                    programas: rows_Programas,
-                    //datos generales
-                    //consultaGen: rowsGen,
-                    //datos por grupos/terapeutas
-                    programasResultados: programasResultados,
-                    //utils
-                    backArrow: {display: 'block', link: '/consultas'},
-                    forwArrow: arrows[1]
-                });
-            
-                console.log("Consultas Resultados");
-                response.status(201);
+                console.log(metaData);
+                console.log(parseInt(metaData.cicloIni));
+                datosConsultas.fetchGen()
+                .then(([rowsGen, fieldData_Gen]) => {
+                    console.table(rowsGen);
+                    console.table(metaData.listaProg);
+                    console.log(fieldData_Datos.length);
+                    console.log(rowsDatos[0][fieldData_Datos[0]['name']]);
+                    console.log(rowsDatos[0][fieldData_Datos[9]['name']]);
+                    console.log(rowsDatos[0][fieldData_Datos[fieldData_Datos.length-1]['name']]);
+                    response.render('consultas_Resultados', {
+                        tituloDeHeader: "Consulta - Resultados",
+                        tituloBarra: "Resultados de consulta",
+                        //metadata
+                        cantProg : metaData.TotProg,
+                        cantCiclos : metaData.TotCicl,
+                        cantCol : metaData.TotCol,
+                        cantPart : metaData.TotPart,
+                        ciclos : {ini : parseInt(metaData.cicloIni),
+                                  fin : parseInt(metaData.cicloFin)},
+                        listaProg : metaData.listaProg,
+                        //bools
+                        estadoConsulta: bools.estadoConsulta,
+                        mostrarSexEdad: bools.mostrarSexEdad,
+                        mostrarCalif: bools.mostrarCalif,
+                        califOava: bools.califOava,
+                        //datos
+                        datos: rowsDatos,
+                        col_Datos: fieldData_Datos,                    
+                        programas: rows_Programas,
+                        //datos generales
+                        consultaGen: rowsGen,
+                        col_Gen: fieldData_Gen,
+                        //datos por grupos/terapeutas
+                        programasResultados: programasResultados,
+                        //utils
+                        backArrow: {display: 'block', link: '/consultas'},
+                        forwArrow: arrows[1]
+                    });
+                    console.log("Consultas Resultados");
+                    response.status(201);
+                }).catch( err => {
+                    console.log(err);
+                    response.redirect('/');
+                })
             }).catch( err => {
                 console.log(err);
                 response.redirect('/');
