@@ -58,6 +58,8 @@ BEGIN
     UNTIL @x >= ((Ciclo_fin-Ciclo_ini+1)*numProg) 
     END REPEAT;
 
+    DROP TABLE IF EXISTS ultimaConsulta;
+
     SET @sql = CONCAT('CREATE TABLE `ultimaConsulta` AS SELECT * FROM datosPart_temp',CAST(@x AS CHAR)); 
     PREPARE stmt FROM @sql; 
     EXECUTE stmt; 
@@ -75,6 +77,8 @@ CREATE OR REPLACE PROCEDURE getProgs (
     IN arrayProg VARCHAR(255)
 ) 
 BEGIN 
+    DROP TEMPORARY TABLE IF EXISTS listProg_temp;
+
     SET @sql = CONCAT('CREATE TEMPORARY TABLE `listProg_temp` AS SELECT * FROM Programas WHERE idPrograma IN (',CAST(arrayProg AS CHAR), ')'); 
     PREPARE stmt FROM @sql; 
     EXECUTE stmt; 
@@ -126,6 +130,8 @@ CREATE OR REPLACE PROCEDURE crearTablaTempDatos2 (
     In `Programas` VARCHAR(255) 
 ) 
 BEGIN
+    DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
+
     CREATE TEMPORARY TABLE `datosPart_temp` AS
     SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
@@ -149,6 +155,8 @@ CREATE OR REPLACE PROCEDURE crearTablaTempDatos3 (
     In `Programas` VARCHAR(255)
 ) 
 BEGIN
+    DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
+
     CREATE TEMPORARY TABLE `datosPart_temp` AS
     SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
@@ -171,6 +179,8 @@ CREATE OR REPLACE PROCEDURE crearTablaTempDatos4 (
     In `Programas` VARCHAR(255)
 )  
 BEGIN
+    DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
+
     CREATE TEMPORARY TABLE `datosPart_temp` AS
     SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
@@ -237,7 +247,8 @@ CREATE OR REPLACE PROCEDURE cosultaGeneral(
     In `Programas` VARCHAR(255)
 )
 BEGIN
-    #CALL getProgs(Programas);
+    #Crear tabla de programas TEMP
+    CALL getProgs(Programas);
     
     SET @progCont := 0; 
     SET @cicloCont := 0;
@@ -285,6 +296,80 @@ BEGIN
     EXECUTE stmt ;
     DEALLOCATE PREPARE stmt;
 END 
+$$
+
+DELIMITER ;
+
+----------------------------------------------------------
+
+DELIMITER $$
+
+CREATE OR REPLACE PROCEDURE consultaGrupo (
+    IN `Filtrar_edad` BOOLEAN, 
+    IN `Filtrar_sexo` BOOLEAN,
+    IN `grupo` INT,
+    IN `Edad_ini` INT, 
+    IN `Edad_fin` INT,
+    IN `Sexo` VARCHAR(1)
+)
+BEGIN
+    SET @programa = (SELECT idPrograma FROM grupos WHERE idGrupo = grupo);
+    SET @Ciclo = (SELECT idCiclo FROM grupos WHERE idGrupo = grupo);
+
+    #Crear tabla de programas TEMP
+    CALL getProgs(@programa);
+
+    #Crear tabla temporal de datos
+    IF Filtrar_edad = TRUE THEN
+        IF Filtrar_sexo = TRUE THEN
+            CALL crearTablaTempDatos1(@Ciclo, @Ciclo, Edad_ini, Edad_fin, Sexo, @programa);
+        ELSE
+            CALL crearTablaTempDatos2(@Ciclo, @Ciclo, Edad_ini, Edad_fin, @programa);
+        END IF;
+    ELSE
+        IF Filtrar_sexo = TRUE THEN
+            CALL crearTablaTempDatos3(@Ciclo, @Ciclo, Sexo, @programa);
+        ELSE
+            CALL crearTablaTempDatos4(@Ciclo, @Ciclo, @programa);
+        END IF;
+    END IF;
+
+    #Asignar login como llave primaria
+    ALTER TABLE datosPart_temp
+    ADD CONSTRAINT pk_login_partTemp
+    PRIMARY KEY (login);
+
+    #Merge de la tabla de datos con las calificaciones y avances
+    CALL mergeTablaCalif_datos (@Ciclo, @programa, 1);
+    CALL mergeTablaAva_datos (@Ciclo, @programa, 2);
+
+    DROP TABLE IF EXISTS ConsultaGrupo;
+    CREATE TABLE `ConsultaGrupo` AS SELECT * FROM datosPart_temp2;
+END
+$$
+
+DELIMITER ;
+
+--------------------------------------------------
+
+DELIMITER $$
+
+CREATE OR REPLACE PROCEDURE consultaGenGrupo ( IN `grupo` INT )
+BEGIN
+    SET @programa = (SELECT idPrograma FROM grupos WHERE idGrupo = grupo);
+    SET @Ciclo = (SELECT idCiclo FROM grupos WHERE idGrupo = grupo);
+
+    SET @sql = CONCAT(
+            'SELECT C.idGrupo, C.idPrograma, C.idCiclo, P.nombrePrograma, U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno,',
+            ' AVG(C.CalifFinal_P', CAST(@programa AS CHAR), '_C', CAST(@Ciclo AS CHAR),') AS `Prom_CaliF`,',
+            ' AVG(C.Avance_P', CAST(@programa AS CHAR), '_C', CAST(@Ciclo AS CHAR),') AS `Prom_Ava`',
+            ' FROM consultagrupo C, programas P, grupos_terapeutas GT, usuarios U WHERE',
+            ' C.idGrupo = GT.idGrupo AND GT.login = U.login AND P.idPrograma=C.idPrograma'
+        );
+    PREPARE stmt FROM @sql ;
+    EXECUTE stmt ;
+    DEALLOCATE PREPARE stmt;
+END
 $$
 
 DELIMITER ;

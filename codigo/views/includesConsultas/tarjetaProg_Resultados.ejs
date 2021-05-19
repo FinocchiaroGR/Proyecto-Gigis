@@ -1,32 +1,27 @@
-<% for (let programa of programasResultados) { %>
+<% for (let datoGrupo of datosGrupos) { %>
   <div class="col s12 m6 l4 xl3">
-      <a href="/consultas/ProgramaN">
+      <a href="/consultas/Grupo/<%= datoGrupo.idGrupo %>">
         <div class="card" >
           <div class="card-image">
-            <img src="<%= programa.linkFoto %>">
+            <img src="<%= datoGrupo.dirImagen %>">
           </div>
           <div class="card-content">
             <div class="row">
-              <div class="col s8">
-                  <span class="card-title flow-text"><strong><%= programa.nombre %></strong></span>
-              </div>
-              <div class="col s4">
-                <div class="nivel-programas-consultas">
-                  <i class="material-icons red-text medium right"><%= programa.nivel %></i>
-                </div>
+              <div class="col s10">
+                  <span class="card-title flow-text"><strong><%= datoGrupo.nombrePrograma %></strong></span>
               </div>
               <div class="descr-programas-consultas">
-                <p >Ciclo: &nbsp <%= programa.ciclo %></p>
-                <p >Num de matchs: &nbsp <%= programa.numCoincid %></p>
-                <p >Total Participantes: &nbsp <%= programa.numParticip %></p>
-                <p >Promedio: &nbsp <%= programa.promedio %></p>
+                <p >Ciclo: &nbsp <%= datoGrupo.idCiclo %></p>
+                <p >Num de matchs: &nbsp <%= datoGrupo.TotalMatchs %></p>
+                <p >Total Participantes: &nbsp <%= datoGrupo.TotalAlumnInscr %></p>
+                <p >Promedio: &nbsp <%= Math.round(datoGrupo.Prom_calif_gr) %></p>
                 <br>
               </div>
               <div>
                 <p class="col s8 offset-s1">Avance</p>
-                <p class="col s2 right-align"><%= programa.avance %>%</p>
+                <p class="col s2 right-align"><%= Math.round(datoGrupo.Prom_Ava_gr*10)/10 %>%</p>
                 <div class="progress col s10 offset-s1">
-                  <div class="determinate" style="width: <%= programa.avance %>%"></div>
+                  <div class="determinate" style="width: <%= Math.round(datoGrupo.Prom_Ava_gr*100) %>%"></div>
                 </div>
               </div>
             </div>

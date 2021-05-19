@@ -103,7 +103,7 @@ module.exports = class DatosConsultas {
       return arrdeBools;
   }
 
-  fetch(){
+  fetch3(){
     let consultaFinal = '';
     let vars = [];
     
@@ -430,7 +430,7 @@ module.exports = class DatosConsultas {
     return db.execute(texto,vars);
   }
   
-  fetch3(){
+  fetch(){
         //CALL crearConsultaCalif ( Filtrar_edad BOOL, Filtrar_sexo BOOL, Calif_Ava BOOL, Ciclo_ini INT, Ciclo_fin INT, 
         //                          Edad_ini INT, Edad_fin INT, Sexo CHAR, cantProg INT, Programas CHAR[255] )
         let texto = 'CALL crearConsultaCalif (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -546,17 +546,51 @@ module.exports = class DatosConsultas {
         }
     }
     texto +=' FROM ultimaConsulta';
-    console.log(texto);
     return db.execute(texto,[]);
   }
 
-  fetchPorGroup_cons(){
-    return db.execute('SELECT t1.*, t2.TotalAlumnInscr FROM'+
-    ' (SELECT COUNT(U.idGrupo) AS `TotalMatchs`, U.idGrupo, P.nombrePrograma, P.dirImagen, S.nombreUsuario, S.apellidoPaterno, S.apellidoMaterno'+
-    ' FROM ultimaconsulta U, grupos_terapeutas GT, usuarios S, programas P'+
-    ' WHERE U.idPrograma = P.idPrograma AND U.idGrupo = GT.idGrupo AND GT.login = S.login #AND PG.login=U.login'+
-    ' GROUP BY U.idGrupo) t1 LEFT JOIN'+
-	' (SELECT COUNT(idGrupo) AS `TotalAlumnInscr`, idGrupo FROM participantes_grupos_objetivo GROUP BY idGrupo) t2 '+
-    ' ON (t1.idGrupo = t2.idGrupo)',[]);
-  }
+    static fetchPorGroup_cons(){
+        return db.execute('SELECT t1.*, t2.TotalAlumnInscr, t2.Prom_calif_gr, t2.Prom_Ava_gr FROM'+
+        ' (SELECT COUNT(U.idGrupo) AS `TotalMatchs`, U.idGrupo, U.idCiclo, P.nombrePrograma, P.dirImagen, S.nombreUsuario, S.apellidoPaterno, S.apellidoMaterno'+
+        ' FROM ultimaconsulta U, grupos_terapeutas GT, usuarios S, programas P'+
+        ' WHERE U.idPrograma = P.idPrograma AND U.idGrupo = GT.idGrupo AND GT.login = S.login'+
+        ' GROUP BY U.idGrupo) t1 LEFT JOIN'+
+        ' (SELECT COUNT(idGrupo) AS `TotalAlumnInscr`, AVG(c.CalifFinal) AS `Prom_calif_gr`, AVG(c.Avance) AS `Prom_Ava_gr`, idGrupo'+
+        ' FROM califdatos c GROUP BY idGrupo) t2'+
+        ' ON (t1.idGrupo = t2.idGrupo)',[]);
+    }
+
+    fetchPorGrupo(id){
+        //CALL consultaGrupo ( Filtrar_edad BOOL, Filtrar_sexo BOOL, grupo INT, Edad_ini INT, Edad_fin INT, Sexo VARCHAR(1))
+        let texto = 'CALL consultaGrupo (?, ?, ?, ?, ?, ?)';
+        let vars = [this.filtrarEdad,this.filtrarSexo,id];
+        this.edadIni = this.edadIni === undefined ? 0 : parseInt(this.edadIni);
+        this.edadFin = this.edadFin === undefined ? 200 : parseInt(this.edadFin);
+        if(this.intervaloEdad){
+            vars.push(this.edadIni);
+            vars.push(this.edadFin);
+        } else {
+            vars.push(this.edadIni);
+            vars.push(this.edadIni);
+        }
+        if(this.valueSexo){
+            vars.push('H');
+        } else {
+            vars.push('M');
+        }
+        console.log(vars);
+        return db.execute(texto,vars)
+        .then(() => {
+            return db.execute('SELECT * FROM consultagrupo',[]);
+        }).catch( err => {
+            console.log(err);
+        });
+    }
+
+    static DatosGenGrupo(id){
+        //CALL consultaGenGrupo ( grupo INT )
+        let texto = 'CALL consultaGenGrupo (?)';
+        let vars = [id];
+        return db.execute(texto,vars)
+    }
 };
