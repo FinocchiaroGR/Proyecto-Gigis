@@ -490,11 +490,11 @@ module.exports = class DatosConsultas {
     .then(([rows, fieldData]) => {
         data.TotPart = rows[0].TotPart;
         if(data.TotPart === 0){
-            throw Error('No existen coincidencias con estas condiciones');
+            throw Error("No existen datos que coincidan con las condiciones propuestas");
         }
         return data;
     }).catch( err => {
-        console.log(err);
+        throw Error(err);
     });
   }
 

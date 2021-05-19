@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(express.static(path.join(__dirname, '..', 'public')));
 
-const programasController = require('../controllers/programas_contoller');
+const programasController = require('../controllers/programas_controller');
 const isAuth = require('../util/is-auth.js');
 
 router.post('/registro-puntajes', isAuth, programasController.registroPuntajes);
