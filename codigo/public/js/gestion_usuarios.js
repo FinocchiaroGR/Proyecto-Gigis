@@ -110,9 +110,9 @@ const modRol = (idRol) => {
 
                   html +=         '</tbody>' +
                                 '</table>' +
-                                '<input type="hidden" name="idRol" value="' + data.idRol + '">' +
+                                '<input type="hidden" style="display:none;"  name="idRol" value="' + data.idRol + '">' +
                                 '<div class="modal-footer">' +
-                                  '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar Rol</button>' +
+                                  '<br><button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar Rol</button>' +
                                 '</div>' +
                               '</form>' +
                             '</div>';

@@ -19,21 +19,8 @@
             <% } %>
             <td>
             <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
-                <!-- Modal Eliminar Participante -->
-            <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarP"><i class="material-icons left">delete</i></a>
             </td>
         </tr>
     <% } %>
-    <!-- Modal Structure Eliminar Participante-->
-    <div id="modalEliminarP" class="modal">
-        <div class="modal-content">
-        <h4>Eliminar participante</h4>
-        <p>¿Está seguro de eliminar este participante?</p>
-        </div>
-        <div class="modal-footer">
-        <a href="#" class="modal-close waves-effect btn-flat eliminarP">Sí</a>
-        <a href="./" class="modal-close waves-effect btn-flat">Cancelar</a>
-        </div>
-    </div><!-- Fin Modal Structure Eliminar Participante-->
     </tbody>
 </table>
