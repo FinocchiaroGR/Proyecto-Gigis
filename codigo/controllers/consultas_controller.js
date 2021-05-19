@@ -55,24 +55,34 @@ exports.getResultados = ((request, response, next) => {
                         console.log("Consultas Resultados");
                         response.status(201);
                     }).catch( err => {
+                        request.session.mensaje = 'Error de comunicacion con el servidor1';
+                        request.session.bandera = true;
+                        response.redirect('/consultas');
                         console.log(err);
-                        response.redirect('/');
                     })
                 }).catch( err => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor2';
+                    request.session.bandera = true;
+                    response.redirect('/consultas');
                     console.log(err);
-                    response.redirect('/');
                 })
             }).catch( err => {
+                request.session.mensaje = 'Su consulta no arrojó ningun resultado. Por favor ingrese otras condiciones.';
+                request.session.bandera = true;
+                response.redirect('/consultas');
                 console.log(err);
-                response.redirect('/');
             });
         }).catch( err => {
+            request.session.mensaje = 'Error de actualizacion de la base de datos';
+            request.session.bandera = true;
+            response.redirect('/consultas');
             console.log(err);
-            response.redirect('/');
         });
     }).catch( err => {
+        request.session.mensaje = 'Error de comunicacion con el servidor';
+        request.session.bandera = true;
+        response.redirect('/consultas');
         console.log(err);
-        response.redirect('/');
     });
 });
 
@@ -107,12 +117,16 @@ exports.getResultadosGrupo = ((request, response, next) => {
             console.log("Consultas Resultados por Grupo");
             response.status(201);
         }).catch( err => {
-            console.log(err);
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
             response.redirect('/consultas');
+            console.log(err);
         });
     }).catch( err => {
-        console.log(err);
+        request.session.mensaje = 'Error de comunicacion con el servidor';
+        request.session.bandera = true;
         response.redirect('/consultas');
+        console.log(err);
     });
 });
 
@@ -123,7 +137,8 @@ exports.postResultadosGrupo = ((request, response, next) => {
 });
 
 exports.getConsultas = ((request, response, next) => {
-
+    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
     DatosConsultas.prepConsulta();
 
     Ciclo.fetchFechaCiclo(0)
@@ -133,6 +148,8 @@ exports.getConsultas = ((request, response, next) => {
             Programas.fetchAll()
             .then(([rows_Programas, fieldData_Prog]) => {
                 response.render('consultas', {
+                    mensaje: mensaje,
+                    bandera: bandera,
                     tituloDeHeader: "Consultas",
                     tituloBarra: "Consultas",
                     años: rows_CantAno,
@@ -144,25 +161,35 @@ exports.getConsultas = ((request, response, next) => {
                     backArrow: arrows[0],
                     forwArrow: arrows[1]
                 });
+                request.session.mensaje = undefined;
+                request.session.bandera = undefined;
                 console.log("Consultas");
                 response.status(201);
             }).catch(err => {
+                request.session.mensaje = 'Error de comunicacion con el servidor';
+                request.session.bandera = true;
+                response.redirect('/consultas');
                 console.log(err);
-                response.redirect('/');
             });
         }).catch(err => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/consultas');
             console.log(err);
-            response.redirect('/');
         });
     }).catch(err => {
+        request.session.mensaje = 'Error de comunicacion con el servidor';
+        request.session.bandera = true;
+        response.redirect('/consultas');
         console.log(err);
-        response.redirect('/');
     });
 });
 
 exports.postConsultas = ((request, response, next) => {
     if(datosConsultas.getModoConsulta() < 1){
         console.log("Accion post en consultas INCORRECTA");
+        request.session.mensaje = 'Debe seleccionar al menos un programa';
+        request.session.bandera = true;
         response.status(304);
         response.redirect('/consultas');
         response.end();

@@ -210,5 +210,18 @@
         </div>
     </div>
 </form>
-    
+
+<input type="hidden" id="bandera" value="<%= bandera%>">
+
+
 <%- include('include/footer.ejs') %>
+
+<script>
+    let bandera = document.getElementById('bandera').value;
+    if (bandera == 'true'){
+      M.toast({html: '<%- mensaje %>', length:7500, classes: 'black'})
+    }
+    if (bandera == 'false'){
+      M.toast({html: '<%- mensaje %>',  length:6500, classes: 'grey'})
+    }
+  </script>
