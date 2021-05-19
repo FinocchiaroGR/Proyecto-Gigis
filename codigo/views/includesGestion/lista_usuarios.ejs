@@ -11,25 +11,17 @@
         <tr>
             <td  style="cursor: pointer;"><a href="<%= usuario.login%>-perfil" class = "black-text"><%= usuario.nombreUsuario %> <%= usuario.apellidoPaterno %></a></td>
             <td><%= usuario.nombre %></td>
-                
            
             <td>
-            <a href="/modificar-usuario" name="<%= usuario.login %>" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
-            <!-- Modal Eliminar Usuario -->
-            <!-- <a class="modal-trigger black-text" href="#modalEliminarU"><i class="material-icons left">delete</i></a> -->
+                <!-- Modal Modificar Usuario -->
+                <button class="btn-flat modal-trigger black-text white right" href="#modificarUsuario" value="<%= usuario.login %>" onclick="modUser(this.value)"><i class="material-icons">create</i></button>
             </td>
         </tr>
     <% } %>
-    <!-- Modal Structure Eliminar Usuario-->
-    <!-- <div id="modalEliminarU" class="modal">
-        <div class="modal-content">
-        <h4>Eliminar usuario</h4>
-        <p>¿Está seguro de eliminar este usuario?</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="modal-close btn-flat eliminarU">Sí</a>
-            <a href="./"  class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-        </div>
-    </div>--><!-- Fin Modal Structure Eliminar Usuario-->
+    <!-- Modal Structure Modificar Usuario-->
+    <div id="modificarUsuario" class="modal">
+        <div id="despliega_usuario"><div id="childDiv"></div></div>
+    </div><!-- Fin Modal Structure Modificar Usuario -->
+    
     </tbody>
 </table>

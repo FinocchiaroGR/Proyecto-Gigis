@@ -1,3 +1,4 @@
+const { response } = require('express');
 const db = require('../util/database');
 
 module.exports = class Terapeuta{
@@ -22,4 +23,9 @@ module.exports = class Terapeuta{
     return db.execute('SELECT * FROM terapeutas');
   }
 
+  static fetchById(login) {
+    return db.execute('Select * From terapeutas Where login = ?',
+      [login]
+    );
+  }
 }

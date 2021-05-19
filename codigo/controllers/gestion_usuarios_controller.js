@@ -6,7 +6,7 @@ const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
 const { fetchId } = require('../models/roles');
-const { response } = require('express');
+const { response, request } = require('express');
 
 const arrows = Arrow.fetchAll();
 
@@ -220,7 +220,51 @@ exports.postUpdateRoll = (request, response) => {
             console.log(err);
         });
 };
+ 
+exports.postModUser = (request, response) => {
+    console.log("Petición asíncrona");
 
-exports.getModUser = (request, response) => {
-    
+    let tBool = false;
+    console.log(request.body.login);
+    Usuario.fetchOneUsuarioTerapeuta(request.body.login)
+        .then(([usuarios]) => {
+            console.log(usuarios);
+            for(let usuario of usuarios){
+                if(usuario.idRol == 2){
+                    tBool = true;
+                }
+            }
+            if (tBool == true){
+                Terapeuta.fetchById(request.body.login)
+                    .then(([terapeuta]) => {
+                        console.log(terapeuta);
+                        return response.status(200).json({
+                            usuarios : usuarios,
+                            terapeuta : terapeuta
+                        })
+                    })
+                    .catch((err) => {
+                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                        request.session.bandera = true;
+                        response.redirect('/gestionAdmin/gestionUsuarios');
+                        console.log(err);
+                    });
+            }
+            else {
+                return response.status(200).json({
+                    usuarios : usuarios
+                });
+            }
+        })
+        .catch((err) => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/gestionAdmin/gestionUsuarios');
+            console.log(err); 
+        });
+};
+
+exports.postUpdateUser = (request, response) => {
+    response.redirect('/gestionAdmin/gestionUsuarios');
+    //Falta
 };

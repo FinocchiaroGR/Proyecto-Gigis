@@ -54,6 +54,12 @@ module.exports = class Usuario {
     return db.execute('SELECT * FROM usuarios WHERE login = ?', [login]);
   }
 
+  static fetchOneUsuarioTerapeuta(login) {
+    return db.execute('SELECT `nombreUsuario`, `apellidoPaterno`, `apellidoMaterno`, `password`, U.login, R.nombre, R.idRol FROM  usuarios U, roles R, usuarios_roles UR WHERE U.login = UR.login AND R.idRol = UR.idRol AND U.login = ? GROUP BY R.idRol',
+    [login]
+    );
+  }
+
   static actualizarPassword(password, login) {
     return bcrypt.hash(password, 12)
     .then( (password) => {
@@ -65,5 +71,4 @@ module.exports = class Usuario {
         console.log(err); 
     });
   }
-
 }
