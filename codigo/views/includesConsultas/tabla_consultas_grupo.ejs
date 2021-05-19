@@ -1,0 +1,40 @@
+<div>
+    <table class="striped highlight responsive-table">
+        <thead>
+            <tr class="center-aligned">
+    
+                <td>Participantes</td>
+    
+                <% if(mostrarSexEdad) { %>
+                    <td>Sexo</td>
+                    <td>Edad</td>
+                <% } %>
+    
+                <% if(mostrarCalif) { %>
+                    <td> Calificación Inicial </td>
+                    <td> Calificación Final </td>
+                    <td>Avance</td>
+                <% } %>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(let dato of datos) { %>
+              <tr>
+    
+                <td><%= dato.nombreUsuario %> <%= dato.apellidoPaterno %> <%= dato.apellidoMaterno %></td>
+    
+                <% if(mostrarSexEdad) { %>
+                    <td><%= dato.sexo %></td>
+                    <td><%= dato.Edad %></td>
+                <% } %>
+
+                <% if(mostrarCalif) { %>
+                    <td><%= Math.round((dato[col_Datos[9]['name']]) * 10) / 10 %> </td>
+                    <td><%= Math.round((dato[col_Datos[10]['name']]) * 10) / 10 %></td>
+                    <td><%= Math.round((dato[col_Datos[11]['name']]) * 10) / 10 %>%</td>
+                <% } %>
+              </tr>
+            <% } %>
+        </tbody>
+    </table>              
+</div>

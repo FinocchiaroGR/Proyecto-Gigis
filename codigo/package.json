@@ -30,6 +30,7 @@
     "express-session": "^1.17.1",
     "linked-list": "^3.0.1",
     "multer": "^1.4.2",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.2.5",
+    "select2": "^4.1.0-rc.0"
   }
 }

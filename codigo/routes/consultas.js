@@ -26,9 +26,9 @@ router.get('/Resultados', isAuth, consultasController.getResultados);
 
 router.post('/Resultados', isAuth, consultasController.postResultados);
 
-router.get('/ProgramaN', isAuth, consultasController.getResultadosPrograma);
+router.get('/Grupo/:idGrupo', isAuth, consultasController.getResultadosGrupo);
 
-router.post('/ProgramaN', isAuth, consultasController.postResultadosPrograma);
+router.post('/Grupo/:idGrupo', isAuth, consultasController.postResultadosGrupo);
 
 router.get('/', isAuth, consultasController.getConsultas);
 
