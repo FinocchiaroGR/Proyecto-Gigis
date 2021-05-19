@@ -153,12 +153,10 @@ exports.editarPrograma  = (request, response, next) => {
    } else if (request.body.enImagen === 'on' && request.body.enNombre === undefined) {
       Programa.editarProgramaSinTitulo(request.body.idPrograma, request.file.path)
       .then(() => {
-        console.log('Entre al tercer if');
         request.session.registro_exitoso = 'El programa se actualizó correctamente.'
         response.redirect('/gestionAdmin/gestionProgramas')
       }).catch((err) => {
         request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
-        console.log(err);
         response.redirect('/gestionAdmin/gestionProgramas')
       });
    }
