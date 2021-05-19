@@ -10,8 +10,8 @@ const { fetchId } = require('../models/roles');
 const arrows = Arrow.fetchAll();
 
 exports.get = (request, response) => {
-    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
-    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const mensaje = request.session.mensaje;
+    const bandera =  request.session.bandera;
     Usuario.fetchListaSin('participante')
         .then(([usuarios]) => {
             Rol.fetchAll()
