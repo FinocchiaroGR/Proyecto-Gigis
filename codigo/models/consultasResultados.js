@@ -578,7 +578,6 @@ module.exports = class DatosConsultas {
         } else {
             vars.push('M');
         }
-        console.log(vars);
         return db.execute(texto,vars)
         .then(() => {
             return db.execute('SELECT * FROM consultagrupo',[]);

@@ -16,13 +16,13 @@ exports.getResultados = ((request, response, next) => {
             console.table(rowsDatos);
             datosConsultas.fetchCants()
             .then((metaData) => {
-                console.log(metaData);
+                //console.log(metaData);
                 datosConsultas.fetchGen()
                 .then(([rowsGen, fieldData_Gen]) => {
-                    console.table(rowsGen);
+                    //console.table(rowsGen);
                     DatosConsultas.fetchPorGroup_cons()
                     .then(([rowsGroup, fieldData_Group]) => {
-                        console.table(rowsGroup);
+                        //console.table(rowsGroup);
                         response.render('consultas_Resultados', {
                             tituloDeHeader: "Consulta - Resultados",
                             tituloBarra: "Resultados de consulta",
@@ -91,6 +91,8 @@ exports.getResultadosGrupo = ((request, response, next) => {
     .then(([rows_dato, fieldData_dato]) => {
         DatosConsultas.DatosGenGrupo(id)
         .then(([rows_Gen, fieldData_Gen]) => {
+            console.table(rows_Gen);
+            console.table(fieldData_Gen);
             response.render('consultas_Programa', {
                 tituloDeHeader: 'Resultados ' + rows_Gen.nombrePrograma,
                 tituloBarra: 'Resultados - Programa ' + rows_Gen.idPrograma + ' - Ciclo ' + rows_Gen.idCiclo,
