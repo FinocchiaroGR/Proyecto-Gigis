@@ -1,22 +1,22 @@
 const tabGestion = [
     {
-        nombre: 'GESTIÓN DE USUARIOS',
-        imagen: 'https://www.fundacionsomos.cl/wp-content/uploads/2017/05/IMG_2792-960x750.jpeg',
+        nombre: 'GESTIÓN DE PERSONAL',
+        imagen: '/media/tablero_personal.png',
         ruta:   'gestionUsuarios'
     },
     {
         nombre: 'GESTIÓN DE PARTICIPANTES',
-        imagen: 'https://www.fundacionsomos.cl/wp-content/uploads/2017/05/IMG_2792-960x750.jpeg',
+        imagen: '/media/tablero_participante.png',
         ruta:   'gestionParticipantes'
     },
     {
         nombre: 'GESTIÓN DE PROGRAMAS',
-        imagen: 'https://www.fundacionsomos.cl/wp-content/uploads/2017/05/IMG_2792-960x750.jpeg',
+        imagen: '/media/tablero_programa.png',
         ruta:   'gestionProgramas'
     },
     {
         nombre: 'GESTION DE CICLOS',
-        imagen: 'https://www.fundacionsomos.cl/wp-content/uploads/2017/05/IMG_2792-960x750.jpeg',
+        imagen: '/media/tablero_ciclo.png',
         ruta:   'gestionCiclos'
     }
 ];

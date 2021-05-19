@@ -5,7 +5,8 @@ const Nivel = require('../models/niveles');
 const Usuario = require('../models/usuarios');
 const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
-const Grupo_Terapeuta = require('../models/grupos_terapeutas');
+const Objetivo = require('../models/objetivos');
+const Participantes_Grupos_Objetivos = require('../models/participantes_grupos_objetivos');
 
 const arrows = Arrow.fetchAll();
 const mes = [
@@ -73,9 +74,17 @@ exports.getInscribir = (request,response,next) => {
 };
 
 exports.getInsPar = (request,response,next) => {
+    request.session.grupoinscripcion = request.params.idGrupo;
     Participante.fetchActivos()
         .then(([participantes, fieldData1]) => {
-            return response.status(200).json({participantes: participantes});
+            Participantes_Grupos_Objetivos.fetchLoginIncritos(request.params.idGrupo)
+                .then(([inscritos, fieldData]) => {
+                    return response.status(200).json({
+                        participantes: participantes,
+                        inscritos: inscritos
+                    });
+                })
+                .catch((err) => console.log(err));
         })
         .catch((err) => console.log(err));
 };
@@ -83,7 +92,14 @@ exports.getInsPar = (request,response,next) => {
 exports.getBuscarPar = (request,response,next) => {
     Participante.fetchPorCriterio(request.params.criterio)
         .then(([participante, fieldData]) => {
-            return response.status(200).json({participante:participante});
+            Participantes_Grupos_Objetivos.fetchLoginIncritos(request.session.grupoinscripcion)
+                .then(([inscritos, fieldData]) => {
+                    return response.status(200).json({
+                        participante: participante,
+                        inscritos: inscritos
+                    });
+                })
+                .catch((err) => console.log(err));
         })
         .catch(err => {
             console.log(err)
@@ -95,14 +111,33 @@ exports.postSelectNivel = (request,response,next) => {
         .then(([niveles, fieldData]) => {
             Usuario.fetchNombre(request.body.login)
                 .then(([usuarios, fieldData]) => {
-                    return response.status(200).json({
-                        niveles: niveles, 
-                        usuarios: usuarios
-                    });
+                    Participantes_Grupos_Objetivos.fetchIncritos(request.body.idGrupo,request.body.login)
+                        .then(([inscritos, fieldData]) => {
+                            return response.status(200).json({
+                                niveles: niveles, 
+                                usuarios: usuarios,
+                                inscritos: inscritos
+                            });
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        });
                 })
                 .catch(err => {
                     console.log(err)
                 });
+        })
+        .catch(err => {
+            console.log(err)
+        });
+};
+
+exports.postMostrarObj = (request,response,next) => {
+    Objetivo.objetivosPorNivel(request.body.idNivelObj)
+        .then(([objetivos, fieldData]) => {
+            return response.status(200).json({
+                objetivos: objetivos
+            });
         })
         .catch(err => {
             console.log(err)
@@ -168,12 +203,12 @@ exports.postAgrCiclo= (request,response,next) => {
                             });
                     }
                     if(tsize=== parseInt(t) && psize === parseInt(p)){
+                        request.session.error = undefined; 
+                        request.session.bandera =true;
                         return response.status(300).json({ciclo: ciclo});
                     }
                 }
             }
-            request.session.error = undefined; 
-            request.session.bandera =true;
         }).catch( err => {
             request.session.bandera =true;
             request.session.error = "El ciclo no se pudo registrar correctamente.";

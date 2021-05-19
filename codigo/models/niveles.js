@@ -25,7 +25,7 @@ module.exports = class Nivel {
     }
 
     static fetchPorIdGrupo(idGrupo) {
-        return db.execute('SELECT * FROM niveles WHERE idPrograma  IN (SELECT idPrograma FROM grupos WHERE idGrupo = 2)',
+        return db.execute('SELECT * FROM niveles WHERE idPrograma  IN (SELECT idPrograma FROM grupos WHERE idGrupo = ?)',
         [idGrupo])
     }
 }

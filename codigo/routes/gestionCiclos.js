@@ -12,11 +12,13 @@ subrouter.get('/inscribir/:idCiclo', isAuth, gestionCicloController.getInscribir
 
 subrouter.post('/inscribir', isAuth, gestionCicloController.postInscribir);
 
-subrouter.get('/participantes', isAuth, gestionCicloController.getInsPar);
+subrouter.get('/participantes/:idGrupo', isAuth, gestionCicloController.getInsPar);
 
 subrouter.get('/buscar/:criterio', isAuth, gestionCicloController.getBuscarPar);
 
 subrouter.post('/select-nivel', isAuth, gestionCicloController.postSelectNivel);
+
+subrouter.post('/mostrar-obj', isAuth, gestionCicloController.postMostrarObj);
 
 subrouter.post('/agregar-ciclo', isAuth, gestionCicloController.postAgrCiclo);
 

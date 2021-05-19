@@ -47,7 +47,7 @@
   }
 
   const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
-    fetch('/gestionAdmin/gestionCiclos/participantes', {
+    fetch('/gestionAdmin/gestionCiclos/participantes/'+idGrupo, {
         method: 'GET'
     }).then(result => {
         return result.json(); //Regresa otra promesa
@@ -58,42 +58,41 @@
         let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
         '<div class="row">'+
           '<div class="col s12 m6 l6 ">'+
-            '<div class="input-field">'+
-                '<i class="material-icons prefix">search</i>'+
-                '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
-            '</div>'+
-          '</div>'+
-        '</div>'+
-        '<div class="row">'+
-          '<div class="col s12 m6 l6 ">'+
             '<table id = "tablita">'+
               '<thead>'+
                 '<tr>'+
-                  '<th>Participantes</th>'+
-                  '<th>Inscribir</th>'+
+                  '<div class="input-field col m11">'+
+                      '<i class="material-icons prefix">search</i>'+
+                      '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
+                  '</div>'+
                 '</tr>'+
               '</thead>'+
-              '</tbody>';
-              for (participante of data.participantes) {
+              '<tbody id = "tablita">';
+              let colorPalomita = 'grey-text text-lighten-3';
+              for (let participante of data.participantes) {
                 let apellidoP =  participante.apellidoPaterno === 'null '? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
                 let apellidoM =  participante.apellidoMaterno === 'null '? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
+                for (let inscrito of data.inscritos){
+                  if(inscrito.login === participante.login){
+                    colorPalomita = 'light-green-text text-accent-4';
+                  }
+                }
                 html += '<tr>'+
-                    '<td>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
+                    '<td><i class="material-icons left '+colorPalomita+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
                     '<td>'+
                       '<a  onclick="registroObjetivos(&apos;'+participante.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                         '<i class="material-icons left">chevron_right</i>'+
                       '</a>'+
                     '</td>'+
                   '<tr>';
+                colorPalomita = 'grey-text text-lighten-3';
               }
         html +=   '</tbody>'+
                     '</table>'+
                     '<br><br>'+
                   '</div>'+
-                  '<div class="col s12 m6 l6 asignar-ojetivos">'+
-                    '<div id="niveles-participante-'+idGrupo+'">'+
-                    '</div>'+
-                    '<div id="objetivos-participante-grupo-'+idGrupo+'">'+
+                  '<div class="col s12 m6 l6">'+
+                    '<div class="asignar-nivel" id="niveles-participante-'+idGrupo+'">'+
                     '</div>'+
                   '</div>'+
                 '</div>';        
@@ -114,29 +113,27 @@ const buscar = (idGrupo) => {
     }).then(data => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
         console.log("Respuesta de la petición asíncrona");
-        let html = 
-            '<table id = "tablita">'+
-              '<thead>'+
-                '<tr>'+
-                  '<th>Participantes</th>'+
-                  '<th>Inscribir</th>'+
-                '</tr>'+
-              '</thead>'+
-              '</tbody>';
-              for (p of data.participante) {
-                let apellidoP =  p.apellidoPaterno === 'null '? '&nbsp;':  p.apellidoPaterno === 'null'? '&nbsp;': p.apellidoPaterno;
-                let apellidoM =  p.apellidoMaterno === 'null '? '&nbsp;': p.apellidoMaterno === 'null'? '&nbsp;': p.apellidoMaterno;
-                html += '<tr>'+
-                    '<td>' + p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
-                    '<td>'+
-                      '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
-                        '<i class="material-icons left">chevron_right</i>'+
-                      '</a>'+
-                    '</td>'+
-                  '<tr>';
-              }
-              '</tbody>'+
-            '</table>';      
+        let html = '<tbody id = "tablita">';
+        let colorPalomita = 'grey-text text-lighten-3';
+        for (p of data.participante) {
+          let apellidoP =  p.apellidoPaterno === 'null '? '&nbsp;':  p.apellidoPaterno === 'null'? '&nbsp;': p.apellidoPaterno;
+          let apellidoM =  p.apellidoMaterno === 'null '? '&nbsp;': p.apellidoMaterno === 'null'? '&nbsp;': p.apellidoMaterno;
+          for (let inscrito of data.inscritos){
+            if(inscrito.login === p.login){
+              colorPalomita = 'light-green-text text-accent-4';
+            }
+          }
+          html += '<tr>'+
+              '<td><i class="material-icons left '+colorPalomita+'" >check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
+              '<td>'+
+                '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
+                  '<i class="material-icons left">chevron_right</i>'+
+                '</a>'+
+              '</td>'+
+            '<tr>';
+          colorPalomita = 'grey-text text-lighten-3';
+        }
+        '</tbody>';     
         document.getElementById('tablita').innerHTML = html;
         M.AutoInit();
 
@@ -173,22 +170,93 @@ const registroObjetivos = (login, idGrupo) => {
     
       html +=   
                   '<div >' +
-                    '<p>Selecciona el nivel del participante.</p>' +
+                    '<p class="grey-text text-darken-4" ><strong>Selecciona el nivel del participante.</strong></p>' +
                   '</div>' +  
-                  '<div>' +
-                    '<select id = "nivelAsig-' + login + '" onchange="mostrarObj(this)">';
+                  '<div class="input-field ">'+
+                    '<select id = "nivelAsig-' + login+'" >'+
+                      '<option value="" disabled selected> - </option>';
+                      
                       for(nivel of data.niveles){
                         html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
                       }
       html +=       '</select>' +
                   '</div>' +  
-                '</div>';
-                
+                  '<div class="asignar-ojetivos" id="objetivos-participante-grupo-'+idGrupo+'">'+
+                  '</div>'+
+                '</div>';                
                 
     let id = 'niveles-participante-' + idGrupo;
     document.getElementById(id).innerHTML = html;
     M.AutoInit();
+    let idselect = 'nivelAsig-' + login;
+    if (Object.keys(data.inscritos).length != 0){
+      selectNivel = document.getElementById(idselect);
+      selectNivel.options[data.inscritos[0].idNivel-data.niveles[0].idNivel].selected=true;
+    }
+    M.AutoInit();
 
+    document.getElementById(idselect).onchange = () => {
+        let idNivelObj = document.getElementById(idselect).value;
+        console.log(idNivelObj);
+        let data2 = {idNivelObj: idNivelObj};
+
+        console.log(data2);
+        //función que manda la petición asíncrona
+        fetch('/gestionAdmin/gestionCiclos/mostrar-obj', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                //'csrf-token': csrf
+            },
+            body: JSON.stringify(data2)
+        }).then(result => {
+            return result.json(); //Regresa otra promesa
+        }).then(data2 => {
+          //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+          //...
+          console.log(data2)
+          let html2 = '';
+          //Header 
+          html2 += 
+                      '<div>'+
+                        '<br><p class="grey-text text-darken-4" ><strong>Selecciona los objetivos para asignar al participante.</strong></p>'+
+                      '</div>'+
+                      '<table class="highlight">'+
+                        '<tbody>'+
+                          '<tr>'+
+                            '<td class = " light-blue-text text-darken-4">Seleeccionar todos los objetivos.</td>'+
+                            '<td>'+
+                              '<label>'+
+                                '<input name ="selTodos" id="selTodos" type="checkbox" />'+ 
+                                '<span>.</span>'+
+                              '</label>'+  
+                            '</td>'+
+                          '</tr>'; 
+                        for (let obj of data2.objetivos){ 
+                            html2+= '<tr>'+
+                              '<td>'+ obj.descripcion + '</td>'+
+                              '<td>'+
+                                '<label>'+
+                                  '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                  '<span>.</span>'+
+                                '</label>'+  
+                              '</td>'+
+                            '</tr>';
+                        }
+                html2 += '</tbody> '+ 
+                        '</table>'+
+                        '<br>'+
+                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right">Inscribir</button>';            
+                
+          let id2 = "objetivos-participante-grupo-"+idGrupo;
+          document.getElementById(id2).innerHTML = html2;
+          M.AutoInit();
+          
+          
+        }).catch(err => {
+          console.log(err);
+        });
+      }
     
   }).catch(err => {
     console.log(err);
