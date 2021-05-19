@@ -203,12 +203,12 @@ exports.postAgrCiclo= (request,response,next) => {
                             });
                     }
                     if(tsize=== parseInt(t) && psize === parseInt(p)){
+                        request.session.error = undefined; 
+                        request.session.bandera =true;
                         return response.status(300).json({ciclo: ciclo});
                     }
                 }
             }
-            request.session.error = undefined; 
-            request.session.bandera =true;
         }).catch( err => {
             request.session.bandera =true;
             request.session.error = "El ciclo no se pudo registrar correctamente.";

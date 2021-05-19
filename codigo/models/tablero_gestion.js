@@ -16,7 +16,7 @@ const tabGestion = [
     },
     {
         nombre: 'GESTION DE CICLOS',
-        imagen: '/media/tablero_ciclos.png',
+        imagen: '/media/tablero_ciclo.png',
         ruta:   'gestionCiclos'
     }
 ];

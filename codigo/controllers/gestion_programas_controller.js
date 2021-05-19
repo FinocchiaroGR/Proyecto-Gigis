@@ -26,6 +26,7 @@ exports.nivelObjetivos = (request, response, next) => {
     }).catch((err) => {
       console.log(err);
     });
+    request.session.registro_exitoso = undefined;
 };
 
 exports.registrarObjetivo = (request, response, next) => {
