@@ -59,11 +59,12 @@
       <form action="/gestionAdmin/gestionProgramas/agregarNivel" method="POST">
         <div class="modal-content">
           <h3>Agregar Nivel</h3>
+          <label> * Campos obligatorios.</label>
           <input type="hidden" name="idPrograma" value="<%=programa.idPrograma%>">
           <ul>
             <li><strong><br>Nombre del nivel nuevo *</strong></li>
             <li>
-              <div class="input">
+              <div class="input-field">
                 <input name="nombreNivel" type="text" class="validate"  placeholder="Nombre" required>
               </div>
             </li>
