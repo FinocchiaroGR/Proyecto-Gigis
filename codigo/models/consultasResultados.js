@@ -549,4 +549,14 @@ module.exports = class DatosConsultas {
     console.log(texto);
     return db.execute(texto,[]);
   }
+
+  fetchPorGroup_cons(){
+    return db.execute('SELECT t1.*, t2.TotalAlumnInscr FROM'+
+    ' (SELECT COUNT(U.idGrupo) AS `TotalMatchs`, U.idGrupo, P.nombrePrograma, P.dirImagen, S.nombreUsuario, S.apellidoPaterno, S.apellidoMaterno'+
+    ' FROM ultimaconsulta U, grupos_terapeutas GT, usuarios S, programas P'+
+    ' WHERE U.idPrograma = P.idPrograma AND U.idGrupo = GT.idGrupo AND GT.login = S.login #AND PG.login=U.login'+
+    ' GROUP BY U.idGrupo) t1 LEFT JOIN'+
+	' (SELECT COUNT(idGrupo) AS `TotalAlumnInscr`, idGrupo FROM participantes_grupos_objetivo GROUP BY idGrupo) t2 '+
+    ' ON (t1.idGrupo = t2.idGrupo)',[]);
+  }
 };

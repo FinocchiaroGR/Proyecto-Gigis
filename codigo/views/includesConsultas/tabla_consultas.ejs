@@ -47,7 +47,7 @@
             <td><%= Math.round((datos[i][col_Datos[9]['name']]) * 10) / 10 %> </td>
 
             <% let acumProm=0,contProm = 0,flag=0;%>
-            <% for(let j = 10; j<col_Gen.length; j+=2) { //7 porque es la primera calif Final %>
+            <% for(let j = 10; j<col_Datos.length; j+=2) { //7 porque es la primera calif Final %>
 
               <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
 
@@ -120,11 +120,11 @@
             <% } %>
             <% if(mostrarCalif) { %><!--Prueba de que se imprimen califs-->
               <% if(!califOava) { %><!--Prueba de que se imprimen calificaciones-->
-                <% for(let j = 10; j<col_Gen.length; j+=2) { %><!--calif final <%= j %>-->
+                <% for(let j = 10; j < col_Datos.length; j+=2) { %>
                   <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
                 <% } %>
               <% } else { %><!--Prueba de que se imprimen avances-->
-                <% for(let j = 9; j<col_Gen.length; j++) { %><!--avances <%= j %>-->
+                <% for(let j = 9; j < col_Datos.length; j++) { %>
                   <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> %</td>
                 <% } %>
               <% } %>
