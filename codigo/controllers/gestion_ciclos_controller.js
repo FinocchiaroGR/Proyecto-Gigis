@@ -5,6 +5,7 @@ const Nivel = require('../models/niveles');
 const Usuario = require('../models/usuarios');
 const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
+const Objetivo = require('../models/objetivos');
 const Participantes_Grupos_Objetivos = require('../models/participantes_grupos_objetivos');
 
 const arrows = Arrow.fetchAll();
@@ -125,6 +126,18 @@ exports.postSelectNivel = (request,response,next) => {
                 .catch(err => {
                     console.log(err)
                 });
+        })
+        .catch(err => {
+            console.log(err)
+        });
+};
+
+exports.postMostrarObj = (request,response,next) => {
+    Objetivo.objetivosPorNivel(request.body.idNivelObj)
+        .then(([objetivos, fieldData]) => {
+            return response.status(200).json({
+                objetivos: objetivos
+            });
         })
         .catch(err => {
             console.log(err)

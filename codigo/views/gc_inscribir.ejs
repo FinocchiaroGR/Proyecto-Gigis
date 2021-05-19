@@ -94,8 +94,6 @@
                   '<div class="col s12 m6 l6">'+
                     '<div class="asignar-nivel" id="niveles-participante-'+idGrupo+'">'+
                     '</div>'+
-                    '<div class="asignar-ojetivos" id="objetivos-participante-grupo-'+idGrupo+'">'+
-                    '</div>'+
                   '</div>'+
                 '</div>';        
         document.getElementById('contenido').innerHTML = html;
@@ -172,30 +170,93 @@ const registroObjetivos = (login, idGrupo) => {
     
       html +=   
                   '<div >' +
-                    '<p>Selecciona el nivel del participante.</p>' +
+                    '<p class="grey-text text-darken-4" ><strong>Selecciona el nivel del participante.</strong></p>' +
                   '</div>' +  
                   '<div class="input-field ">'+
-                    '<select id = "nivelAsig-' + login+'" onchange="mostrarObj(this)">';
-                      if (Object.keys(data.inscritos).length === 0){
-                        html += '<option value="" disabled selected> - </option>';
-                      }
+                    '<select id = "nivelAsig-' + login+'" >'+
+                      '<option value="" disabled selected> - </option>';
+                      
                       for(nivel of data.niveles){
                         html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
                       }
       html +=       '</select>' +
                   '</div>' +  
+                  '<div class="asignar-ojetivos" id="objetivos-participante-grupo-'+idGrupo+'">'+
+                  '</div>'+
                 '</div>';                
                 
     let id = 'niveles-participante-' + idGrupo;
     document.getElementById(id).innerHTML = html;
     M.AutoInit();
+    let idselect = 'nivelAsig-' + login;
     if (Object.keys(data.inscritos).length != 0){
-      let idselect = 'nivelAsig-' + login;
       selectNivel = document.getElementById(idselect);
       selectNivel.options[data.inscritos[0].idNivel-data.niveles[0].idNivel].selected=true;
     }
     M.AutoInit();
 
+    document.getElementById(idselect).onchange = () => {
+        let idNivelObj = document.getElementById(idselect).value;
+        console.log(idNivelObj);
+        let data2 = {idNivelObj: idNivelObj};
+
+        console.log(data2);
+        //función que manda la petición asíncrona
+        fetch('/gestionAdmin/gestionCiclos/mostrar-obj', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                //'csrf-token': csrf
+            },
+            body: JSON.stringify(data2)
+        }).then(result => {
+            return result.json(); //Regresa otra promesa
+        }).then(data2 => {
+          //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+          //...
+          console.log(data2)
+          let html2 = '';
+          //Header 
+          html2 += 
+                      '<div>'+
+                        '<br><p class="grey-text text-darken-4" ><strong>Selecciona los objetivos para asignar al participante.</strong></p>'+
+                      '</div>'+
+                      '<table class="highlight">'+
+                        '<tbody>'+
+                          '<tr>'+
+                            '<td class = " light-blue-text text-darken-4">Seleeccionar todos los objetivos.</td>'+
+                            '<td>'+
+                              '<label>'+
+                                '<input name ="selTodos" id="selTodos" type="checkbox" />'+ 
+                                '<span>.</span>'+
+                              '</label>'+  
+                            '</td>'+
+                          '</tr>'; 
+                        for (let obj of data2.objetivos){ 
+                            html2+= '<tr>'+
+                              '<td>'+ obj.descripcion + '</td>'+
+                              '<td>'+
+                                '<label>'+
+                                  '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                  '<span>.</span>'+
+                                '</label>'+  
+                              '</td>'+
+                            '</tr>';
+                        }
+                html2 += '</tbody> '+ 
+                        '</table>'+
+                        '<br>'+
+                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right">Inscribir</button>';            
+                
+          let id2 = "objetivos-participante-grupo-"+idGrupo;
+          document.getElementById(id2).innerHTML = html2;
+          M.AutoInit();
+          
+          
+        }).catch(err => {
+          console.log(err);
+        });
+      }
     
   }).catch(err => {
     console.log(err);
