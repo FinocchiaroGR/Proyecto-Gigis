@@ -71,7 +71,7 @@
             <input type="hidden" name="idNivel" value="<%=idNivel%>">
             <div id="idObjetivo"></div>
             <ul>
-                <li><strong><br>Descripción</strong></li>
+                <li><strong><br>Descripción *</strong></li>
                 <li>
                 <div class="input">
                     <input name="descripcion" type="text" class="validate"  placeholder="Descripción">
@@ -128,14 +128,12 @@
       let i = 1;
       for (let objetivo of data.objetivos){
           if(objetivo.estatus === 1){
-            html += '<li>'+
-                '<div class="collapsible-header">' +
+            html += '<li class="collection-item">'+
                    i + '.- ' + objetivo.descripcion +
                     '<span class="badge">' +
                         '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>'+
                         '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>' +
                     '</span>'+
-                '</div>'+
             '</li>';
           } 
         i++;
