@@ -37,8 +37,8 @@ module.exports = class Objetivo {
         return db.execute('UPDATE objetivos SET estatus=0 WHERE idObjetivo=?', [idObjetivo])
     }
 
-    static existe(descripcion) {
-        return db.execute('SELECT * FROM objetivos WHERE descripcion LIKE ?', [descripcion])
+    static existe(descripcion, idNivel) {
+        return db.execute('SELECT * FROM objetivos WHERE descripcion LIKE ? AND idNivel=?', [descripcion, idNivel])
     }
 
     static activar(descripcion){

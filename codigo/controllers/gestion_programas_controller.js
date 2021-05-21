@@ -30,12 +30,12 @@ exports.nivelObjetivos = (request, response, next) => {
 };
 
 exports.registrarObjetivo = (request, response, next) => {
-  Objetivo.existe(request.body.descripcion)
+  Objetivo.existe(request.body.descripcion, request.body.idNivel)
     .then(([existe,fieldData]) => {
       Objetivo.activar(existe[0].descripcion)
         .then(() => {
           request.session.registro_exitoso = 'El objetivo se registró correctamente';
-          response.redirect('./' + request.body.idNivel);
+          response.redirect('/gestionAdmin/gestionProgramas/objetivos/' + request.body.idNivel);
         }).catch((err) => {
           console.log(err);
         });
