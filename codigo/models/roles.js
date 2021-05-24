@@ -24,4 +24,10 @@ module.exports = class Rol {
     [nombre]
     );
   }
+
+  static fetchAllRolsByLogin(login) {
+    return db.execute('SELECT R.*, CASE WHEN UR.idRol is null then 0 else 1 end as foo FROM roles R LEFT JOIN usuarios_roles UR ON UR.idRol = R.idRol AND UR.login = ? GROUP BY R.idRol',
+    [login]
+    );
+  }
 }

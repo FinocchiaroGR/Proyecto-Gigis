@@ -225,7 +225,6 @@ exports.postModUser = (request, response) => {
     console.log("Petición asíncrona");
 
     let tBool = false;
-    console.log(request.body.login);
     Usuario.fetchOneUsuarioTerapeuta(request.body.login)
         .then(([usuarios]) => {
             console.log(usuarios);
@@ -233,28 +232,39 @@ exports.postModUser = (request, response) => {
                 if(usuario.idRol == 2){
                     tBool = true;
                 }
-            }
-            if (tBool == true){
-                Terapeuta.fetchById(request.body.login)
-                    .then(([terapeuta]) => {
-                        console.log(terapeuta);
+            }Rol.fetchAllRolsByLogin(request.body.login)
+                .then(([roles]) => {
+                    if (tBool == true){
+                        Terapeuta.fetchById(request.body.login)
+                            .then(([terapeuta]) => {
+                                return response.status(200).json({
+                                    usuarios : usuarios,
+                                    roles : roles,
+                                    terapeuta : terapeuta,
+                                    tBool : tBool
+                                })
+                            })
+                            .catch((err) => {
+                                request.session.mensaje = 'Error de comunicacion con el servidor';
+                                request.session.bandera = true;
+                                response.redirect('/gestionAdmin/gestionUsuarios');
+                                console.log(err);
+                            });
+                    }
+                    else {
                         return response.status(200).json({
                             usuarios : usuarios,
-                            terapeuta : terapeuta
-                        })
-                    })
-                    .catch((err) => {
-                        request.session.mensaje = 'Error de comunicacion con el servidor';
-                        request.session.bandera = true;
-                        response.redirect('/gestionAdmin/gestionUsuarios');
-                        console.log(err);
-                    });
-            }
-            else {
-                return response.status(200).json({
-                    usuarios : usuarios
+                            roles : roles,
+                            tBool : tBool
+                        });
+                    }
+                })
+                .catch((err) => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
+                    response.redirect('/gestionAdmin/gestionUsuarios');
+                    console.log(err); 
                 });
-            }
         })
         .catch((err) => {
             request.session.mensaje = 'Error de comunicacion con el servidor';
