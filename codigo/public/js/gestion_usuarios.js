@@ -1,6 +1,4 @@
-// Or with jQuery
 
-const { fetchNomTerapeutas } = require("../../models/usuarios");
 
 $(document).ready(function(){
     $('.modal').modal();

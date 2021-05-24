@@ -43,7 +43,7 @@
 
                 let html =  
                             '<form action="/gestionAdmin/gestionUsuarios/update-usuario" method="POST" enctype="multipart/form-data>' +
-                                '<div class="modal-content">' +
+                                '<div class="modal-content container">' +
                                     '<h3>Modificar usuario</h3>' +
                                     '<ul>' +
                                         '<li><strong>Nombre</strong></li>' +
@@ -143,7 +143,6 @@
                                             '</table>' +
                                         '</li>' +
                                         '<div id="datosTerapeuta">';
-
                                             if(data.tBool == true) {
                 html +=
                                                 '<div id="childDiv1">' + 
@@ -169,7 +168,7 @@
                                                     '<li><strong><br>Status</strong></li>' +
                                                     '<li>' +
                                                         '<div class="input-field m4">' +
-                                                            '<select>';
+                                                            '<select id="estatusSelect">';
                                                                 if (data.terapeuta[0].estatus == 'A'){
                                                                     html += '<h3>hola</h3>' +
                                                                         '<option selected value="Astatus">Activo</option>' +
@@ -197,7 +196,7 @@
                                                                         '<option value="B">Algo con B</option>' +
                                                                         '<option selected value="I">Inactivo</option>' +
                                                             '</select>' +
-                                                        '</div>' +
+                                                       '</div>' +
                                                     '</li>' +
                                                 '</div>';
                                                                 }
@@ -223,6 +222,7 @@
                             '</div>';
 console.log(html);
                 document.getElementById('despliega_usuario').innerHTML = html;
+                M.FormSelect.init(document.getElementById('estatusSelect'));
           }).catch(err => {
               console.log(err);
           });

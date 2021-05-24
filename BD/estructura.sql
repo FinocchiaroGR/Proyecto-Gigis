@@ -250,9 +250,9 @@ CREATE VIEW CalifDatos AS (SELECT
     G.idPrograma,
     P.puntajeMaximo,
     Punt.idNivel,
-    AVG(punt.puntajeInicial) AS `CalifInicial`,
-    AVG(punt.puntajeFinal) AS `CalifFinal`,
-    ((AVG(punt.puntajeFinal) - AVG(punt.puntajeInicial)) / (P.puntajeMaximo-1)) * 100 AS `Avance`
+    AVG(Punt.puntajeInicial) AS `CalifInicial`,
+    AVG(Punt.puntajeFinal) AS `CalifFinal`,
+    ((AVG(Punt.puntajeFinal) - AVG(Punt.puntajeInicial)) / (P.puntajeMaximo-1)) * 100 AS `Avance`
 FROM
     participantes_grupos_objetivo Punt,
     grupos G,
@@ -263,10 +263,10 @@ FROM
 WHERE
     Punt.idGrupo = G.idGrupo 
     AND G.idPrograma = P.idPrograma 
-    AND U.login = punt.login
+    AND U.login = Punt.login
     AND U.login = Part.login
     AND C.idCiclo = G.idCiclo
 GROUP BY
-    punt.login,
-    punt.idGrupo,
-    punt.idNivel)
+    Punt.login,
+    Punt.idGrupo,
+    Punt.idNivel);
