@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 //Controladores
-const consultasController = require('../controllers/consultas_Controller');
+const consultasController = require('../controllers/consultas_controller');
 const isAuth = require('../util/is-auth.js');
 
 //Inicializa dependencias
