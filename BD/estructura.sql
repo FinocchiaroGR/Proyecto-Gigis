@@ -89,7 +89,7 @@ CREATE TABLE `roles_funciones`
 ( 
     `idRol` INT NOT NULL , 
     `idfuncion` INT NOT NULL , 
-    `fechaRF` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fechaRF` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY  (`idRol`, `idfuncion`)
 ) 
 ENGINE = InnoDB;
@@ -98,7 +98,7 @@ CREATE TABLE `usuarios_roles`
 ( 
     `login` VARCHAR(50) NOT NULL , 
     `idRol` INT NOT NULL , 
-    `fechaUR` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fechaUR` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY  (`login`, `idRol`)
 ) 
 ENGINE = InnoDB;
@@ -107,7 +107,7 @@ CREATE TABLE `grupos_terapeutas`
 ( 
     `idGrupo` INT NOT NULL , 
     `login` VARCHAR(50) NOT NULL , 
-    `fechaAsignacion` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fechaAsignacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`idGrupo`, `login`)
 ) 
 ENGINE = InnoDB;
@@ -270,3 +270,9 @@ GROUP BY
     Punt.login,
     Punt.idGrupo,
     Punt.idNivel);
+
+-- Para Empezar servidor :
+-- INSERT INTO usuarios (login, password, nombreUsuario, apellidoPaterno, apellidoMaterno) VALUES ('sandra@hotmail.com','$2a$12$opSzIUOqyS1hlYR5CPXvWOBoDUYG6AXjlHr3weEV3E1DMl0JE9PE2','Sandra','Tello','Del Valle');
+-- Usuario: sandra@hotmail.com  Password: sandra525&
+-- INSERT INTO funciones (idFuncion, requisitoFuncional) VALUES (1,'Registrar Programa'), (2,'Modificar Datos de Programas'), (3,'Asignar Participantes'), (4,'Agregar Ciclo'), (5,'Generar Comparativa de Programas'), (6,'Generar Reporte Programa Individual'), (7,'Generar Archivo de Descarga'), (8,'Registrar Usuario'), (9,'Modificar Usuario'), (10,'Modificar Funciones Rol'), (11,'Asignar Rol'), (12,'Crear Rol'), (13,'Modifcar Rol'), (14,'Consultar Datos de Participantes'), (15,'Registrar Puntaje de Participante'), (16,'Modificar Objetivos de Divisiones'), (17,'Eliminar Usuario');
+-- INSERT INTO roles (`idRol`, `nombre`) VALUES (null,'Participante'), (null,'Terapeuta'), (null,'Gestor'), (null,'Administrador');
