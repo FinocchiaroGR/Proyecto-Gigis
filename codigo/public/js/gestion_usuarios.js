@@ -58,12 +58,13 @@ function generarContra(){
 
 
 const modRol = (idRol) => {
-
+    const csrf = document.getElementById('_csrf').value;
     let data = {idRol: idRol};
             fetch('/gestionAdmin/gestionUsuarios/modificar-roll', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'csrf-token': csrf
                 },
                 body: JSON.stringify(data)
             }).then(result => {
@@ -75,6 +76,7 @@ const modRol = (idRol) => {
 
                   let html =  '<div id="childDiv">' +
                                 '<form action="/gestionAdmin/gestionUsuarios/update-roll" method="POST">' +
+                                '<input type="hidden" id="_csrf" name="_csrf" value="' + csrf + '" >' +
                                   '<table class="highlight">' +
                                     '<thead>' +
                                       '<tr>' +
@@ -120,6 +122,7 @@ const modRol = (idRol) => {
                             
                   document.getElementById('despliega_Funciones').removeChild(document.getElementById("childDiv"));
                   document.getElementById('despliega_Funciones').innerHTML = html;
+                  M.AutoInit();
             }).catch(err => {
                 console.log(err);
             });

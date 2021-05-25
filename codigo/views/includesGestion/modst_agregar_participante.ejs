@@ -1,4 +1,5 @@
 <form action="/gestionAdmin/gestionParticipantes" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
     <div class="modal-content">
         <h3>Nuevo participante</h3>
         <label> * Campos obligatorios.</label>
@@ -53,7 +54,7 @@
             <li"><strong><br>Teléfono del responsable</strong></li>
             <li>
                 <div class="input-field ">
-                    <input id="tel" name = "tel" type="text" class="validate" placeholder="Número telefónico">
+                    <input id="tel" name = "tel" type="text" class="validate" placeholder="Número telefónico" minlength="10" maxlength="10">
                 </div>
             </li>
         </ul>

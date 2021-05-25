@@ -12,6 +12,7 @@
                 <span style="color: #ff3d41;"><%- error %></span>
                 <% } %>
                 <form action= "login" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
                     <div class="input-field col s12">
                         <label for="username">Email</label>
                         <input type="text" name="username" required>
@@ -29,7 +30,7 @@
                         </button>
                     </div>
                     <div style="text-align: center;">
-                        <a style="color: rgb(37, 34, 255);" href="">Olvidaste la contraseña?</a>
+                        <a style="color: rgb(37, 34, 255);" href="">¿Olvidaste la contraseña?</a>
                     </div>
                 </form>
                 </div>

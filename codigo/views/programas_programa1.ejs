@@ -58,12 +58,14 @@
   <% grupos = grupos.next; 
      participantes = headParticipantes; %>
 <% } %>
-  
+
+<input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >  
 <input type="hidden" id="idPrograma" value="<%=programa%>">
  
 <script>
   const registroPuntajes = (idGrupo, login) => {
-
+    //El token de protección CSRF
+    const csrf = document.getElementById('_csrf').value;
     let data = {
       grupo_id: idGrupo,
       login_participante: login
@@ -71,9 +73,10 @@
     //función que manda la petición asíncrona
     fetch('/programas/objetivos-participante', {
         method: 'POST',
+
         headers: {
-            'Content-Type': 'application/json'
-            //'csrf-token': csrf
+            'Content-Type': 'application/json',
+            'csrf-token': csrf 
         },
         body: JSON.stringify(data)
     }).then(result => {
@@ -100,7 +103,7 @@
                     '<div class="col s6">' +
                       '<p>' + objetivo.descripcion + '</p>' +
                     '</div>' +  
-                    '<div class="col s3">' +
+                    '<div class="col s3 input-field">' +
                       '<select id = "puntajeInicial-' + numeroObj + '">';
           
           //Asignacion de opciones para calificar puntaje inicial
@@ -113,7 +116,7 @@
           }
           html +=     '</select>' +
                     '</div>'+
-                    '<div class="col s3">' +
+                    '<div class="col s3 input-field">' +
                       '<select id = "puntajeFinal-' + numeroObj + '">';
 
           //Asignacion de opciones para calificar puntaje final 
@@ -167,8 +170,8 @@
         fetch('/programas/registro-puntajes',{
           method: 'POST',
           headers: {
-              'Content-Type': 'application/json'
-              //'csrf-token': csrf
+              'Content-Type': 'application/json',
+              'csrf-token': csrf
           },
           body: JSON.stringify(obj)
         }).then(result => {

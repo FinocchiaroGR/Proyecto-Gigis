@@ -36,7 +36,10 @@
         </div>
     <!-- Inicia Modal Structure agregar usuario-->
     <div id="agregarUsuario" class="modal">
-      <%- include('includesGestion/modst_agregar_usuario.ejs') %>  
+      <form action="/gestionAdmin/gestionUsuarios/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
+        
+        <%- include('includesGestion/modst_agregar_usuario.ejs') %> 
+      
     </div><!--Fin Modal Structure agregar usuario-->
     <!-- Modal Structure Crear Rol-->
     <div id="crearRol" class="modal">

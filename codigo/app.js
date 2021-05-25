@@ -5,6 +5,11 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const csrfMiddleWare = require('./util/csrf.js');
+
+const csrf = require('csurf');
+const csrfProtection = csrf();
+
 
 //EJS
 app.set('view engine', 'ejs');
@@ -15,9 +20,6 @@ const rutasConsultas = require('./routes/consultas');
 const rutasProgramas = require('./routes/programas');
 const rutasGestionAdmin = require('./routes/GestionAdmin');
 const rutaSessionUsuarios = require('./routes/sesion_usuarios');
-
-app.set('view engine', 'ejs');
-app.set('views', 'views');
 
 //Inicializar dependencias
 app.use(bodyParser.urlencoded({extended: false}));
@@ -32,6 +34,11 @@ app.use(session({
 
 //Enviar archivos estáticos en carpeta public
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(csrfProtection);
+
+app.use(csrfMiddleWare);
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/consultas', rutasConsultas);

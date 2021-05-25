@@ -33,7 +33,7 @@ module.exports = class Usuario {
   //Este método servirá para devolver todos los usuarios exceptuando los que tengan el rol que se pasa por parámetro.
   static fetchListaSin(nombreRol) {
     return db.execute(
-      'SELECT nombreUsuario, apellidoPaterno, U.login, R.nombre FROM  usuarios U, roles R, usuarios_roles UR WHERE R.idRol = UR.idRol AND U.login = UR.login AND  R.nombre NOT LIKE ? GROUP BY U.login',
+      'SELECT nombreUsuario, apellidoPaterno, U.login, R.nombre FROM  usuarios U, roles R, usuarios_roles UR WHERE R.idRol = UR.idRol AND U.login = UR.login AND  R.nombre NOT LIKE ? GROUP BY U.login ORDER BY U.nombreUsuario',
       [nombreRol]
       );
   }

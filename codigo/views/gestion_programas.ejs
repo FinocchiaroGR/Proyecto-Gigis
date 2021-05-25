@@ -36,18 +36,18 @@
 
 <input type="hidden" id="errorPrograma" value="<%=error%>">
 <input type="hidden" id="registroExitoso" value="<%=registro_exitoso%>">
-
 <%- include('include/footer.ejs') %>
 
 <script>
   const buscarPrograma = () => {
+    const csrf = document.getElementById('_csrf').value;
     let data = {criterio: document.getElementById('buscarPrograma').value}
     console.log(data)
     fetch('/gestionAdmin/gestionProgramas/buscar-programa', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
-            //'csrf-token': csrf
+            'Content-Type': 'application/json',
+            'csrf-token': csrf
         },
         body: JSON.stringify(data)
     }).then(result => {

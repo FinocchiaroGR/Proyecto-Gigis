@@ -22,6 +22,7 @@
     </div>
     <!-- Inicia Modal Structure agregar objetivo-->
     <form action="/gestionAdmin/gestionProgramas/objetivos/agregar-objetivo" method="POST">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
         <div id="agregarObjetivo" class="modal">
             <div class="modal-content">
                 <h3>Nuevo objetivo</h3>
@@ -64,6 +65,7 @@
 
 <!-- Modal Structure Editar Objetivo-->
 <form action="/gestionAdmin/gestionProgramas/objetivos/editar-objetivo" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >  
     <div id="EditarObjetivo" class="modal">
         <div class="modal-content">
             <h3>Editar objetivo</h3>
@@ -88,6 +90,7 @@
 
 <!-- Modal Structure Eliminar Objetivo-->
 <form action="/gestionAdmin/gestionProgramas/objetivos/eliminar-objetivo" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >  
     <div id="modalEliminarObj" class="modal">
         <div class="modal-content">
             <h4>Eliminar objetivo</h4>
@@ -106,6 +109,7 @@
 <%- include('include/footer.ejs') %>
 
 <script>
+    const csrf = document.getElementById('_csrf').value;
     const buscarObjetivo = () => {
     let data = {
         criterio: document.getElementById('buscarObjetivo').value,
@@ -115,8 +119,8 @@
     fetch('/gestionAdmin/gestionProgramas/buscar-objetivo', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
-            //'csrf-token': csrf
+            'Content-Type': 'application/json',
+            'csrf-token': csrf
         },
         body: JSON.stringify(data)
     }).then(result => {
