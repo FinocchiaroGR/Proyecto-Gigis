@@ -2,6 +2,7 @@
 
 $(document).ready(function(){
     $('.modal').modal();
+
   });
 
 // Or with jQuery
@@ -122,7 +123,6 @@ const modRol = (idRol) => {
                             
                   document.getElementById('despliega_Funciones').removeChild(document.getElementById("childDiv"));
                   document.getElementById('despliega_Funciones').innerHTML = html;
-                  M.AutoInit();
             }).catch(err => {
                 console.log(err);
             });
