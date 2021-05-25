@@ -13,7 +13,7 @@ app.set('views', 'views');
 //Rutas
 const rutasConsultas = require('./routes/consultas');
 const rutasProgramas = require('./routes/programas');
-const rutasGestionAdmin = require('./routes/GestionAdmin');
+const rutasGestionAdmin = require('./routes/gestionAdmin');
 const rutaSessionUsuarios = require('./routes/sesion_usuarios');
 
 app.set('view engine', 'ejs');
