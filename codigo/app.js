@@ -10,6 +10,7 @@ const csrfMiddleWare = require('./util/csrf.js');
 const csrf = require('csurf');
 const csrfProtection = csrf();
 
+const secret = require('./util/secret');
 
 //EJS
 app.set('view engine', 'ejs');
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
-    secret: 'ytfvvjsdfmc467879cievy8ihrwtbuc4y+nu948wbyn8cr4mivnj8bfugnc', //cambiar a otra variable externa que no se versione
+    secret: secret.secret, //cambiar a otra variable externa que no se versione
     resave: false, //La sesión no se guardará en cada petición, sino sólo se guardará si algo cambió 
     saveUninitialized: false, //Asegura que no se guarde una sesión para una petición que no lo necesita
 }));
@@ -65,4 +66,3 @@ app.use((request, response, next) => {
 app.listen(3000, function(){
     console.log("server is running in port 3000");
   });
-                         
