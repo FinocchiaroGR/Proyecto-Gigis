@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const usuariosController = require('../controllers/sesion_usuarios_Controller');
+const usuariosController = require('../controllers/sesion_usuarios_controller');
 const isAuth = require('../util/is-auth.js');
 
 
