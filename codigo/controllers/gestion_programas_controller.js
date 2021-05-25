@@ -102,6 +102,7 @@ exports.get = (request, response, next) => {
 };
 
 exports.postNuevoPrograma = (request, response, next) => {
+  request.session.registro_exitoso = undefined;
   const programa = new Programa(request.body.nombreProgra, request.body.puntajeMax,request.file.path);
   programa.save()
     .then(() => {
@@ -167,6 +168,7 @@ exports.agregarNivel = (request, response, next) => {
   const nuevoNivel = new Nivel(request.body.nombreNivel, request.body.idPrograma);
   nuevoNivel.save()
     .then(() => {
+      request.session.registro_exitoso = 'El nivel fue registrado correctamente.';
       response.redirect('./')
     }).catch((err) => {
       console.log(err);
