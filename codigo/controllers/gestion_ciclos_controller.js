@@ -146,7 +146,29 @@ exports.postMostrarObj = (request,response,next) => {
 };
 
 exports.postInscribir = (request,response,next) => {
-    
+    for (let participante of request.body.objetivos){
+        let PGO = new Participantes_Grupos_Objetivos(participante.login, participante.idGrupo,participante.idNivel, participante.idObjetivo);
+        console.log(PGO);
+        PGO.save()
+          .then(() =>{
+          }).catch((err) => {
+            console.log(err);
+            return response.status(500).json({message: "Internal Server Error"});
+        })
+      }
+      Usuario.fetchNombre(request.body.objetivos[0].login)
+        .then(([nombre,fieldData]) => {
+          console.log(nombre);
+          console.log(request.body.objetivos[0].idGrupo);
+          return response.status(200).json({
+            nombre: nombre,
+            grupo: request.body.objetivos[0].idGrupo
+          });
+        }).catch((err) => {
+            console.log(err);
+            return response.status(500).json({message: "Internal Server Error"});
+        })
+      
 };
 
 exports.getAgrCiclo = (request,response,next) => {

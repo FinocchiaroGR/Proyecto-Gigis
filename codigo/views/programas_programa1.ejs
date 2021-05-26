@@ -178,7 +178,7 @@
           let mensaje = 'Se actualizaron los puntajes de ' + objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno;
           let id = 'objetivos-participante-grupo-' + objetivos.grupo; 
           document.getElementById(id).innerHTML = html;
-          M.toast({html: mensaje}) 
+          M.toast({html: mensaje, classes: 'grey'}) 
         }).catch(err => {
             console.log(err);
           });

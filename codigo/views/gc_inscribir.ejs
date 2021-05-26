@@ -276,7 +276,7 @@ const registroObjetivos = (login, idGrupo) => {
                 html2 += '</tbody> '+ 
                         '</table>'+
                         '<br>'+
-                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right">Inscribir</button>';            
+                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right" id = "inscribir">Inscribir</button>';            
                 
           let id2 = "objetivos-participante-grupo-"+idGrupo;
           document.getElementById(id2).innerHTML = html2;
@@ -299,6 +299,45 @@ const registroObjetivos = (login, idGrupo) => {
                 }
               }
           }
+          
+        document.getElementById("inscribir").onclick = () => {
+          const objetivos = [];
+          function PGO(login, idGrupo, idObjetivo, idNivel){
+            this.login = login;
+            this.idGrupo = idGrupo;
+            this.idObjetivo = idObjetivo;
+            this.idNivel = idNivel;
+          }
+          for(let obj of data2.objetivos){
+            let isChecked =  document.getElementById(obj.idObjetivo).checked;
+            if(isChecked){ 
+              const participante = new PGO(login, idGrupo,obj.idObjetivo, idNivelObj);
+              objetivos.push(participante); 
+            }
+          }
+          console.log(objetivos);
+          let obj = {
+            objetivos: objetivos
+          } 
+          fetch('/gestionAdmin/gestionCiclos/inscribir',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                //'csrf-token': csrf
+            },
+            body: JSON.stringify(obj)
+          }).then(result => {
+            return result.json();
+          }).then (objetivos => {
+            let html = '';
+            let mensaje = objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno +' fue inscrito correctamente.';
+            let id = "niveles-participante-"+objetivos.grupo; 
+            document.getElementById(id).innerHTML = html;
+            M.toast({html: mensaje,classes: 'grey'}) 
+          }).catch(err => {
+            console.log(err);
+          });
+        }
           
         }).catch(err => {
           console.log(err);
