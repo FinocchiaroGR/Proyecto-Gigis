@@ -45,7 +45,7 @@ module.exports = class Participante_Grupo_Objetivo {
         [idGrupo]);
     }
 
-    static fetchIncritos(idGrupo, login) {
+    static fetchIncrito(idGrupo, login) {
         return db.execute('SELECT * FROM participantes_grupos_objetivo WHERE idGrupo = ? AND login = ?',
         [idGrupo, login]);
     }

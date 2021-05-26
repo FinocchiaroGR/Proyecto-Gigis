@@ -174,7 +174,7 @@ const registroObjetivos = (login, idGrupo) => {
                   '</div>' +  
                   '<div class="input-field ">'+
                     '<select id = "nivelAsig-' + login+'" >'+
-                      '<option value="" disabled selected> - </option>';
+                      '<option value="0" disabled selected> - </option>';
                       
                       for(nivel of data.niveles){
                         html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
@@ -188,17 +188,30 @@ const registroObjetivos = (login, idGrupo) => {
     let id = 'niveles-participante-' + idGrupo;
     document.getElementById(id).innerHTML = html;
     M.AutoInit();
-    let idselect = 'nivelAsig-' + login;
-    if (Object.keys(data.inscritos).length != 0){
-      selectNivel = document.getElementById(idselect);
-      selectNivel.options[data.inscritos[0].idNivel-data.niveles[0].idNivel].selected=true;
-    }
-    M.AutoInit();
 
+    let idselect = 'nivelAsig-' + login;
+    //Si ya está inscrito carga el nivel y objetivos registrados actualmente
+    if (Object.keys(data.inscrito).length != 0){
+      selectNivel = document.getElementById(idselect);
+      selectNivel.options[(data.inscrito[0].idNivel-data.niveles[0].idNivel)+1].selected=true;
+      let idNivelObj = data.inscrito[0].idNivel;
+      M.AutoInit();
+      mostratObj(); 
+      console.log("hola");
+    }
+    
     document.getElementById(idselect).onchange = () => {
+      mostratObj();
+    }
+    
+    function mostratObj() {
         let idNivelObj = document.getElementById(idselect).value;
         console.log(idNivelObj);
-        let data2 = {idNivelObj: idNivelObj};
+        let data2 = {
+          idNivelObj: idNivelObj,
+          login: login,
+          idGrupo: idGrupo
+        };
 
         console.log(data2);
         //función que manda la petición asíncrona
@@ -233,15 +246,28 @@ const registroObjetivos = (login, idGrupo) => {
                             '</td>'+
                           '</tr>'; 
                         for (let obj of data2.objetivos){ 
-                            html2+= '<tr>'+
-                              '<td>'+ obj.descripcion + '</td>'+
-                              '<td>'+
-                                '<label>'+
-                                  '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
-                                  '<span>.</span>'+
-                                '</label>'+  
-                              '</td>'+
-                            '</tr>';
+                          if(obj.paloma === 1){
+                              html2+= '<tr>'+
+                                '<td>'+ obj.descripcion + '</td>'+
+                                '<td>'+
+                                  '<label>'+
+                                    '<input name ="' +obj.idObjetivo + '" checked="checked" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                    '<span>.</span>'+
+                                  '</label>'+  
+                                '</td>'+
+                              '</tr>';
+                            }
+                            else {
+                              html2+= '<tr>'+
+                                '<td>'+ obj.descripcion + '</td>'+
+                                '<td>'+
+                                  '<label>'+
+                                    '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                    '<span>.</span>'+
+                                  '</label>'+  
+                                '</td>'+
+                              '</tr>';
+                            }
                         }
                 html2 += '</tbody> '+ 
                         '</table>'+
@@ -257,7 +283,7 @@ const registroObjetivos = (login, idGrupo) => {
           console.log(err);
         });
       }
-    
+
   }).catch(err => {
     console.log(err);
   });

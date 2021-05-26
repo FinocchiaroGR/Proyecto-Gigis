@@ -71,6 +71,7 @@ exports.getInscribir = (request,response,next) => {
     
     request.session.error = undefined;
     request.session.bandera =undefined;
+    request.session.idcicloparam =undefined;
 };
 
 exports.getInsPar = (request,response,next) => {
@@ -111,12 +112,12 @@ exports.postSelectNivel = (request,response,next) => {
         .then(([niveles, fieldData]) => {
             Usuario.fetchNombre(request.body.login)
                 .then(([usuarios, fieldData]) => {
-                    Participantes_Grupos_Objetivos.fetchIncritos(request.body.idGrupo,request.body.login)
-                        .then(([inscritos, fieldData]) => {
+                    Participantes_Grupos_Objetivos.fetchIncrito(request.body.idGrupo,request.body.login)
+                        .then(([inscrito, fieldData]) => {
                             return response.status(200).json({
                                 niveles: niveles, 
                                 usuarios: usuarios,
-                                inscritos: inscritos
+                                inscrito: inscrito
                             });
                         })
                         .catch(err => {
@@ -133,7 +134,7 @@ exports.postSelectNivel = (request,response,next) => {
 };
 
 exports.postMostrarObj = (request,response,next) => {
-    Objetivo.objetivosPorNivel(request.body.idNivelObj)
+    Objetivo.objetivosPorNivelInscritos(request.body.idNivelObj, request.body.login, request.body.idGrupo)
         .then(([objetivos, fieldData]) => {
             return response.status(200).json({
                 objetivos: objetivos
