@@ -53,5 +53,10 @@ module.exports = class Objetivo {
         return db.execute ('SELECT PGO.login, O.*, case when PGO.idObjetivo is null then 0 else 1 end as paloma FROM objetivos O LEFT JOIN participantes_grupos_objetivo PGO ON O.idObjetivo = PGO.idObjetivo AND PGO.idNivel = O.idNivel AND PGO.login = ? AND PGO.idGrupo = ? WHERE O.idNivel = ? AND O.estatus = 1',
         [login, idGrupo, idNivel])
     }
+
+    static deleteObj(login, idGrupo, idNivel) {
+        return db.execute ('DELETE FROM participantes_grupos_objetivo WHERE login = ? AND idGrupo = ? AND idNivel = ?',
+        [login, idGrupo, idNivel])
+    }
 }
 

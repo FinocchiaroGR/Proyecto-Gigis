@@ -68,10 +68,8 @@ exports.getInscribir = (request,response,next) => {
             })
             .catch((err) => console.log(err));
     }).catch((err) => console.log(err)); 
-    
     request.session.error = undefined;
     request.session.bandera =undefined;
-    request.session.idcicloparam =undefined;
 };
 
 exports.getInsPar = (request,response,next) => {
@@ -146,23 +144,32 @@ exports.postMostrarObj = (request,response,next) => {
 };
 
 exports.postInscribir = (request,response,next) => {
-    for (let participante of request.body.objetivos){
-        let PGO = new Participantes_Grupos_Objetivos(participante.login, participante.idGrupo,participante.idNivel, participante.idObjetivo);
-        console.log(PGO);
-        PGO.save()
-          .then(() =>{
-          }).catch((err) => {
-            console.log(err);
-            return response.status(500).json({message: "Internal Server Error"});
+    request.session.error = undefined;
+    Objetivo.deleteObj(request.body.objetivos[0].login, request.body.objetivos[0].idGrupo,request.body.objetivos[0].idNivel)
+        .then(() => {
+            console.log(request.body.objetivos);
+            for (let participante of request.body.objetivos){
+                let PGO = new Participantes_Grupos_Objetivos(participante.login, participante.idGrupo,participante.idNivel, participante.idObjetivo);
+                PGO.save()
+                .then(() =>{
+                }).catch((err) => {
+                    console.log(err);
+                    request.session.error = 'No se pudo inscribir correctamente al participante.';
+                    return response.status(500).json({message: "Internal Server Error"});
+                })
+            }
         })
-      }
+        .catch( err => {
+            request.session.error = 'No se pudo inscribir correctamente al participante.';
+            response.redirect('/gestionAdmin/gestionCiclos');
+            console.log(err);
+        });
       Usuario.fetchNombre(request.body.objetivos[0].login)
         .then(([nombre,fieldData]) => {
-          console.log(nombre);
-          console.log(request.body.objetivos[0].idGrupo);
           return response.status(200).json({
             nombre: nombre,
-            grupo: request.body.objetivos[0].idGrupo
+            grupo: request.body.objetivos[0].idGrupo,
+            error: request.session.error
           });
         }).catch((err) => {
             console.log(err);
@@ -172,6 +179,7 @@ exports.postInscribir = (request,response,next) => {
 };
 
 exports.getAgrCiclo = (request,response,next) => {
+    request.session.idcicloparam =undefined;
     Programa.fetchAll()
     .then(([programas, fieldData1]) => {
         Usuario.fetchNomTerapeutas()
@@ -219,16 +227,15 @@ exports.postAgrCiclo= (request,response,next) => {
                         let grupo = new Grupo(idGrupo,numeroGrupo, idPrograma, idCiclo,login);
                         grupo.save()
                             .then(() => {
-                                                               
+                                if(tsize=== parseInt(t) && psize === parseInt(p)){
+                                    request.session.error = undefined; 
+                                    request.session.bandera =true;
+                                    return response.status(300).json({ciclo: ciclo});
+                                }                                                               
                             }).catch( err => {
                                 console.log(err); 
                                 request.session.error = "No se pudieron asignar los grupos correctamente.";
                             });
-                    }
-                    if(tsize=== parseInt(t) && psize === parseInt(p)){
-                        request.session.error = undefined; 
-                        request.session.bandera =true;
-                        return response.status(300).json({ciclo: ciclo});
                     }
                 }
             }

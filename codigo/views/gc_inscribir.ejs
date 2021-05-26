@@ -4,7 +4,14 @@
 
 <div class="row">
   <div id= "contenido">
-    <br><h5><strong>Programas disponibles</strong></h5><br>
+    <div class = "row">
+      <div class = "col s12 m10 l6">
+      </div>
+      <div class = "col s12 m2 l6">
+        <br><br><a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4 right">Finalizar inscripción</a>
+      </div>
+    </div>
+    <p><strong>Programas disponibles</strong></p>
     <ul class="collapsible" id="lista-programas"> 
       <% for (let programa of programas) { %>  
           <li>
@@ -27,7 +34,6 @@
           </li>
       <% } %>
     </ul>
-    <a  href= "/gestionAdmin/gestionCiclos" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right">Finalizar inscripción</a>
   </div>
 </div>
 
@@ -53,8 +59,6 @@
         return result.json(); //Regresa otra promesa
     }).then(data => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        console.log("Respuesta de la petición asíncrona");
-        console.log(data);
         let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
         '<div class="row">'+
           '<div class="col s12 m6 l6 ">'+
@@ -78,7 +82,7 @@
                   }
                 }
                 html += '<tr>'+
-                    '<td><i class="material-icons left '+colorPalomita+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
+                    '<td><i class="material-icons left '+colorPalomita+'" id = "paloma-'+participante.login+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
                     '<td>'+
                       '<a  onclick="registroObjetivos(&apos;'+participante.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                         '<i class="material-icons left">chevron_right</i>'+
@@ -112,7 +116,6 @@ const buscar = (idGrupo) => {
         return result.json(); //Regresa otra promesa
     }).then(data => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        console.log("Respuesta de la petición asíncrona");
         let html = '<tbody id = "tablita">';
         let colorPalomita = 'grey-text text-lighten-3';
         for (p of data.participante) {
@@ -124,7 +127,7 @@ const buscar = (idGrupo) => {
             }
           }
           html += '<tr>'+
-              '<td><i class="material-icons left '+colorPalomita+'" >check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
+              '<td><i class="material-icons left '+colorPalomita+'" id = "paloma-'+p.login+'">check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
               '<td>'+
                 '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                   '<i class="material-icons left">chevron_right</i>'+
@@ -161,7 +164,6 @@ const registroObjetivos = (login, idGrupo) => {
   }).then(data => {
     //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
     //...
-    console.log(data)
     let html = '';
     //Header 
     html = '<div class="row">' +
@@ -197,7 +199,6 @@ const registroObjetivos = (login, idGrupo) => {
       let idNivelObj = data.inscrito[0].idNivel;
       M.AutoInit();
       mostratObj(); 
-      console.log("hola");
     }
     
     document.getElementById(idselect).onchange = () => {
@@ -206,7 +207,6 @@ const registroObjetivos = (login, idGrupo) => {
     
     function mostratObj() {
         let idNivelObj = document.getElementById(idselect).value;
-        console.log(idNivelObj);
         let data2 = {
           idNivelObj: idNivelObj,
           login: login,
@@ -227,7 +227,6 @@ const registroObjetivos = (login, idGrupo) => {
         }).then(data2 => {
           //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
           //...
-          console.log(data2)
           let html2 = '';
           //Header 
           html2 += 
@@ -287,7 +286,6 @@ const registroObjetivos = (login, idGrupo) => {
 
           document.getElementById("selTodos").onchange = () => {
             let isChecked =  document.getElementById("selTodos").checked;
-            console.log(isChecked);
               if(isChecked){
                 for (let obj of data2.objetivos){ 
                   document.getElementById(obj.idObjetivo).checked = true;
@@ -315,7 +313,6 @@ const registroObjetivos = (login, idGrupo) => {
               objetivos.push(participante); 
             }
           }
-          console.log(objetivos);
           let obj = {
             objetivos: objetivos
           } 
@@ -329,11 +326,20 @@ const registroObjetivos = (login, idGrupo) => {
           }).then(result => {
             return result.json();
           }).then (objetivos => {
-            let html = '';
-            let mensaje = objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno +' fue inscrito correctamente.';
+            let html = '', mensaje = '', color = '';
+            if (objetivos.error === undefined){
+              mensaje = objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno +' fue inscrito correctamente.';
+              color = 'grey';
+            }
+            else{
+              mensaje = objetivos.error.toString();
+              color = 'black';
+            }
             let id = "niveles-participante-"+objetivos.grupo; 
             document.getElementById(id).innerHTML = html;
-            M.toast({html: mensaje,classes: 'grey'}) 
+            M.toast({html: mensaje,classes: color}) 
+            document.getElementById('paloma-'+login).className = "material-icons left light-green-text text-accent-4";
+            M.AutoInit();
           }).catch(err => {
             console.log(err);
           });
