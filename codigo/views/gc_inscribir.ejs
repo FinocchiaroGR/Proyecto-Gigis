@@ -237,7 +237,7 @@ const registroObjetivos = (login, idGrupo) => {
                       '<table class="highlight">'+
                         '<tbody>'+
                           '<tr>'+
-                            '<td class = " light-blue-text text-darken-4">Seleeccionar todos los objetivos.</td>'+
+                            '<td class = " light-blue-text text-darken-4">Seleccionar todos los objetivos.</td>'+
                             '<td>'+
                               '<label>'+
                                 '<input name ="selTodos" id="selTodos" type="checkbox" />'+ 
@@ -245,8 +245,12 @@ const registroObjetivos = (login, idGrupo) => {
                               '</label>'+  
                             '</td>'+
                           '</tr>'; 
+                        let todosobj= 0;
+                        let selectobj = 0;
                         for (let obj of data2.objetivos){ 
+                          todosobj += 1;
                           if(obj.paloma === 1){
+                            selectobj += 1;
                               html2+= '<tr>'+
                                 '<td>'+ obj.descripcion + '</td>'+
                                 '<td>'+
@@ -277,11 +281,29 @@ const registroObjetivos = (login, idGrupo) => {
           let id2 = "objetivos-participante-grupo-"+idGrupo;
           document.getElementById(id2).innerHTML = html2;
           M.AutoInit();
-          
+          if(selectobj === todosobj){
+            document.getElementById("selTodos").checked = true;
+          }
+
+          document.getElementById("selTodos").onchange = () => {
+            let isChecked =  document.getElementById("selTodos").checked;
+            console.log(isChecked);
+              if(isChecked){
+                for (let obj of data2.objetivos){ 
+                  document.getElementById(obj.idObjetivo).checked = true;
+                }
+              }
+              else{
+                for (let obj of data2.objetivos){ 
+                  document.getElementById(obj.idObjetivo).checked = false;
+                }
+              }
+          }
           
         }).catch(err => {
           console.log(err);
         });
+
       }
 
   }).catch(err => {
