@@ -1,6 +1,6 @@
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE crearConsultaCalif (
+CREATE PROCEDURE crearConsultaCalif (
     IN `Filtrar_edad` BOOLEAN, 
     IN `Filtrar_sexo` BOOLEAN,
     IN `Calif_Ava` BOOLEAN,
@@ -19,15 +19,15 @@ BEGIN
     #Crear tabla temporal de datos
     IF Filtrar_edad = TRUE THEN
         IF Filtrar_sexo = TRUE THEN
-            CALL crearTablaTempDatos1(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin, Sexo, Programas);
+            CALL crearTablaTempDatos1(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin, Sexo);
         ELSE
-            CALL crearTablaTempDatos2(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin, Programas);
+            CALL crearTablaTempDatos2(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin);
         END IF;
     ELSE
         IF Filtrar_sexo = TRUE THEN
-            CALL crearTablaTempDatos3(Ciclo_ini, Ciclo_fin, Sexo, Programas);
+            CALL crearTablaTempDatos3(Ciclo_ini, Ciclo_fin, Sexo);
         ELSE
-            CALL crearTablaTempDatos4(Ciclo_ini, Ciclo_fin, Programas);
+            CALL crearTablaTempDatos4(Ciclo_ini, Ciclo_fin);
         END IF;
     END IF;
 
@@ -73,13 +73,13 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE getProgs (
+CREATE PROCEDURE getProgs (
     IN arrayProg VARCHAR(255)
 ) 
 BEGIN 
     DROP TEMPORARY TABLE IF EXISTS listProg_temp;
 
-    SET @sql = CONCAT('CREATE TEMPORARY TABLE `listProg_temp` AS SELECT * FROM Programas WHERE idPrograma IN (',CAST(arrayProg AS CHAR), ')'); 
+    SET @sql = CONCAT('CREATE TEMPORARY TABLE `listProg_temp` AS SELECT * FROM programas WHERE idPrograma IN (',CAST(arrayProg AS CHAR), ')'); 
     PREPARE stmt FROM @sql; 
     EXECUTE stmt; 
     DEALLOCATE PREPARE stmt; 
@@ -94,13 +94,12 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE crearTablaTempDatos1 (
+CREATE PROCEDURE crearTablaTempDatos1 (
     IN `Ciclo_ini` INT, 
     IN `Ciclo_fin` INT, 
     IN `Edad_ini` INT, 
     IN `Edad_fin` INT,
-    IN `Sexo` VARCHAR(1),  
-    In `Programas` VARCHAR(255) 
+    IN `Sexo` VARCHAR(1) 
 ) 
 BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
@@ -112,7 +111,7 @@ BEGIN
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
       AND C.sexo = Sexo
       AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
-    GROUP BY C.login;
+    GROUP BY C.login, C.Edad_Matriculacion;
 END
 $$
 
@@ -122,13 +121,12 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE crearTablaTempDatos2 (
+CREATE PROCEDURE crearTablaTempDatos2 (
     IN `Ciclo_ini` INT, 
     IN `Ciclo_fin` INT, 
     IN `Edad_ini` INT, 
-    IN `Edad_fin` INT,
-    In `Programas` VARCHAR(255) 
-) 
+    IN `Edad_fin` INT
+)
 BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
 
@@ -138,7 +136,7 @@ BEGIN
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
       AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
-    GROUP BY C.login;
+    GROUP BY C.login, C.Edad_Matriculacion;
 END
 $$
 
@@ -148,11 +146,10 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE crearTablaTempDatos3 (
+CREATE PROCEDURE crearTablaTempDatos3 (
     IN `Ciclo_ini` INT, 
     IN `Ciclo_fin` INT,
-    IN `Sexo` VARCHAR(1),  
-    In `Programas` VARCHAR(255)
+    IN `Sexo` VARCHAR(1)
 ) 
 BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
@@ -163,7 +160,7 @@ BEGIN
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.sexo = Sexo
       AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
-    GROUP BY C.login;
+    GROUP BY C.login, C.Edad_Matriculacion;
 END
 $$
 
@@ -173,10 +170,9 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE crearTablaTempDatos4 (
+CREATE PROCEDURE crearTablaTempDatos4 (
     IN `Ciclo_ini` INT, 
-    IN `Ciclo_fin` INT,
-    In `Programas` VARCHAR(255)
+    IN `Ciclo_fin` INT
 )  
 BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
@@ -186,7 +182,7 @@ BEGIN
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
-    GROUP BY C.login;
+    GROUP BY C.login, C.Edad_Matriculacion;
 END
 $$
 
@@ -374,6 +370,8 @@ $$
 
 DELIMITER ;
 
+----------------------------------------------------------------------------------------------
+
 SELECT
     COUNT(*) AS `ContTotal`,
     AVG(Avance_P1_C10) AS `Prom_Avance_P1_C10`,
@@ -501,3 +499,28 @@ FROM
   ON (t1.login = t2.login);
 
 SELECT * FROM datosPart_temp2;
+
+----------------------------------------------------------------
+
+CALL getProgs('1');
+CALL crearTablaTempDatos4(1, 1);
+SELECT * FROM datosPart_temp;
+DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
+
+CREATE TEMPORARY TABLE `datosPart_temp` AS
+SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
+FROM CalifDatos C 
+WHERE C.idCiclo >= 1 AND C.idCiclo <= 1
+    AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
+GROUP BY C.login, C.Edad_Matriculacion;
+
+
+
+SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
+FROM CalifDatos C 
+WHERE C.idCiclo >= 1 AND C.idCiclo <= 1
+    AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
+GROUP BY C.login;
+
+
+CALL crearConsultaCalif (TRUE, TRUE, FALSE, 1, 1, 1, 99, 'M',1,'1');
