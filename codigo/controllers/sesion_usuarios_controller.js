@@ -1,6 +1,7 @@
 const Usuario = require('../models/usuarios');
 const Arrow = require('../models/arrow');
 const bcrypt = require('bcryptjs');
+const { permisos } = require('../models/usuarios');
 const arrows = Arrow.fetchAll();
 
 
@@ -30,6 +31,16 @@ exports.postlogin = (request, response, next) => {
                     if (doMatch) {
                         request.session.isLoggedIn = true;
                         request.session.user = rows[0].login;
+                        request.session.permisos = []
+                        Usuario.permisos(rows[0].login)
+                            .then(([permisos,fieldData]) => {
+                                for (let permiso of permisos){
+                                    request.session.permisos.push(permiso.idFuncion)
+                                }
+                                console.log(request.session.permisos);
+                            }).catch(err => {
+                                console.log(err);                  
+                            });
                         return request.session.save(err => {
                             response.redirect('/gestionAdmin');
                         });

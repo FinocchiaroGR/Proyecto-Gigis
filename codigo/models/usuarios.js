@@ -66,4 +66,8 @@ module.exports = class Usuario {
     });
   }
 
+  static permisos (login) {
+    return db.execute('SELECT idFuncion FROM usuarios_roles UR, roles_funciones RF WHERE RF.idRol = UR.idRol AND UR.login = ?', [login]);
+  }
+
 }
