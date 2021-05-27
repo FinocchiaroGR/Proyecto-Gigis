@@ -335,7 +335,7 @@ exports.postUpdateUser = (request, response) => {
                         })
                 }
                 else {
-                    Terapeuta.changeStatusToI(oldEmail)
+                    Terapeuta.changeStatusToB(oldEmail)
                         .then(() => {
                             Usuario_Rol.deleteById(oldEmail)
                                 .then(() => {
