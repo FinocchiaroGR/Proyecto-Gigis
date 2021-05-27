@@ -3,19 +3,16 @@ const db = require('../util/database');
 module.exports = class Participante_Grupo_Objetivo {
 
     //Constructor de la clase. Sirve para crear un nuevo objeto, y en él se definen las propiedades del modelo
-    constructor(login, idGrupo, idNivel, idObjetivo, puntajeInicial, puntajeFinal) {
+    constructor(login, idGrupo, idNivel, idObjetivo) {
         this.login = login;
         this.idGrupo = idGrupo;
         this.idNivel = idNivel;
         this.idObjetivo = idObjetivo;
-        this.apellidoMaterno = apellidoMaterno;
-        this.puntajeInicial = puntajeInicial;
-        this.puntajeFinal = puntajeFinal;
     }
     //Este método servirá para guardar de manera persistente el nuevo objeto. 
     save() {
-        return db.execute('INSERT INTO participantes_grupos_objetivos (login,idGrupo, idNivel, idObjetivo, puntajeInicial, puntajeFinal) VALUES (?, ?, ?, ?, ?, ?)',
-            [this.login, this.idGrupo,this.idNivel, this.idObjetivo,this.puntajeInicial, this.puntajeFinal]
+        return db.execute('INSERT INTO participantes_grupos_objetivo (login,idGrupo, idNivel, idObjetivo) VALUES (?, ?, ?, ?)',
+            [this.login, this.idGrupo,this.idNivel, this.idObjetivo]
         )
     }
 
@@ -45,7 +42,7 @@ module.exports = class Participante_Grupo_Objetivo {
         [idGrupo]);
     }
 
-    static fetchIncritos(idGrupo, login) {
+    static fetchIncrito(idGrupo, login) {
         return db.execute('SELECT * FROM participantes_grupos_objetivo WHERE idGrupo = ? AND login = ?',
         [idGrupo, login]);
     }

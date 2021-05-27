@@ -4,7 +4,14 @@
 
 <div class="row">
   <div id= "contenido">
-    <br><h5><strong>Programas disponibles</strong></h5><br>
+    <div class = "row">
+      <div class = "col s12 m10 l6">
+      </div>
+      <div class = "col s12 m2 l6">
+        <br><br><a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4 right">Finalizar inscripción</a>
+      </div>
+    </div>
+    <p><strong>Programas disponibles</strong></p>
     <ul class="collapsible" id="lista-programas"> 
       <% for (let programa of programas) { %>  
           <li>
@@ -27,7 +34,6 @@
           </li>
       <% } %>
     </ul>
-    <a  href= "/gestionAdmin/gestionCiclos" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right">Finalizar inscripción</a>
   </div>
 </div>
 
@@ -53,8 +59,6 @@
         return result.json(); //Regresa otra promesa
     }).then(data => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        console.log("Respuesta de la petición asíncrona");
-        console.log(data);
         let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
         '<div class="row">'+
           '<div class="col s12 m6 l6 ">'+
@@ -78,7 +82,7 @@
                   }
                 }
                 html += '<tr>'+
-                    '<td><i class="material-icons left '+colorPalomita+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
+                    '<td><i class="material-icons left '+colorPalomita+'" id = "paloma-'+participante.login+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
                     '<td>'+
                       '<a  onclick="registroObjetivos(&apos;'+participante.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                         '<i class="material-icons left">chevron_right</i>'+
@@ -112,7 +116,6 @@ const buscar = (idGrupo) => {
         return result.json(); //Regresa otra promesa
     }).then(data => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        console.log("Respuesta de la petición asíncrona");
         let html = '<tbody id = "tablita">';
         let colorPalomita = 'grey-text text-lighten-3';
         for (p of data.participante) {
@@ -124,7 +127,7 @@ const buscar = (idGrupo) => {
             }
           }
           html += '<tr>'+
-              '<td><i class="material-icons left '+colorPalomita+'" >check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
+              '<td><i class="material-icons left '+colorPalomita+'" id = "paloma-'+p.login+'">check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
               '<td>'+
                 '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
                   '<i class="material-icons left">chevron_right</i>'+
@@ -161,7 +164,6 @@ const registroObjetivos = (login, idGrupo) => {
   }).then(data => {
     //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
     //...
-    console.log(data)
     let html = '';
     //Header 
     html = '<div class="row">' +
@@ -174,7 +176,7 @@ const registroObjetivos = (login, idGrupo) => {
                   '</div>' +  
                   '<div class="input-field ">'+
                     '<select id = "nivelAsig-' + login+'" >'+
-                      '<option value="" disabled selected> - </option>';
+                      '<option value="0" disabled selected> - </option>';
                       
                       for(nivel of data.niveles){
                         html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
@@ -188,17 +190,28 @@ const registroObjetivos = (login, idGrupo) => {
     let id = 'niveles-participante-' + idGrupo;
     document.getElementById(id).innerHTML = html;
     M.AutoInit();
-    let idselect = 'nivelAsig-' + login;
-    if (Object.keys(data.inscritos).length != 0){
-      selectNivel = document.getElementById(idselect);
-      selectNivel.options[data.inscritos[0].idNivel-data.niveles[0].idNivel].selected=true;
-    }
-    M.AutoInit();
 
+    let idselect = 'nivelAsig-' + login;
+    //Si ya está inscrito carga el nivel y objetivos registrados actualmente
+    if (Object.keys(data.inscrito).length != 0){
+      selectNivel = document.getElementById(idselect);
+      selectNivel.options[(data.inscrito[0].idNivel-data.niveles[0].idNivel)+1].selected=true;
+      let idNivelObj = data.inscrito[0].idNivel;
+      M.AutoInit();
+      mostratObj(); 
+    }
+    
     document.getElementById(idselect).onchange = () => {
+      mostratObj();
+    }
+    
+    function mostratObj() {
         let idNivelObj = document.getElementById(idselect).value;
-        console.log(idNivelObj);
-        let data2 = {idNivelObj: idNivelObj};
+        let data2 = {
+          idNivelObj: idNivelObj,
+          login: login,
+          idGrupo: idGrupo
+        };
 
         console.log(data2);
         //función que manda la petición asíncrona
@@ -214,7 +227,6 @@ const registroObjetivos = (login, idGrupo) => {
         }).then(data2 => {
           //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
           //...
-          console.log(data2)
           let html2 = '';
           //Header 
           html2 += 
@@ -224,7 +236,7 @@ const registroObjetivos = (login, idGrupo) => {
                       '<table class="highlight">'+
                         '<tbody>'+
                           '<tr>'+
-                            '<td class = " light-blue-text text-darken-4">Seleeccionar todos los objetivos.</td>'+
+                            '<td class = " light-blue-text text-darken-4">Seleccionar todos los objetivos.</td>'+
                             '<td>'+
                               '<label>'+
                                 '<input name ="selTodos" id="selTodos" type="checkbox" />'+ 
@@ -232,32 +244,113 @@ const registroObjetivos = (login, idGrupo) => {
                               '</label>'+  
                             '</td>'+
                           '</tr>'; 
+                        let todosobj= 0;
+                        let selectobj = 0;
                         for (let obj of data2.objetivos){ 
-                            html2+= '<tr>'+
-                              '<td>'+ obj.descripcion + '</td>'+
-                              '<td>'+
-                                '<label>'+
-                                  '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
-                                  '<span>.</span>'+
-                                '</label>'+  
-                              '</td>'+
-                            '</tr>';
+                          todosobj += 1;
+                          if(obj.paloma === 1){
+                            selectobj += 1;
+                              html2+= '<tr>'+
+                                '<td>'+ obj.descripcion + '</td>'+
+                                '<td>'+
+                                  '<label>'+
+                                    '<input name ="' +obj.idObjetivo + '" checked="checked" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                    '<span>.</span>'+
+                                  '</label>'+  
+                                '</td>'+
+                              '</tr>';
+                            }
+                            else {
+                              html2+= '<tr>'+
+                                '<td>'+ obj.descripcion + '</td>'+
+                                '<td>'+
+                                  '<label>'+
+                                    '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                    '<span>.</span>'+
+                                  '</label>'+  
+                                '</td>'+
+                              '</tr>';
+                            }
                         }
                 html2 += '</tbody> '+ 
                         '</table>'+
                         '<br>'+
-                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right">Inscribir</button>';            
+                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right" id = "inscribir">Inscribir</button>';            
                 
           let id2 = "objetivos-participante-grupo-"+idGrupo;
           document.getElementById(id2).innerHTML = html2;
           M.AutoInit();
+          if(selectobj === todosobj){
+            document.getElementById("selTodos").checked = true;
+          }
+
+          document.getElementById("selTodos").onchange = () => {
+            let isChecked =  document.getElementById("selTodos").checked;
+              if(isChecked){
+                for (let obj of data2.objetivos){ 
+                  document.getElementById(obj.idObjetivo).checked = true;
+                }
+              }
+              else{
+                for (let obj of data2.objetivos){ 
+                  document.getElementById(obj.idObjetivo).checked = false;
+                }
+              }
+          }
           
+        document.getElementById("inscribir").onclick = () => {
+          const objetivos = [];
+          function PGO(login, idGrupo, idObjetivo, idNivel){
+            this.login = login;
+            this.idGrupo = idGrupo;
+            this.idObjetivo = idObjetivo;
+            this.idNivel = idNivel;
+          }
+          for(let obj of data2.objetivos){
+            let isChecked =  document.getElementById(obj.idObjetivo).checked;
+            if(isChecked){ 
+              const participante = new PGO(login, idGrupo,obj.idObjetivo, idNivelObj);
+              objetivos.push(participante); 
+            }
+          }
+          let obj = {
+            objetivos: objetivos
+          } 
+          fetch('/gestionAdmin/gestionCiclos/inscribir',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                //'csrf-token': csrf
+            },
+            body: JSON.stringify(obj)
+          }).then(result => {
+            return result.json();
+          }).then (objetivos => {
+            let html = '', mensaje = '', color = '';
+            if (objetivos.error === undefined){
+              mensaje = objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno +' fue inscrito correctamente.';
+              color = 'grey';
+            }
+            else{
+              mensaje = objetivos.error.toString();
+              color = 'black';
+            }
+            let id = "niveles-participante-"+objetivos.grupo; 
+            document.getElementById(id).innerHTML = html;
+            M.toast({html: mensaje,classes: color}) 
+            document.getElementById('paloma-'+login).className = "material-icons left light-green-text text-accent-4";
+            M.AutoInit();
+          }).catch(err => {
+            console.log(err);
+          });
+        }
           
         }).catch(err => {
           console.log(err);
         });
+
       }
-    
+
   }).catch(err => {
     console.log(err);
   });

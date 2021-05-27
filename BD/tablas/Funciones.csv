@@ -1,17 +1,20 @@
 1,Registrar programa
 2,Modificar datos programa
-3,Asignar participantes
+3,Inscribir participantes
 4,Agregar ciclo
 5,Generar comparativa de programas
 6,Generar reporte programa individual
 7,Generar archivo de descarga
 8,Registrar usuario
 9,Modificar usuario
-10,mMdificar funciones del rol
-11,Asignar rol
+10,Modificar funciones del rol
+11,Modificar ciclo
 12,Crear rol
-13,Cambiar rol
-14,Consultar datos participante
-15,Registrar puntaje de participante
-16,Modificar objetivos de divisiones
+13,Cambiar rol de usuarios
+14,Consultar historial de participante
+15,Registrar puntajes de participante
+16,Modificar objetivos de niveles
 17,Eliminar usuario
+18,Agregar objetivos
+19,Eliminar objetivos
+
