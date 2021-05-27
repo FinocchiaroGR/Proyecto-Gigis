@@ -19,4 +19,8 @@ module.exports = class Grupo_Terapeuta {
         return db.execute('SELECT * FROM grupos_terapeutas');
     }
 
+    static fetchIfTerapeutaHaveGroups(login) {
+        return db.execute('SELECT COUNT(*) AS num_groups FROM grupos_terapeutas WHERE login = ?',
+        [login]);
+    }
 }

@@ -28,4 +28,19 @@ module.exports = class Terapeuta{
       [login]
     );
   }
+
+  static deleteById(login) {
+    return db.execute('DELETE FROM terapeutas WHERE login = ?',
+    [login]);
+  }
+
+  static changeStatusToI(login) {
+    return db.execute("UPDATE terapeutas SET estatus = 'I' WHERE login = ?",
+    [login]);
+  }
+
+  static updateTerapeuta(login, titulo, cv, estatus) {
+    return db.execute('UPDATE terapeutas SET titulo = ?, cv = ?, estatus = ? WHERE terapeutas.login = ?', 
+    [titulo, cv, estatus, login]);
+  }
 }

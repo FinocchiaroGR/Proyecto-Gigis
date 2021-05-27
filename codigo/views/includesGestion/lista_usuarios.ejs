@@ -28,258 +28,259 @@
 <script>
     const modUser = (login) => {
         let data = {login: login};
-          fetch('/gestionAdmin/gestionUsuarios/modificar-usuario', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-          }).then(result => {
-              return result.json();
-              
-          }).then(data => {
-              console.log("Starting...");
-              console.log(data);
-
+            fetch('/gestionAdmin/gestionUsuarios/modificar-usuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+            },
+                body: JSON.stringify(data)
+            }).then(result => {
+                return result.json();  
+            }).then(data => {
+                console.log("Starting...");
+                console.log(data);
                 let html =  
-                            '<form action="/gestionAdmin/gestionUsuarios/update-usuario" method="POST" enctype="multipart/form-data>' +
-                                '<div class="modal-content container">' +
-                                    '<h3>Modificar usuario</h3>' +
-                                    '<ul>' +
-                                        '<li><strong>Nombre</strong></li>' +
-                                        '<li>' +
-                                            '<div class="input-field">' +
-                                                '<input id="nombre" name="nombre" type="text" class="validate" value="' + data.usuarios[0].nombreUsuario + '" placeholder="Nombre(s)">' +
-                                            '</div>' +
-                                        '</li>' +
-                                        '<li><strong><br>Apellido paterno</strong></li>' +
-                                        '<li>' +
-                                            '<div class="input-field">' +
-                                                '<input id="apellidoP" name="apellidoP" type="text" class="validate" value="' + data.usuarios[0].apellidoPaterno + '" placeholder="Apellido paterno">' +
-                                            '</div>' +
-                                        '</li>' +
-                                        '<li><strong><br>Apellido materno</strong></li>' +
-                                        '<li>' +
-                                            '<div class="input-field">' +
-                                                '<input id="apellidoM" name="apellidoM" type="text" class="validate" value="' + data.usuarios[0].apellidoMaterno + '" placeholder="Apellido materno">' +
-                                            '</div>' +
-                                        '</li>' +
-                                        '<li><strong><br>Correo</strong></li>' +
-                                        '<li>' +
-                                            '<div class="input-field">' +
-                                                '<input id="correo" name="correo" type="email" class="validate" value="' + data.usuarios[0].login + '" placeholder="correo@mail.com" required>' +
-                                                '<span class="helper-text" data-error="Introduce un correo válido"></span>' +
-                                            '</div>' +
-                                        '</li>' +
-                                        '<li><strong>Contraseña</strong></li>' +
-                                        '<li>' +
-                                            '<div class="input-field">' +
-                                                '<input  id="contra" name= "contrasena"  type="text" class="validate" value="' + data.usuarios[0].password + '" placeholder="contraseña" required>' +
-                                            '</div>' +
-                                        '</li>' +
-                                        '<li><strong><br>Roles</strong></li>' +
-                                        '<li>' +
-                                            '<table>';
+                    '<form action="/gestionAdmin/gestionUsuarios/update-usuario" method="POST" enctype="multipart/form-data>' +
+                        '<div class="modal-content container">' +
+                            '<h3>Modificar usuario</h3>' +
+                            '<ul>' +
+                                '<li><strong>Nombre</strong></li>' +
+                                '<li>' +
+                                    '<div class="input-field">' +
+                                        '<input id="nombre" name="nombre" type="text" class="validate" value="' + data.usuarios[0].nombreUsuario + '" placeholder="Nombre(s)">' +
+                                    '</div>' +
+                                '</li>' +
+                                '<li><strong><br>Apellido paterno</strong></li>' +
+                                '<li>' +
+                                    '<div class="input-field">' +
+                                        '<input id="apellidoP" name="apellidoP" type="text" class="validate" value="' + data.usuarios[0].apellidoPaterno + '" placeholder="Apellido paterno">' +
+                                    '</div>' +
+                                '</li>' +
+                                '<li><strong><br>Apellido materno</strong></li>' +
+                                '<li>' +
+                                    '<div class="input-field">' +
+                                        '<input id="apellidoM" name="apellidoM" type="text" class="validate" value="' + data.usuarios[0].apellidoMaterno + '" placeholder="Apellido materno">' +
+                                    '</div>' +
+                                '</li>' +
+                                '<li><strong><br>Correo</strong></li>' +
+                                '<li>' +
+                                    '<div class="input-field">' +
+                                        '<input id="login" name="login" type="email" class="validate" value="' + data.usuarios[0].login + '" placeholder="correo@mail.com" required>' +
+                                        '<span class="helper-text" data-error="Introduce un correo válido"></span>' +
+                                    '</div>' +
+                                '</li>' +
+                                '<li><strong>Contraseña</strong></li>' +
+                                '<li>' +
+                                    '<div class="input-field">' +
+                                        '<input  id="password" name= "password"  type="text" class="validate" value="' + data.usuarios[0].password + '" placeholder="contraseña" required>' +
+                                    '</div>' +
+                                '</li>' +
+                                '<li><strong><br>Roles</strong></li>' +
+                                '<li>' +
+                                    '<table>';
 
-                                            for (let rol of data.roles) { 
-                                                if (rol.idRol != 1) { 
-                                                    if (rol.foo == 1) {
-                                                        if (rol.idRol == 2) {
-                                                            html +=     
-                                                                                '<tr id="terapeuta">' +
-                                                                                    '<td id="childT">' +
-                                                                                        '<label>'+
-                                                                                            '<input type="checkbox" checked="checked" onclick="quitarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
-                                                                                            '<span>' + rol.nombre + '</span>' +
-                                                                                        '</label>' +
-                                                                                    '</td>' +
-                                                                                '</tr>' +
-                                                                            '</div>' +
-                                                                        '</div>';
-                                                        }
-                                                        else {
-                                                            html +=     '<tr>' +
-                                                                            '<td>' +
-                                                                                '<label>'+
-                                                                                    '<input type="checkbox" checked="checked" name="Rol_' + rol.idRol + '">' +
-                                                                                    '<span>' + rol.nombre + '</span>' +
-                                                                                '</label>' +
-                                                                            '</td>' +
-                                                                        '</tr>';
-                                                        }
+                for (let rol of data.roles) { 
+                    if (rol.idRol != 1) { 
+                        if (rol.foo == 1) {
+                            if (rol.idRol == 2) {
+                                html +=     
+                                    '<tr id="terapeuta">' +
+                                        '<td id="childT">' +
+                                            '<label>'+
+                                                '<input type="checkbox" checked="checked" onclick="quitarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr></div></div>';      
+                            }
+                            else {
+                                html +=     
+                                    '<tr>' +
+                                        '<td>' +
+                                            '<label>'+
+                                                '<input type="checkbox" checked="checked" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr>';
+                            }
                                                         
-                                                    }
-                                                    else {
-                                                        if (rol.idRol == 2) {
-                                                            html +=     
-                                                                                '<tr id="terapeuta">' +
-                                                                                    '<td id="childT">' +
-                                                                                        '<label>'+
-                                                                                            '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
-                                                                                            '<span>' + rol.nombre + '</span>' +
-                                                                                        '</label>' +
-                                                                                    '</td>' +
-                                                                                '</tr>' +
-                                                                            '</div>' +
-                                                                        '</div>';
-                                                                
-                                                        }
-                                                        else {
-                                                            html +=     '<tr>' +
-                                                                            '<td>' +
-                                                                                '<label>'+
-                                                                                    '<input type="checkbox" name="Rol_' + rol.idRol + '">' +
-                                                                                    '<span>' + rol.nombre + '</span>' +
-                                                                                '</label>' +
-                                                                            '</td>' +
-                                                                        '</tr>';
-                                                        }
-                                                        
-                                                    }
-                                                } 
-                                            }
+                        }
+                        else {
+                            if (rol.idRol == 2) {
+                                html +=     
+                                    '<tr id="terapeuta">' +
+                                        '<td id="childT">' +
+                                            '<label>'+
+                                                '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr></div></div>';       
+                            }
+                            else {
+                                html +=     
+                                    '<tr>' +
+                                        '<td>' +
+                                            '<label>'+
+                                                '<input type="checkbox" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr>';
+                            }
+                        }
+                    } 
+                }
                                       
                 html += 
-                                            '</table>' +
-                                        '</li>' +
-                                        '<div id="datosTerapeuta">';
-                                            if(data.tBool == true) {
-                html +=
-                                                '<div id="childDiv1">' + 
-                                                    '<li><strong><br>Formación profesional</strong></li>' +
-                                                    '<li>' +
-                                                        '<div class="input-field">' +
-                                                            '<input id="titulo" name="titulo" type="text" class="validate" value="' + data.terapeuta[0].titulo + '" placeholder="Título">' +
-                                                        '</div>' +
-                                                    '</li>' +
-                                                    '<li><strong><br>Currículum</strong></li>' +
-                                                    '<li>' +
-                                                        '<div class="file-field input-field">' +
-                                                            '<div class="waves-effect waves-light btn-small white black-text">' +
-                                                                '<i class="material-icons left">file_upload</i>Modificar' +
-                                                                '<input type="file" name="cv" href="">' +
-                                                            '</div>' +
-                                                            '<div class="file-path-wrapper">' +
-                                                                '<input class="file-path validate" type="text" placeholder="' + data.terapeuta[0].cv + '">' +
-                                                            '</div>' +
-                                                            '<br>' +
-                                                        '</div>' +
-                                                    '</li>' +
-                                                    '<li><strong><br>Status</strong></li>' +
-                                                    '<li>' +
-                                                        '<div class="input-field m4">' +
-                                                            '<select id="estatusSelect">';
-                                                                if (data.terapeuta[0].estatus == 'A'){
-                                                                    html += '<h3>hola</h3>' +
-                                                                        '<option selected value="Astatus">Activo</option>' +
-                                                                        '<option value="Bstatus">Algo con B</option>' +
-                                                                        '<option value="Istatus">Inactivo</option>' +
-                                                            '</select>' +
-                                                            '<h3>hola</h3>' +
-                                                        '</div>' +
-                                                    '</li>' +
-                                                '</div>';
-                                                                }
-                                                                else if (data.terapeuta[0].estatus == 'B') {
-                                                                    html += 
-                                                                        '<option value="Astatus">Activo</option>' +
-                                                                        '<option selected value="Bstatus">Algo con B</option>' +
-                                                                        '<option value="Istatus">Inactivo</option>' +
-                                                            '</select>' +
-                                                        '</div>' +
-                                                    '</li>' +
-                                                '</div>';
-                                                                }
-                                                                else if (data.terapeuta[0].estatus == 'I') {
-                                                                    html += 
-                                                                        '<option value="A">Activo</option>' +
-                                                                        '<option value="B">Algo con B</option>' +
-                                                                        '<option selected value="I">Inactivo</option>' +
-                                                            '</select>' +
-                                                       '</div>' +
-                                                    '</li>' +
-                                                '</div>';
-                                                                }
-                                            }
-                html +=                 '</div>' +
-                                    '</ul>' +
+                    '</table><input hidden name="lengthRoles" value="' + data.roles.length + '"><input hidden name="oldEmail" value="' + data.usuarios[0].login + '"><input hidden name="tBool" value="' + data.tBool + '"></li><div id="datosTerapeuta">';
+                if(data.tBool == true) {
+                    html +=
+                        '<div id="childDiv1">' + 
+                            '<li><strong><br>Formación profesional</strong></li>' +
+                            '<li>' +
+                                '<div class="input-field">';
+                                    if (!$.trim(data.terapeuta)) {
+                                        html += '<input id="titulo" name="titulo" type="text" class="validate" value="null" placeholder="Título" required>';
+                                    }
+                                    else{
+                                        html += '<input id="titulo" name="titulo" type="text" class="validate" value="' + data.terapeuta[0].titulo + '" placeholder="Título">';
+                                    }
+                            html +=
                                 '</div>' +
-                                '<div class="modal-footer container">' +
-                                    '<button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>    ' +
-                                    '<a class="modal-trigger modal-action waves-effect btn-flat grey lighten-1 boton-md" href="#modalEliminarU"><i class="material-icons">delete</i></a>' +
+                            '</li>' +
+                            '<li><strong><br>Currículum</strong></li>' +
+                            '<li>' +
+                                '<div class="file-field input-field">' +
+                                    '<div class="waves-effect waves-light btn-small white black-text">' +
+                                        '<i class="material-icons left">file_upload</i>Modificar' +
+                                        '<input type="file" name="cv" href="">' +
+                                    '</div>' +
+                                    '<div class="file-path-wrapper">';
+                                        if (!$.trim(data.terapeuta)) {
+                                            html += '<input class="file-path validate" type="text" placeholder="null" requiered>';
+                                        }
+                                        else {
+                                            html += '<input class="file-path validate" type="text" placeholder="' + data.terapeuta[0].cv + '">';
+                                        }
+                                    html += '</div>' +
+                                    '<br>' +
                                 '</div>' +
-                                '<br>' +
-                            '</form>' +
-                            '<div id="modalEliminarU" class="modal">' +
-                                '<div class="modal-content">' +
-                                    '<h4>Eliminar usuario</h4>' +
-                                    '<p>¿Está seguro de eliminar este usuario?</p>' +
-                                '</div>' +
-                                '<div class="modal-footer">' +
-                                    '<a href="#" class="modal-close btn-flat eliminarU">Sí</a>' +
-                                    '<a href="./"  class="modal-close waves-effect waves-green btn-flat">Cancelar</a>' +
-                                '</div>' +
-                            '</div>';
-console.log(html);
+                            '</li>' +
+                            '<li><strong><br>Status</strong></li>' +
+                            '<li>' +
+                                '<div class="input-field m4">' +
+                                    '<select id="estatusSelect" required>';
+                    if ($.trim(data.terapeuta)) {
+                        if (data.terapeuta[0].estatus == 'A'){
+                            html += 
+                                '<option selected value="A">Activo</option>' +
+                                '<option value="B">B</option>' +
+                                '<option value="I">Inactivo</option></select></div></li></div>';
+                        }
+                        else if (data.terapeuta[0].estatus == 'B') {
+                            html += 
+                                '<option value="A">Activo</option>' +
+                                '<option selected value="B">Algo con B</option>' +
+                                '<option value="I">Inactivo</option></select></div></li></div>';
+                    
+                
+                        }
+                        else if (data.terapeuta[0].estatus == 'I') {
+                            html += 
+                                '<option value="A">Activo</option>' +
+                                '<option value="B">Algo con B</option>' +
+                                '<option selected value="I">Inactivo</option></select></div></li></div>';
+                        }
+                    }
+                    else {
+                        html += 
+                            '<option disabled selected value="">Elige un estatus</option>' +
+                            '<option value="A">Activo</option>' +
+                            '<option value="B">Algo con B</option>' +
+                            '<option value="I">Inactivo</option></select></div></li></div>';
+                    }
+                    
+                }
+                html +=                 
+                    '</div></ul></div><div class="modal-footer container">' +
+                        '<div class="modal-footer container">' +
+                            '<button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>    ' +
+                            '<a class="modal-trigger modal-action waves-effect btn-flat grey lighten-1 boton-md" href="#modalEliminarU"><i class="material-icons">delete</i></a>' +
+                        '</div>' +
+                        '<br>' +
+                    '</form>' +
+                    '<div id="modalEliminarU" class="modal">' +
+                        '<div class="modal-content">' +
+                            '<h4>Eliminar usuario</h4>' +
+                            '<p>¿Está seguro de eliminar este usuario?</p>' +
+                        '</div>' +
+                        '<div class="modal-footer">' +
+                            '<a href="#" class="modal-close btn-flat eliminarU">Sí</a>' +
+                            '<a href="./"  class="modal-close waves-effect waves-green btn-flat">Cancelar</a>' +
+                        '</div>' +
+                    '</div>';
+
+                
+                
                 document.getElementById('despliega_usuario').innerHTML = html;
                 M.FormSelect.init(document.getElementById('estatusSelect'));
-          }).catch(err => {
-              console.log(err);
-          });
+            }).catch(err => {
+                console.log(err);
+            });
     };
 
     const mostrarDatosTerapeuta = () => {
 
         let html =
-                                    '<div id="childDiv1">' +
-                                        '<li><strong><br>Formación profesional</strong></li>' +
-                                        '<li>' +
-                                            '<div class="input-field">' +
-                                                '<input id="titulo" name="titulo" type="text" class="validate" placeholder="Título">' +
-                                            '</div>' +
-                                        '</li>' +
-                                        '<li><strong><br>Currículum</strong></li>' +
-                                        '<li>' +
-                                            '<div class="file-field input-field">' +
-                                                '<div class="waves-effect waves-light btn-small white black-text">' +
-                                                    '<i class="material-icons left">file_upload</i>Subir' +
-                                                    '<input type="file" name="cv" href="">' +
-                                                '</div>' +
-                                                '<div class="file-path-wrapper">' +
-                                                    '<input class="file-path validate" type="text" placeholder="Currículum">' +
-                                                '</div>' +
-                                                '<br>' +
-                                            '</div>' +
-                                        '</li>' +
-                                    '</div>';
+            '<div id="childDiv1">' +
+                '<li><strong><br>Formación profesional</strong></li>' +
+                '<li>' +
+                    '<div class="input-field">' +
+                        '<input id="titulo" name="titulo" type="text" class="validate" placeholder="Título">' +
+                    '</div>' +
+                '</li>' +
+                '<li><strong><br>Currículum</strong></li>' +
+                '<li>' +
+                    '<div class="file-field input-field">' +
+                        '<div class="waves-effect waves-light btn-small white black-text">' +
+                            '<i class="material-icons left">file_upload</i>Subir' +
+                            '<input type="file" name="cv" href="">' +
+                        '</div>' +
+                        '<div class="file-path-wrapper">' +
+                            '<input class="file-path validate" type="text" placeholder="Currículum">' +
+                        '</div>' +
+                        '<br>' +
+                    '</div>' +
+                '</li>' +
+            '</div>';
 
-            document.getElementById('datosTerapeuta').innerHTML = html;
+        document.getElementById('datosTerapeuta').innerHTML = html;
         let html2 = 
-                            '<td id="childT">' +
-                                '<label>'+
-                                    '<input type="checkbox" checked="checked" onclick="quitarDatosTerapeuta()" name="Rol_2">' +
-                                    '<span>terapeuta</span>' +
-                                '</label>' +
-                            '</td>' +
-                        '</tr>' +
-                    '</div>';
-            document.getElementById('terapeuta').removeChild(document.getElementById("childT"));
-            document.getElementById('terapeuta').innerHTML = html2;
+            '<td id="childT">' +
+                '<label>'+
+                    '<input type="checkbox" checked="checked" onclick="quitarDatosTerapeuta()" name="Rol_2">' +
+                    '<span>terapeuta</span>' +
+                '</label>' +
+            '</td></tr></div>';
+
+        document.getElementById('terapeuta').removeChild(document.getElementById("childT"));
+        document.getElementById('terapeuta').innerHTML = html2;
     };
 
     const quitarDatosTerapeuta = (idRol, nombre) => {
         document.getElementById('datosTerapeuta').removeChild(document.getElementById("childDiv1"));
 
         let html2 = 
-                            '<td id="childT">' +
-                                '<label>'+
-                                    '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_2">' +
-                                    '<span>terapeuta</span>' +
-                                '</label>' +
-                            '</td>' +
-                        '</tr>' +
-                    '</div>';
-            document.getElementById('terapeuta').removeChild(document.getElementById("childT"));
-            document.getElementById('terapeuta').innerHTML = html2;
+            '<td id="childT">' +
+                '<label>'+
+                    '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_2">' +
+                    '<span>terapeuta</span>' +
+                '</label>' +
+            '</td></tr></div>';
+        
+        document.getElementById('terapeuta').removeChild(document.getElementById("childT"));
+        document.getElementById('terapeuta').innerHTML = html2;
     };
 </script>

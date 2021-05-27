@@ -172,7 +172,7 @@ ADD CONSTRAINT `cfterapeutas_login_usuarios`
 FOREIGN KEY (`login`) 
 REFERENCES `usuarios`(`login`) 
 ON DELETE RESTRICT 
-ON UPDATE RESTRICT;
+ON UPDATE CASCADE;
 
 ALTER TABLE `participantes` 
 ADD CONSTRAINT `cfparticipantes_login_usuarios` 

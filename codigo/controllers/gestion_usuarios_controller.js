@@ -5,8 +5,7 @@ const Usuario_Rol = require('../models/usuarios_roles');
 const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
-const { fetchId } = require('../models/roles');
-const { response, request } = require('express');
+const Grupos_Terapeutas = require('../models/grupos_terapeutas')
 
 const arrows = Arrow.fetchAll();
 
@@ -193,7 +192,6 @@ exports.postUpdateRoll = (request, response) => {
         request.body.Funcion_16 === undefined ? null : 16,
         request.body.Funcion_17 === undefined ? null : 17
     ]
-    let i = funciones.length;
 
     Rol_Func.deleteById(idRol)
         .then(() => {
@@ -222,17 +220,15 @@ exports.postUpdateRoll = (request, response) => {
 };
  
 exports.postModUser = (request, response) => {
-    console.log("Petición asíncrona");
-
     let tBool = false;
     Usuario.fetchOneUsuarioTerapeuta(request.body.login)
         .then(([usuarios]) => {
-            console.log(usuarios);
             for(let usuario of usuarios){
                 if(usuario.idRol == 2){
                     tBool = true;
                 }
-            }Rol.fetchAllRolsByLogin(request.body.login)
+            }
+            Rol.fetchAllRolsByLogin(request.body.login)
                 .then(([roles]) => {
                     if (tBool == true){
                         Terapeuta.fetchById(request.body.login)
@@ -275,6 +271,174 @@ exports.postModUser = (request, response) => {
 };
 
 exports.postUpdateUser = (request, response) => {
-    response.redirect('/gestionAdmin/gestionUsuarios');
-    //Falta
+    let login = request.body.login;
+    let oldEmail = request.body.oldEmail;
+    let password = request.body.password;
+    let nombre = request.body.nombre;
+    let apellidoP = request.body.apellidoP;
+    let apellidoM = request.body.apellidoM;
+    let lengthRoles = request.body.lengthRoles;
+    let titulo = request.body.titulo;
+    let path = request.file.path;
+    console.log(path);
+    let estatus = request.body.estatusSelect;
+    let tBool = request.body.tBool === 'true' ? true : false;
+    let roles = [];
+    
+    for (let i = 2; i <= lengthRoles; i++) {
+        roles.push(request.body[`Rol_${i}`] === undefined ? null : i);
+    }
+
+    if (tBool == true && roles[0] == null) {
+        Grupos_Terapeutas.fetchIfTerapeutaHaveGroups(oldEmail)
+            .then(([numGrupos]) => {
+                console.log(numGrupos);
+                if (numGrupos[0].num_groups == 0){
+                    Terapeuta.deleteById(oldEmail)
+                        .then(() => {
+                            Usuario_Rol.deleteById(oldEmail)
+                                .then(() => {
+                                    Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                                        .then(() => {
+                                            for (rol of roles){ 
+                                                if (rol != null && rol != 2) {
+                                                    let usuario_rol = new Usuario_Rol(login, rol);
+                                                    usuario_rol.save()
+                                                        .catch((err) => {
+                                                            console.log(err);
+                                                        })
+                                                }
+                                            }
+                                            request.session.mensaje = 'El rol fue actualizado correctamente';
+                                            request.session.bandera = false; 
+                                            response.redirect('/gestionAdmin/gestionUsuarios');
+                                        }).catch((err) => {
+                                            console.log(err);
+                                        })
+                                }).catch((err) => {
+                                    console.log(err);
+                                })
+                            
+                        }).catch((err) => {
+                            console.log(err);
+                        })
+                }
+                else {
+                    Terapeuta.changeStatusToI(oldEmail)
+                        .then(() => {
+                            Usuario_Rol.deleteById(oldEmail)
+                                .then(() => {
+                                    Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                                        .then(() => {
+                                            for (rol of roles){ 
+                                                if (rol != null) {
+                                                    console.log(rol);
+                                                    let usuario_rol = new Usuario_Rol(login, rol);
+                                                    usuario_rol.save()
+                                                        .catch((err) => {
+                                                            console.log(err);
+                                                        })
+                                                }
+                                            }
+                                            let usuario_rol = new Usuario_Rol(login, 2);
+                                            usuario_rol.save()
+                                                .catch((err) => {
+                                                    console.log(err);
+                                                })
+                                            request.session.mensaje = 'El rol fue actualizado correctamente';
+                                            request.session.bandera = false; 
+                                            response.redirect('/gestionAdmin/gestionUsuarios');
+                                        }).catch((err) => {
+                                            console.log(err);
+                                        })
+                                }).catch((err) => {
+                                    console.log(err);
+                                })
+                        }).catch((err) => {
+                            console.log(err);
+                        })
+                }
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
+    else if (tBool == true && roles[0] == 2) {
+        Usuario_Rol.deleteById(oldEmail)
+            .then(() => {
+                Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                    .then(() => {
+                        for (rol of roles){ 
+                            if (rol != null) {
+                                console.log(rol);
+                                let usuario_rol = new Usuario_Rol(login, rol);
+                                usuario_rol.save()
+                                    .catch((err) => {
+                                        console.log(err);
+                                    })
+                            }
+                        }
+                        Terapeuta.updateTerapeuta(login,titulo,path,estatus)
+                            .then(() => {
+                                request.session.mensaje = 'El rol fue actualizado correctamente';
+                                request.session.bandera = false; 
+                                response.redirect('/gestionAdmin/gestionUsuarios');
+                            }).catch((err) => {
+                                console.log(err);
+                            })
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
+    else if (tBool == false && roles[0] == 2) {
+        Usuario_Rol.deleteById(oldEmail)
+            .then(() => {
+                Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                    .then(() => {
+                        for (rol of roles){ 
+                            if (rol != null) {
+                                console.log(rol);
+                                let usuario_rol = new Usuario_Rol(login, rol);
+                                usuario_rol.save()
+                                    .catch((err) => {
+                                        console.log(err);
+                                    })
+                            }
+                        }
+                        let terapeuta = new Terapeuta(login,titulo,path,estatus);
+                        terapeuta.save()
+                            .catch((err) => {
+                                console.log(err);
+                            })
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
+    else {
+        Usuario_Rol.deleteById(oldEmail)
+            .then(() => {
+                Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                    .then(() => {
+                        for (rol of roles){ 
+                            if (rol != null) {
+                                console.log(rol);
+                                let usuario_rol = new Usuario_Rol(login, rol);
+                                usuario_rol.save()
+                                    .catch((err) => {
+                                        console.log(err);
+                                    })
+                            }
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
 };
