@@ -271,18 +271,29 @@ exports.postModUser = (request, response) => {
 };
 
 exports.postUpdateUser = (request, response) => {
+    //baja permanente
     let login = request.body.login;
+    console.log(login);
     let oldEmail = request.body.oldEmail;
+    console.log(oldEmail);
     let password = request.body.password;
+    console.log(password);
     let nombre = request.body.nombre;
-    let apellidoP = request.body.apellidoP;
-    let apellidoM = request.body.apellidoM;
-    let lengthRoles = request.body.lengthRoles;
-    let titulo = request.body.titulo;
-    let path = request.file.path;
+    console.log(nombre);
+    let apellidoP = request.body.apellidoP === '' ? null : request.body.apellidoP;
+    console.log(apellidoP);
+    let apellidoM = request.body.apellidoM === '' ? null : request.body.apellidoM;
+    console.log(apellidoM);
+    let titulo = request.body.titulo === '' ? null : request.body.titulo;
+    console.log(titulo);
+    let path = request.file.path === '' ? null : request.file.path;
     console.log(path);
+    let lengthRoles = request.body.lengthRoles;
+    console.log(lengthRoles);
     let estatus = request.body.estatusSelect;
+    console.log(estatus);
     let tBool = request.body.tBool === 'true' ? true : false;
+    console.log(tBool);
     let roles = [];
     
     for (let i = 2; i <= lengthRoles; i++) {

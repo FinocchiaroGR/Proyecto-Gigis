@@ -34,8 +34,8 @@ module.exports = class Terapeuta{
     [login]);
   }
 
-  static changeStatusToI(login) {
-    return db.execute("UPDATE terapeutas SET estatus = 'I' WHERE login = ?",
+  static changeStatusToB(login) {
+    return db.execute("UPDATE terapeutas SET estatus = 'B' WHERE login = ?",
     [login]);
   }
 

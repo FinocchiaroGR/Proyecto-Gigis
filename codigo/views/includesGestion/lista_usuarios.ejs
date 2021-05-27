@@ -40,7 +40,7 @@
                 console.log("Starting...");
                 console.log(data);
                 let html =  
-                    '<form action="/gestionAdmin/gestionUsuarios/update-usuario" method="POST" enctype="multipart/form-data>' +
+                    '<form action="/gestionAdmin/gestionUsuarios/update-usuario" method="POST" enctype="multipart/form-data">' +
                         '<div class="modal-content container">' +
                             '<h3>Modificar usuario</h3>' +
                             '<ul>' +
@@ -155,11 +155,11 @@
                                 '<div class="file-field input-field">' +
                                     '<div class="waves-effect waves-light btn-small white black-text">' +
                                         '<i class="material-icons left">file_upload</i>Modificar' +
-                                        '<input type="file" name="cv" href="">' +
+                                        '<input type="file" name="cv">' +
                                     '</div>' +
                                     '<div class="file-path-wrapper">';
                                         if (!$.trim(data.terapeuta)) {
-                                            html += '<input class="file-path validate" type="text" placeholder="null" requiered>';
+                                            html += '<input class="file-path validate" type="text" placeholder="null">';
                                         }
                                         else {
                                             html += '<input class="file-path validate" type="text" placeholder="' + data.terapeuta[0].cv + '">';
@@ -171,18 +171,18 @@
                             '<li><strong><br>Status</strong></li>' +
                             '<li>' +
                                 '<div class="input-field m4">' +
-                                    '<select id="estatusSelect" required>';
+                                    '<select name="estatusSelect" id="estatusSelect" required>';
                     if ($.trim(data.terapeuta)) {
                         if (data.terapeuta[0].estatus == 'A'){
                             html += 
                                 '<option selected value="A">Activo</option>' +
-                                '<option value="B">B</option>' +
+                                '<option value="B">Baja permanente</option>' +
                                 '<option value="I">Inactivo</option></select></div></li></div>';
                         }
                         else if (data.terapeuta[0].estatus == 'B') {
                             html += 
                                 '<option value="A">Activo</option>' +
-                                '<option selected value="B">Algo con B</option>' +
+                                '<option selected value="B">Baja permanente</option>' +
                                 '<option value="I">Inactivo</option></select></div></li></div>';
                     
                 
@@ -190,7 +190,7 @@
                         else if (data.terapeuta[0].estatus == 'I') {
                             html += 
                                 '<option value="A">Activo</option>' +
-                                '<option value="B">Algo con B</option>' +
+                                '<option value="B">Baja permanente</option>' +
                                 '<option selected value="I">Inactivo</option></select></div></li></div>';
                         }
                     }
@@ -198,7 +198,7 @@
                         html += 
                             '<option disabled selected value="">Elige un estatus</option>' +
                             '<option value="A">Activo</option>' +
-                            '<option value="B">Algo con B</option>' +
+                            '<option value="B">Baja permanente</option>' +
                             '<option value="I">Inactivo</option></select></div></li></div>';
                     }
                     
@@ -206,8 +206,8 @@
                 html +=                 
                     '</div></ul></div><div class="modal-footer container">' +
                         '<div class="modal-footer container">' +
-                            '<button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>    ' +
-                            '<a class="modal-trigger modal-action waves-effect btn-flat grey lighten-1 boton-md" href="#modalEliminarU"><i class="material-icons">delete</i></a>' +
+                            '<a class="modal-trigger modal-action waves-effect btn-flat grey lighten-1 boton-md" href="#modalEliminarU">Eliminar</a>' +
+                            '           <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>' +
                         '</div>' +
                         '<br>' +
                     '</form>' +
