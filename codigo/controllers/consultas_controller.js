@@ -158,6 +158,7 @@ exports.getConsultas = ((request, response, next) => {
                     numProg: rows_Programas.length,
                     meses: DatosConsultas.fetchMeses(),
                     color: DatosConsultas.fetchColors(),
+                    permisos: request.session.permisos,
                     backArrow: arrows[0],
                     forwArrow: arrows[1]
                 });

@@ -16,6 +16,7 @@ exports.nivelObjetivos = (request, response, next) => {
           tituloBarra: tituloBarra,
           idNivel: request.params.nivel_id,
           objetivos: objetivos,
+          permisos: request.session.permisos,
           registro_exitoso: registro_exitoso,
           backArrow: { display: 'block', link: '/gestionAdmin/gestionProgramas' },
           forwArrow: arrows[1],
@@ -86,6 +87,7 @@ exports.get = (request, response, next) => {
             niveles: niveles,
             error: error,
             registro_exitoso: registro_exitoso,
+            permisos: request.session.permisos,
             backArrow: { display: 'block', link: '/gestionAdmin' },
             forwArrow: arrows[1],
           });

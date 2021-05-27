@@ -24,6 +24,7 @@ exports.get = (request, response) => {
                                 func: func,
                                 mensaje: mensaje,
                                 bandera: bandera,
+                                permisos: request.session.permisos,
                                 tituloDeHeader: "Gestión de usuarios",
                                 tituloBarra: "Usuarios",
                                 backArrow: {display: 'block', link: '/gestionAdmin'},

@@ -32,6 +32,9 @@
               </button>
               <div class="divider"></div>
             </li>
+            <% const tienePermiso = permisos.includes(1) || permisos.includes(2) || permisos.includes(3) || permisos.includes(4) || permisos.includes(6) || permisos.includes(9) || permisos.includes(10) || permisos.includes(11) || permisos.includes(12) || permisos.includes(13) || permisos.includes(16) || permisos.includes(17);
+            if(tienePermiso) { 
+            %>
             <li class="center row hide-on-med-and-down">
               <button class="wideBtn blue lighten-1" style="padding: 0%; border-width: 0px;">
                 <a href="/gestionAdmin">
@@ -41,6 +44,7 @@
               </button>
               <div class="divider"></div>
             </li>
+          <% } %>
             <li class="center row hide-on-large-only">
               <button class="wideBtn blue lighten-1" style="padding: 0%; border-width: 0px;">
                 <a href="/programas">

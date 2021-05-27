@@ -26,6 +26,7 @@ exports.getProgramas = (request, response, next) => {
                   grupos: listaGrupos,
                   participantes: listaParticipantes,
                   calificaciones: listaCalificaciones,
+                  permisos: request.session.permisos,
                   backArrow: { display: 'block', link: '/programas' },
                   forwArrow: arrows[1]
                 });
@@ -97,6 +98,7 @@ exports.get = (request, response, next) => {
             tituloBarra: 'Programas',
             programas: programas,
             grupos: grupos,
+            permisos: request.session.permisos,
             backArrow: arrows[0],
             forwArrow: arrows[1],
           });

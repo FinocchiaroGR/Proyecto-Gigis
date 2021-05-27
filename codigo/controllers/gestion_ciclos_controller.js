@@ -58,6 +58,7 @@ exports.getInscribir = (request,response,next) => {
                             bandera: bandera,
                             terapeutas: terapeutas,
                             programas: programas,
+                            permisos: request.session.permisos,
                             tituloDeHeader: "Inscripciones",
                             tituloBarra: encabezado,
                             backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
@@ -144,8 +145,7 @@ exports.postMostrarObj = (request,response,next) => {
         });
 };
 
-exports.postInscribir = (request,response,next) => {
-    
+exports.postInscribir = (request,response,next) => {    
 };
 
 exports.getAgrCiclo = (request,response,next) => {
@@ -162,6 +162,7 @@ exports.getAgrCiclo = (request,response,next) => {
                         fechaLimite: fechaLimite,
                         programas: programas,
                         terapeutas: terapeutas,
+                        permisos: request.session.permisos,
                         tituloDeHeader: "Nuevo ciclo",
                         tituloBarra: "Nuevo ciclo",
                         backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
@@ -242,6 +243,7 @@ exports.get = (request,response,next) => {
                                     a_pasados:a_pasados,
                                     ciclos_aactual: ciclos_aactual,
                                     mes: mes,
+                                    permisos: request.session.permisos,
                                     tituloDeHeader: "Gestión de ciclos",
                                     tituloBarra: "Ciclos",
                                     backArrow: {display: 'block', link: '/gestionAdmin'},

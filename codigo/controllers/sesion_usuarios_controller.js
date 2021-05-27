@@ -21,29 +21,26 @@ exports.getlogin = (request, response, next) => {
 };
 
 exports.postlogin = (request, response, next) => {
-    
     request.session.error = undefined;
-
     Usuario.fetchOne(request.body.username)
         .then(([rows]) => {
             bcrypt.compare(request.body.password, rows[0].password)
-                .then(doMatch => {
+                .then(async doMatch => {
                     if (doMatch) {
                         request.session.isLoggedIn = true;
                         request.session.user = rows[0].login;
-                        request.session.permisos = []
-                        Usuario.permisos(rows[0].login)
+                        request.session.permisos = [];
+                        await Usuario.permisos(rows[0].login)
                             .then(([permisos,fieldData]) => {
                                 for (let permiso of permisos){
-                                    request.session.permisos.push(permiso.idFuncion)
+                                    let p = permiso.idFuncion;
+                                    request.session.permisos.push(p);
                                 }
                                 console.log(request.session.permisos);
                             }).catch(err => {
                                 console.log(err);                  
                             });
-                        return request.session.save(err => {
-                            response.redirect('/gestionAdmin');
-                        });
+                        return response.redirect('/programas');
                     }
                     request.session.error = 'Usuario y/o contraseña incorrectos';
                     response.redirect('login');

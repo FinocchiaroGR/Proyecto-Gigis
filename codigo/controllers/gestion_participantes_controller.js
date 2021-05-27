@@ -42,6 +42,7 @@ exports.get = ((request,response,next) => {
                 participantes: participantes,
                 error: error,
                 bandera: bandera,
+                permisos: request.session.permisos,
                 tituloDeHeader: "Gestión de participantes",
                 tituloBarra: "Participantes",
                 backArrow: {display: 'block', link: '/gestionAdmin'},
