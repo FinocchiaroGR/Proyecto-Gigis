@@ -7,7 +7,7 @@
         <div class="row">
             <div class="input-field col s12" >
             <i class="material-icons prefix">search</i>
-            <input type="text" id="buscarObjetivo" class="autocomplete" oninput="buscarObjetivo()">
+            <input type="text" id="buscarObjetivo" class="autocomplete" oninput="buscarObjetivo('<%= permisos %>')">
             <label for="buscarObjetivo">Objetivo</label>
             </div>
         </div>
@@ -15,8 +15,10 @@
     <div class="col">
         <div class="row">
           <div class="input-field col s12">
-            <!-- Modal Agregar -->
-             <a class="waves-effect waves-light btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <!-- Boton Agregar -->
+            <% if (permisos.includes(18)) { %>
+               <a class="waves-effect waves-light btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% } %>
           </div>
         </div>
     </div>
@@ -52,10 +54,14 @@
             <li class="collection-item">
                 <%= i%>.- <%= objetivo.descripcion %>
                 <span class="badge">
-                    <!-- Modal Editar -->
-                    <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
-                    <!-- Modal Eliminar -->
-                    <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
+                    <!-- Boton Editar -->
+                    <% if (permisos.includes(16)) { %>
+                        <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
+                    <% } %>
+                    <!-- Boton Eliminar -->
+                    <% if (permisos.includes(19)) { %>
+                        <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
+                    <% } %>
                 </span>
             </li>
             <% i++; %>
@@ -110,12 +116,11 @@
 
 <script>
     const csrf = document.getElementById('_csrf').value;
-    const buscarObjetivo = () => {
+    const buscarObjetivo = (permisos) => {
     let data = {
         criterio: document.getElementById('buscarObjetivo').value,
         nivel: document.getElementById('nivelObjetivos').value
     }
-    console.log(data)
     fetch('/gestionAdmin/gestionProgramas/buscar-objetivo', {
         method: 'POST',
         headers: {
@@ -134,10 +139,14 @@
           if(objetivo.estatus === 1){
             html += '<li class="collection-item">'+
                    i + '.- ' + objetivo.descripcion +
-                    '<span class="badge">' +
-                        '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>'+
-                        '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>' +
-                    '</span>'+
+                    '<span class="badge">';
+                        if (permisos.includes(16)) {
+                            html += '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>';
+                        }
+                        if (permisos.includes(19)) {
+                           html += '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>';
+                        }
+                    html += '</span>'+
             '</li>';
           } 
         i++;

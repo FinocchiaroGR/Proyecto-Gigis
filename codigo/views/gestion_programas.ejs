@@ -15,7 +15,9 @@
         <div class="row">
           <div class="input-field col s12">
             <!-- Modal Agregar -->
-             <a class="btn-small modal-trigger light-green accent-4" href="#agregarPrograma"><i class="material-icons left">add_circle</i>Agregar</a>
+             <% if (permisos.includes(1)) { %>
+            <a class="btn-small modal-trigger light-green accent-4" href="#agregarPrograma"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% } %>
           </div>
         </div>
     </div>

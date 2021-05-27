@@ -99,7 +99,9 @@ exports.postNuevoRoll = (request, response) => {
         request.body.Funcion_14 === undefined ? null : 14,
         request.body.Funcion_15 === undefined ? null : 15,
         request.body.Funcion_16 === undefined ? null : 16,
-        request.body.Funcion_17 === undefined ? null : 17
+        request.body.Funcion_17 === undefined ? null : 17,
+        request.body.Funcion_18 === undefined ? null : 18,
+        request.body.Funcion_19 === undefined ? null : 19
     ]
     let i = funciones.length;
     for (let funcion of funciones){
@@ -191,7 +193,9 @@ exports.postUpdateRoll = (request, response) => {
         request.body.Funcion_14 === undefined ? null : 14,
         request.body.Funcion_15 === undefined ? null : 15,
         request.body.Funcion_16 === undefined ? null : 16,
-        request.body.Funcion_17 === undefined ? null : 17
+        request.body.Funcion_17 === undefined ? null : 17,
+        request.body.Funcion_18 === undefined ? null : 18,
+        request.body.Funcion_19 === undefined ? null : 19
     ]
     let i = funciones.length;
 
