@@ -8,49 +8,57 @@ const arrayToLinkedlist = require('array-to-linkedlist');
 
 exports.getProgramas = (request, response, next) => {
   const permiso = request.session.permisos;
-  if(permiso.includes(15)){ 
-    const idPrograma = request.params.id_programa;
-      Programa.fetchNombreProgama(idPrograma)
-        .then(([programa, fieldData]) => {
-          Grupo.fethcGruposProgramaActual(idPrograma)
-          .then(([grupos, fieldData1]) => {
-            Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(idPrograma)
-              .then(([participantes,fieldData2]) => {
-                Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
-                  .then(([calificaciones, fieldData3]) => {
-                    const listaGrupos = arrayToLinkedlist(grupos);
-                    const listaParticipantes = arrayToLinkedlist(participantes);
-                    const listaCalificaciones = arrayToLinkedlist(calificaciones);
-                    response.render('programas_programa1', {
-                      tituloDeHeader: programa[0].nombrePrograma,
-                      tituloBarra: programa[0].nombrePrograma,
-                      programa: idPrograma,
-                      grupos: listaGrupos,
-                      participantes: listaParticipantes,
-                      calificaciones: listaCalificaciones,
-                      permisos: request.session.permisos,
-                      backArrow: { display: 'block', link: '/programas' },
-                      forwArrow: arrows[1]
-                    });
-                  }).catch((err) => {
-                    console.log(err);
-                  })
-              }).catch((err) => {
-                console.log(err);
-              })
-          }).catch((err) => {
+  const rol = request.session.rol;
+  const usuario = request.session.user;
+  let existeTerapeuta = 0;
+  const idPrograma = request.params.id_programa;
+  Programa.fetchNombreProgama(idPrograma)
+    .then(([programa, fieldData]) => {
+      Grupo.fethcGruposProgramaActual(idPrograma)
+      .then(([grupos, fieldData1]) => {
+        for (let grupo of grupos) {
+          if (grupo.login === usuario)
+            existeTerapeuta = 1;
+        }
+        if(existeTerapeuta || rol === 4) {
+          Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(idPrograma)
+            .then(([participantes,fieldData2]) => {
+              Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
+                .then(([calificaciones, fieldData3]) => {
+                  const listaGrupos = arrayToLinkedlist(grupos);
+                  const listaParticipantes = arrayToLinkedlist(participantes);
+                  const listaCalificaciones = arrayToLinkedlist(calificaciones);
+                  response.render('programas_programa1', {
+                    tituloDeHeader: programa[0].nombrePrograma,
+                    tituloBarra: programa[0].nombrePrograma,
+                    programa: idPrograma,
+                    grupos: listaGrupos,
+                    rol: rol,
+                    usuario: usuario,
+                    participantes: listaParticipantes,
+                    calificaciones: listaCalificaciones,
+                    permisos: request.session.permisos,
+                    backArrow: { display: 'block', link: '/programas' },
+                    forwArrow: arrows[1]
+                  });
+                }).catch((err) => {
+                  console.log(err);
+                })
+            }).catch((err) => {
               console.log(err);
-          })
-        }).catch((err) => {
+            })
+        }
+        else {
+          response.status(404);
+          response.send('Lo sentimos, este sitio no existe');
+        }
+      }).catch((err) => {
           console.log(err);
       })
-    }
-  else {
-    request.session.destroy(() => {
-        response.redirect('/usuarios/login'); //Este código se ejecuta cuando la sesión se elimina.
-    });
-  }
-};
+    }).catch((err) => {
+      console.log(err);
+  })
+}
 
 exports.objetivosParticipantes = (request, response, next) => {
   Participante_Grupo_Objetivo.fetchObjetivosPorParticipante(request.body.grupo_id,request.body.login_participante)
@@ -98,6 +106,8 @@ exports.registroPuntajes = (request, response, next) => {
 
 exports.get = (request, response, next) => {
   const permiso = request.session.permisos;
+  const rol = request.session.rol;
+  const usuario = request.session.user;
   if(permiso.includes(15)){ 
     Programa.fetchProgramasCicloActual()
       .then(([programas, fieldData1]) => {
@@ -108,6 +118,8 @@ exports.get = (request, response, next) => {
               tituloBarra: 'Programas',
               programas: programas,
               grupos: grupos,
+              rol: rol,
+              usuario: usuario,
               permisos: request.session.permisos,
               backArrow: arrows[0],
               forwArrow: arrows[1],
@@ -118,9 +130,8 @@ exports.get = (request, response, next) => {
       .catch((err) => console.log(err));
   }
   else {
-    request.session.destroy(() => {
-        response.redirect('/usuarios/login'); //Este código se ejecuta cuando la sesión se elimina.
-    });
+    response.status(404);
+    response.send('Lo sentimos, este sitio no existe');
   }
 };
 

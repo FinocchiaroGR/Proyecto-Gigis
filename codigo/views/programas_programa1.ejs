@@ -5,56 +5,66 @@
 <% let loginParticipante = ''; %>
 <% while (grupos) {
   let headParticipantes = participantes; %>
-  <div class="row">
-    <div class="col s12 m6 ">
-      <h5>Terapeuta: <%= grupos.data.nombreUsuario%> <%= grupos.data.apellidoPaterno%></h5>
-    </div>
-    <div class="col s12 m6">
-    </div>
-  </div>
-  <div class="row">
-    <div class="col s12 m6 l6 ">
-      <table >
-        <thead>
-          <tr>
-            <th>Participantes</th>
-            <th>Nivel</th>
-            <th>Calificaciones</th>
-          </tr>
-        </thead>
-        </tbody>
-        <% while (participantes) { 
-          let headCalificaciones = calificaciones;%>
-          <% if (participantes.data.login !== loginParticipante && participantes.data.idGrupo === grupos.data.idGrupo) { %>
-            <tr>
-              <td>
-                <a  onclick="registroPuntajes(<%=grupos.data.idGrupo%>,'<%=participantes.data.login%>')" href="#rPuntaje-<%=participantes.data.login%>">
-                  <%=participantes.data.nombreUsuario%>  <%=participantes.data.apellidoPaterno%>    <%=participantes.data.apellidoMaterno%>  
-                </a>
-              </td>
-              <td>  <%=participantes.data.nombreNivel%>  </td>
-              <td>
-                <% while (calificaciones) { %>
-                  <% if (calificaciones.data.login === participantes.data.login) { %>
-                    <%= Math.round(calificaciones.data.calificaciones * 100)/100 %>
-                  <% } %>
-                  <% calificaciones = calificaciones.next; %>
-                <% } %>
-              </td>
-              <% loginParticipante = participantes.data.login;%>
-            <% } %>
-            <% participantes = participantes.next; 
-               calificaciones = headCalificaciones;%>
-          <% } %>
-        </tbody>
-      </table>
-      <br /><br />
-    </div>
-    <div class="col s12 m6 l6 asignar-puntaje">
-      <div id="objetivos-participante-grupo-<%=grupos.data.idGrupo%>">
+  <% if (usuario === grupos.data.login || rol === 4) { %>
+    <div class="row">
+      <div class="col s12 m6 ">
+        <h5>Terapeuta: <%= grupos.data.nombreUsuario%> <%= grupos.data.apellidoPaterno%></h5>
+      </div>
+      <div class="col s12 m6">
       </div>
     </div>
-  </div>
+    <div class="row">
+      <div class="col s12 m6 l6 ">
+        <table >
+          <thead>
+            <tr>
+              <th>Participantes</th>
+              <th>Nivel</th>
+              <th>Calificaciones</th>
+            </tr>
+          </thead>
+          </tbody>
+          <% while (participantes) { 
+            let headCalificaciones = calificaciones;%>
+            <% if (participantes.data.login !== loginParticipante && participantes.data.idGrupo === grupos.data.idGrupo) { %>
+              <tr>
+                <td>
+                  <% if (usuario === grupos.data.login) { %>
+                    <a  onclick="registroPuntajes(<%=grupos.data.idGrupo%>,'<%=participantes.data.login%>')" href="#rPuntaje-<%=participantes.data.login%>">
+                    <%=participantes.data.nombreUsuario%>  <%=participantes.data.apellidoPaterno%>    <%=participantes.data.apellidoMaterno%>  
+                  </a>
+                  <% } 
+                     else { %>
+                    <span>
+                      <%=participantes.data.nombreUsuario%>  <%=participantes.data.apellidoPaterno%>    <%=participantes.data.apellidoMaterno%> 
+                    </span>
+                  <% } %>
+                  
+                </td>
+                <td>  <%=participantes.data.nombreNivel%>  </td>
+                <td>
+                  <% while (calificaciones) { %>
+                    <% if (calificaciones.data.login === participantes.data.login) { %>
+                      <%= Math.round(calificaciones.data.calificaciones * 100)/100 %>
+                    <% } %>
+                    <% calificaciones = calificaciones.next; %>
+                  <% } %>
+                </td>
+                <% loginParticipante = participantes.data.login;%>
+              <% } %>
+              <% participantes = participantes.next; 
+                calificaciones = headCalificaciones;%>
+            <% } %>
+          </tbody>
+        </table>
+        <br /><br />
+      </div>
+      <div class="col s12 m6 l6 asignar-puntaje">
+        <div id="objetivos-participante-grupo-<%=grupos.data.idGrupo%>">
+        </div>
+      </div>
+    </div>
+  <% } %>
   <% grupos = grupos.next; 
      participantes = headParticipantes; %>
 <% } %>

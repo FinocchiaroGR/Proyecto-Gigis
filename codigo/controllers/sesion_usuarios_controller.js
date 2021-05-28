@@ -30,8 +30,16 @@ exports.postlogin = (request, response, next) => {
                         request.session.isLoggedIn = true;
                         request.session.user = rows[0].login;
                         request.session.permisos = [];
+                        request.session.rol;
+                        await Usuario.rol(rows[0].login)
+                            .then(([rol,fieldData]) => {
+                                request.session.rol = rol[0].idRol;
+                            }).catch(err => {
+                                console.log(err);                  
+                            });
+                        console.log(request.session.rol);
                         await Usuario.permisos(rows[0].login)
-                            .then(([permisos,fieldData]) => {
+                            .then(([permisos,fieldData2]) => {
                                 for (let permiso of permisos){
                                     let p = permiso.idFuncion;
                                     request.session.permisos.push(p);

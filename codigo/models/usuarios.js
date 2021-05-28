@@ -70,4 +70,8 @@ module.exports = class Usuario {
     return db.execute('SELECT idFuncion FROM usuarios_roles UR, roles_funciones RF WHERE RF.idRol = UR.idRol AND UR.login = ?', [login]);
   }
 
+  static rol (login) {
+    return db.execute('SELECT idRol FROM usuarios_roles WHERE login = ?', [login]);
+  }
+
 }

@@ -5,49 +5,51 @@
 <div class="row" id="lista_programas">
   <!------------------Fila 1 ------------------------>
   <% for (programa of programas) { %>
-    <div class="col s12 m6 l4">
-      <!------------------Programa 1 ------------------------>
-      <div class="card ">
-        <div class="card-image">
-          <img src="../<%=programa.dirImagen%>" width="316.3px" height="205.18px">
-        </div>
-        <div class="card-content">
-          <a href="<%= programa.idPrograma %>">
-            <span class="card-title"><%= programa.nombrePrograma%></span>
-          </a>
-          <br />
-          <p>Ciclo: <%= programa.fechaInicio%> - <%= programa.fechaFinal%></p>
-          <p></p>
-          <p>Grupos:</p>
-          <br />
-          <div class="row">
-            <div class="col s12">
-              <div>
-                <% for (grupo of grupos) { 
-                  if (programa.idPrograma === grupo.idPrograma){ 
-                    switch (grupo.numeroGrupo) { 
-                      case 1: %>
-                        <i class="material-icons medium red-text">looks_one</i>
-                        <% break; 
-                      case 2: %>
-                        <i class="material-icons medium red-text">looks_two</i>
-                        <% break; 
-                      case 3: %>
-                        <i class="material-icons medium red-text">looks_3</i>
-                        <% break; 
-                      case 4: %>
-                        <i class="material-icons medium red-text">looks_4</i>
-                        <% break; 
+    <% if(programa.login === usuario || rol === 4){ %>
+      <div class="col s12 m6 l4">
+        <!------------------Programa 1 ------------------------>
+        <div class="card ">
+          <div class="card-image">
+            <img src="../<%=programa.dirImagen%>" width="316.3px" height="205.18px">
+          </div>
+          <div class="card-content">
+            <a href="<%= programa.idPrograma %>">
+              <span class="card-title"><%= programa.nombrePrograma%></span>
+            </a>
+            <br />
+            <p>Ciclo: <%= programa.fechaInicio%> - <%= programa.fechaFinal%></p>
+            <p></p>
+            <p>Grupos:</p>
+            <br />
+            <div class="row">
+              <div class="col s12">
+                <div>
+                  <% for (grupo of grupos) { 
+                    if (programa.idPrograma === grupo.idPrograma){ 
+                      switch (grupo.numeroGrupo) { 
+                        case 1: %>
+                          <i class="material-icons medium red-text">looks_one</i>
+                          <% break; 
+                        case 2: %>
+                          <i class="material-icons medium red-text">looks_two</i>
+                          <% break; 
+                        case 3: %>
+                          <i class="material-icons medium red-text">looks_3</i>
+                          <% break; 
+                        case 4: %>
+                          <i class="material-icons medium red-text">looks_4</i>
+                          <% break; 
+                        } 
                       } 
-                    } 
-                  } %>
+                    } %>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!------------------Fin Programa 1 -------------------------------->
+      <!------------------Fin Programa 1 -------------------------------->
+    <% } %>
   <% } %>
 </div>
 <!------------------Fin Fila 1 -------------------------------->

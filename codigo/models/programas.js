@@ -38,7 +38,7 @@ module.exports = class Programas {
     
     static fetchProgramasCicloActual() {
         return db.execute(
-        'SELECT G.idPrograma, nombrePrograma, P.dirImagen, DATE_FORMAT(fechaInicial, "%M") AS fechaInicio , DATE_FORMAT(fechafinal, "%M %Y") AS fechaFinal FROM grupos G ,ciclos C, programas P WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE GROUP BY idPrograma'
+        'SELECT G.idPrograma, nombrePrograma,GP.login, P.dirImagen, DATE_FORMAT(fechaInicial, "%M") AS fechaInicio , DATE_FORMAT(fechafinal, "%M %Y") AS fechaFinal FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo = GP.idGrupo AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE GROUP BY idPrograma'
         );
     }
 

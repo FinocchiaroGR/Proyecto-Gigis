@@ -40,7 +40,7 @@ module.exports = class Grupo {
 
   static fethcGruposProgramaActual(idPrograma) {
     return db.execute(
-      'SELECT G.idPrograma,numeroGrupo,G.idGrupo,nombrePrograma, U.nombreUsuario, U.apellidoPaterno FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP, usuarios U WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo=GP.idGrupo AND GP.login=U.login AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE AND P.idPrograma=?',
+      'SELECT G.idPrograma,numeroGrupo,G.idGrupo,nombrePrograma,GP.login, U.nombreUsuario, U.apellidoPaterno FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP, usuarios U WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo=GP.idGrupo AND GP.login=U.login AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE AND P.idPrograma=?',
       [idPrograma]
     );
   }
