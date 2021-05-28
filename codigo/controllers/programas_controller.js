@@ -7,41 +7,49 @@ const arrows = Arrow.fetchAll();
 const arrayToLinkedlist = require('array-to-linkedlist');
 
 exports.getProgramas = (request, response, next) => {
-  const idPrograma = request.params.id_programa;
-  Programa.fetchNombreProgama(idPrograma)
-    .then(([programa, fieldData]) => {
-      Grupo.fethcGruposProgramaActual(idPrograma)
-      .then(([grupos, fieldData1]) => {
-        Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(idPrograma)
-          .then(([participantes,fieldData2]) => {
-            Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
-              .then(([calificaciones, fieldData3]) => {
-                const listaGrupos = arrayToLinkedlist(grupos);
-                const listaParticipantes = arrayToLinkedlist(participantes);
-                const listaCalificaciones = arrayToLinkedlist(calificaciones);
-                response.render('programas_programa1', {
-                  tituloDeHeader: programa[0].nombrePrograma,
-                  tituloBarra: programa[0].nombrePrograma,
-                  programa: idPrograma,
-                  grupos: listaGrupos,
-                  participantes: listaParticipantes,
-                  calificaciones: listaCalificaciones,
-                  permisos: request.session.permisos,
-                  backArrow: { display: 'block', link: '/programas' },
-                  forwArrow: arrows[1]
-                });
+  const permiso = request.session.permisos;
+  if(permiso.includes(15)){ 
+    const idPrograma = request.params.id_programa;
+      Programa.fetchNombreProgama(idPrograma)
+        .then(([programa, fieldData]) => {
+          Grupo.fethcGruposProgramaActual(idPrograma)
+          .then(([grupos, fieldData1]) => {
+            Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(idPrograma)
+              .then(([participantes,fieldData2]) => {
+                Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
+                  .then(([calificaciones, fieldData3]) => {
+                    const listaGrupos = arrayToLinkedlist(grupos);
+                    const listaParticipantes = arrayToLinkedlist(participantes);
+                    const listaCalificaciones = arrayToLinkedlist(calificaciones);
+                    response.render('programas_programa1', {
+                      tituloDeHeader: programa[0].nombrePrograma,
+                      tituloBarra: programa[0].nombrePrograma,
+                      programa: idPrograma,
+                      grupos: listaGrupos,
+                      participantes: listaParticipantes,
+                      calificaciones: listaCalificaciones,
+                      permisos: request.session.permisos,
+                      backArrow: { display: 'block', link: '/programas' },
+                      forwArrow: arrows[1]
+                    });
+                  }).catch((err) => {
+                    console.log(err);
+                  })
               }).catch((err) => {
                 console.log(err);
               })
           }).catch((err) => {
-            console.log(err);
+              console.log(err);
           })
-      }).catch((err) => {
+        }).catch((err) => {
           console.log(err);
       })
-    }).catch((err) => {
-      console.log(err);
-  })
+    }
+  else {
+    request.session.destroy(() => {
+        response.redirect('/usuarios/login'); //Este código se ejecuta cuando la sesión se elimina.
+    });
+  }
 };
 
 exports.objetivosParticipantes = (request, response, next) => {
@@ -89,23 +97,31 @@ exports.registroPuntajes = (request, response, next) => {
 };
 
 exports.get = (request, response, next) => {
-  Programa.fetchProgramasCicloActual()
-    .then(([programas, fieldData1]) => {
-      Grupo.fetchGruposCicloActual()
-        .then(([grupos, fieldData2]) => {
-          response.render('programas', {
-            tituloDeHeader: 'Programas',
-            tituloBarra: 'Programas',
-            programas: programas,
-            grupos: grupos,
-            permisos: request.session.permisos,
-            backArrow: arrows[0],
-            forwArrow: arrows[1],
-          });
-        })
-        .catch((err) => console.log(err));
-    })
-    .catch((err) => console.log(err));
+  const permiso = request.session.permisos;
+  if(permiso.includes(15)){ 
+    Programa.fetchProgramasCicloActual()
+      .then(([programas, fieldData1]) => {
+        Grupo.fetchGruposCicloActual()
+          .then(([grupos, fieldData2]) => {
+            response.render('programas', {
+              tituloDeHeader: 'Programas',
+              tituloBarra: 'Programas',
+              programas: programas,
+              grupos: grupos,
+              permisos: request.session.permisos,
+              backArrow: arrows[0],
+              forwArrow: arrows[1],
+            });
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+  }
+  else {
+    request.session.destroy(() => {
+        response.redirect('/usuarios/login'); //Este código se ejecuta cuando la sesión se elimina.
+    });
+  }
 };
 
  
