@@ -13,8 +13,10 @@
     <div class="col">
         <div class="row">
           <div class="input-field col s12">
-            <!-- Modal Agregar -->
+            <!-- Btn Agregar -->
+            <% if (permisos.includes(20)) { %>
              <a class="btn-small modal-trigger light-green accent-4" href="#agregarParticipante"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% } %>
           </div>
         </div>
       </div>

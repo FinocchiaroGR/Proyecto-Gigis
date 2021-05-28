@@ -48,7 +48,7 @@ exports.get = (request, response) => {
     else {
         response.status(404);
         response.send('Lo sentimos, este sitio no existe');
-      }
+    }
 };
     
 exports.postNuevoUsuario = (request,response) => {
@@ -109,7 +109,9 @@ exports.postNuevoRoll = (request, response) => {
         request.body.Funcion_16 === undefined ? null : 16,
         request.body.Funcion_17 === undefined ? null : 17,
         request.body.Funcion_18 === undefined ? null : 18,
-        request.body.Funcion_19 === undefined ? null : 19
+        request.body.Funcion_19 === undefined ? null : 19,
+        request.body.Funcion_20 === undefined ? null : 20,
+        request.body.Funcion_21 === undefined ? null : 21
     ]
     let i = funciones.length;
     for (let funcion of funciones){
@@ -201,7 +203,9 @@ exports.postUpdateRoll = (request, response) => {
         request.body.Funcion_16 === undefined ? null : 16,
         request.body.Funcion_17 === undefined ? null : 17,
         request.body.Funcion_18 === undefined ? null : 18,
-        request.body.Funcion_19 === undefined ? null : 19
+        request.body.Funcion_19 === undefined ? null : 19,
+        request.body.Funcion_20 === undefined ? null : 20,
+        request.body.Funcion_21 === undefined ? null : 21
     ]
     let i = funciones.length;
 

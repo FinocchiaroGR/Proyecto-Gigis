@@ -18,7 +18,9 @@
                 <td>Baja permanente</td>
             <% } %>
             <td>
-            <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+            <% if (permisos.includes(21)) { %>
+                <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+            <% } %>
             </td>
         </tr>
     <% } %>

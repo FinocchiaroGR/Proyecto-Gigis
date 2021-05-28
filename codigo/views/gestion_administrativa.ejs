@@ -18,6 +18,9 @@
                     </div>
                 </a>
             <% } %>
+            <% const permisoGestionParticipantes = permisos.includes(20) || permisos.includes(21);
+            if(permisoGestionParticipantes) { 
+            %>
                 <a href="<%= tabGestion[1].ruta %>">
                     <div class="col s12 m4">
                         <div class="card">
@@ -30,6 +33,7 @@
                         </div>
                     </div>
                 </a>
+            <% } %>
             <% const permisoGestionPrograma = permisos.includes(1) || permisos.includes(2) || permisos.includes(16) || permisos.includes(18) || permisos.includes(19);
             if(permisoGestionPrograma) { 
             %>

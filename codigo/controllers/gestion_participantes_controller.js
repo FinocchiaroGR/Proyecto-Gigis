@@ -36,20 +36,28 @@ exports.getPerfilPartic = ((request,response,next) => {
 exports.get = ((request,response,next) => {
     const error = request.session.error === undefined ? false : request.session.error;
     const bandera = request.session.bandera === undefined ? false : request.session.bandera;
-    Participante.fetchAll('participante')
-        .then(([participantes, fieldData1]) => {
-            response.render('gestion_participantes', {
-                participantes: participantes,
-                error: error,
-                bandera: bandera,
-                permisos: request.session.permisos,
-                tituloDeHeader: "Gestión de participantes",
-                tituloBarra: "Participantes",
-                backArrow: {display: 'block', link: '/gestionAdmin'},
-                forwArrow: arrows[1]
-            });
-        })
-        .catch((err) => console.log(err));
+    const permisos = request.session.permisos;
+    const permisoGestionUsuarios = permisos.includes(20) || permisos.includes(21);
+    if(permisoGestionUsuarios) {
+        Participante.fetchAll('participante')
+            .then(([participantes, fieldData1]) => {
+                response.render('gestion_participantes', {
+                    participantes: participantes,
+                    error: error,
+                    bandera: bandera,
+                    permisos: request.session.permisos,
+                    tituloDeHeader: "Gestión de participantes",
+                    tituloBarra: "Participantes",
+                    backArrow: {display: 'block', link: '/gestionAdmin'},
+                    forwArrow: arrows[1]
+                });
+            })
+            .catch((err) => console.log(err));
+        }
+        else {
+            response.status(404);
+            response.send('Lo sentimos, este sitio no existe');
+        }
     request.session.error = undefined;
     request.session.bandera =undefined;
 });
