@@ -26,6 +26,8 @@ subrouter.get('/agregar-ciclo', isAuth, gestionCicloController.getAgrCiclo);
 
 subrouter.post('/perfil-ciclo', isAuth, gestionCicloController.postPerfilCiclo);
 
+subrouter.get('/editar-ciclo', isAuth, gestionCicloController.getEditarCiclo);
+
 subrouter.get('/', isAuth, gestionCicloController.get);
 
 module.exports = subrouter;

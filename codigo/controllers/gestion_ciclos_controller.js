@@ -270,6 +270,18 @@ exports.postPerfilCiclo = (request,response,next) => {
 
 };
 
+exports.getEditarCiclo = (request,response,next) => {
+    const permisos = request.session.permisos;
+    if(permisos.includes(11)) {
+        response.status(500);
+        response.send('Hola');
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
+};
+
 exports.get = (request,response,next) => {
     const estado = request.session.estadogc === undefined ? 'vacio' : request.session.estadogc;
     const permisos = request.session.permisos;

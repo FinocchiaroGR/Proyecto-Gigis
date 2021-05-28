@@ -5,10 +5,12 @@
 <div class="row">
   <div id= "contenido">
     <div class = "row">
-      <div class = "col s12 m10 l6">
-      </div>
-      <div class = "col s12 m2 l6">
-        <br><br><a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4 right">Finalizar inscripción</a>
+      <div class = "right">
+        <br><br>
+        <% if (permisos.includes(11)) { %>
+        <a  href= "/gestionAdmin/gestionCiclos/editar-ciclo" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
+        <% } %>
+        <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
       </div>
     </div>
     <p><strong>Programas disponibles</strong></p>
