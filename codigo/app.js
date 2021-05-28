@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const csrfMiddleWare = require('./util/csrf.js');
+const nombreUMiddleWare = require('./util/nombreUsuario.js');
 
 const csrf = require('csurf');
 const csrfProtection = csrf();
@@ -40,15 +41,17 @@ app.use(csrfProtection);
 
 app.use(csrfMiddleWare);
 
+app.use(nombreUMiddleWare);
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use('/usuarios',rutaSessionUsuarios);
 
 app.use('/consultas', rutasConsultas);
 
 app.use('/programas', rutasProgramas);
 
 app.use('/gestionAdmin', rutasGestionAdmin);
-
-app.use('/usuarios',rutaSessionUsuarios);
 
 app.get('/', (request, response, next) => {
     console.log('Prueba home');

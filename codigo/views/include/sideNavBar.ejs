@@ -88,19 +88,19 @@
             </li>
             <% } %>
         </ul>
-        <ul id="slide-out" class="sidenav green">
-          <li><div class="user-view">
-            <div class="background">
-                <img src="https://www.fundacionsomos.cl/wp-content/uploads/2017/05/IMG_2792-960x750.jpeg">
-            </div>
-            <a href="#user"><i class="material-icons large center">account_circle </i></a>
-            <a href="#name"><span class="white-text name"><h5>Administrador 1</h5> <br></span></a>
+        <ul id="slide-out" class="sidenav light-blue lighten-1">
+            <li><div class="user-view">
+              <div class="imagen-logo">
+                <img src="/media/usuario_icon.png" width="70%" >
+              </div>
+              <span class="white-text container"><h5><%= nombreUsuario %></h5> </span>
             </div></li>
-            <li><a href="/usuarios/logout">Cerrar Sesión</a></li>
-            <li><a href="/usuarios/password">Cambiar Contraseña</a></li>
             <li><div class="divider"></div></li>
             <li><a class="subheader">Cuenta</a></li>
             <li><a class="waves-effect" href="#!">Ver Perfil Completo</a></li>
+            <li><a href="/usuarios/logout">Cerrar Sesión</a></li>
+            <li><a href="/usuarios/password">Cambiar Contraseña</a></li>
+            
         </ul>
       </header>
     

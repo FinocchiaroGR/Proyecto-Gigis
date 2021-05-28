@@ -29,6 +29,9 @@ exports.postlogin = (request, response, next) => {
                     if (doMatch) {
                         request.session.isLoggedIn = true;
                         request.session.user = rows[0].login;
+                        let apellidoP = rows[0].apellidoPaterno != null? rows[0].apellidoPaterno : ' ';
+                        let apellidoM = rows[0].apellidoMaterno != null? rows[0].apellidoMaterno : ' ';
+                        request.session.nombreU = rows[0].nombreUsuario + ' ' + apellidoP + ' ' + apellidoM ;
                         request.session.permisos = [];
                         request.session.rol;
                         await Usuario.rol(rows[0].login)
