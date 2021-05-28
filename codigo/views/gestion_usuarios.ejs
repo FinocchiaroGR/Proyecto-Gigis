@@ -14,41 +14,48 @@
         <div class="row">
           <div class="input-field col s12">
             <!-- Modal Agregar -->
-             <a class="btn-small modal-trigger light-green accent-4" name="agregarUsuario" href="#agregarUsuario"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% if (permisos.includes(8)) { %>
+              <a class="btn-small modal-trigger light-green accent-4" name="agregarUsuario" href="#agregarUsuario"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% } %>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="row">
           <div class="input-field col s12">
-              <!-- Modal Crear rol -->
-             <a class="btn-small  modal-trigger light-green accent-4" href="#crearRol"><i class="material-icons left">personal_video</i>Crear rol</a>
+            <!-- Boton Crear rol -->
+            <% if (permisos.includes(12)) { %>
+              <a class="btn-small  modal-trigger light-green accent-4" href="#crearRol"><i class="material-icons left">personal_video</i>Crear rol</a>
+            <% } %>
           </div>
         </div>
       </div>
         <div class="col">
           <div class="row">
             <div class="input-field col s12">
-              <!-- Modal Modiciar rol -->
+            <!-- Boton Modiciar rol -->
+            <% if (permisos.includes(10)) { %>
               <a class="btn-small  modal-trigger light-green accent-4" href="#modificarRol"><i class="material-icons left">create</i>Modificar rol</a>
+            <% } %>
             </div>
           </div>
         </div>
     <!-- Inicia Modal Structure agregar usuario-->
     <div id="agregarUsuario" class="modal">
       <form action="/gestionAdmin/gestionUsuarios/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
-        
         <%- include('includesGestion/modst_agregar_usuario.ejs') %> 
-      
     </div><!--Fin Modal Structure agregar usuario-->
+
     <!-- Modal Structure Crear Rol-->
     <div id="crearRol" class="modal">
       <%- include('includesGestion/modst_crear_rol.ejs') %>
     </div><!-- Fin Modal Structure crear Rol-->
+    
     <!-- Modal Structure Modificar Rol-->
     <div id="modificarRol" class="modal">
       <%- include('includesGestion/modst_modificar_rol.ejs') %>
     </div><!-- Fin Modal Structure modificar Rol-->
+    
     <div class="row">
       <div class="col s12 m12">
         <%- include('includesGestion/lista_usuarios.ejs') %>

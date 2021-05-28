@@ -2,7 +2,9 @@
 <%- include('include/titleBar.ejs') %>
 <%- include('include/sideNavBar.ejs') %>     
         <div class="row">
-
+            <% const permisoGestionUsuarios = permisos.includes(8) || permisos.includes(9) || permisos.includes(10) || permisos.includes(12) || permisos.includes(13) || permisos.includes(17);
+            if(permisoGestionUsuarios) { 
+            %>
                 <a href="<%= tabGestion[0].ruta %>">
                     <div class="col s12 m4">
                         <div class="card">
@@ -15,7 +17,7 @@
                         </div>
                     </div>
                 </a>
-
+            <% } %>
                 <a href="<%= tabGestion[1].ruta %>">
                     <div class="col s12 m4">
                         <div class="card">
@@ -28,7 +30,7 @@
                         </div>
                     </div>
                 </a>
-            <% const permisoGestionPrograma = permisos.includes(1) || permisos.includes(2) || permisos.includes(16);
+            <% const permisoGestionPrograma = permisos.includes(1) || permisos.includes(2) || permisos.includes(16) || permisos.includes(18) || permisos.includes(19);
             if(permisoGestionPrograma) { 
             %>
                 <a href="<%= tabGestion[2].ruta %>">

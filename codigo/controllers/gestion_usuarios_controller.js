@@ -12,35 +12,43 @@ const arrows = Arrow.fetchAll();
 exports.get = (request, response) => {
     const mensaje = request.session.mensaje;
     const bandera =  request.session.bandera;
-    Usuario.fetchListaSin('participante')
-        .then(([usuarios]) => {
-            Rol.fetchAll()
-                .then(([roles]) => {
-                    Func.fetchAll()
-                        .then(([func]) => {
-                            response.render('gestion_usuarios', {
-                                usuarios: usuarios, 
-                                roles: roles,
-                                func: func,
-                                mensaje: mensaje,
-                                bandera: bandera,
-                                permisos: request.session.permisos,
-                                tituloDeHeader: "Gestión de usuarios",
-                                tituloBarra: "Usuarios",
-                                backArrow: {display: 'block', link: '/gestionAdmin'},
-                                forwArrow: arrows[1]
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            request.session.mensaje = 'Error de comunicacion con el Servidor'
-                    });
-                })
-                .catch((err) => console.log(err));
-        })
-        .catch((err) => console.log(err));
-    request.session.mensaje = undefined;
-    request.session.bandera = undefined;
+    const permisos = request.session.permisos;
+    const permisoGestionUsuarios = permisos.includes(8) || permisos.includes(9) || permisos.includes(10) || permisos.includes(12) || permisos.includes(13) || permisos.includes(17);
+    if(permisoGestionUsuarios) { 
+        Usuario.fetchListaSin('participante')
+            .then(([usuarios]) => {
+                Rol.fetchAll()
+                    .then(([roles]) => {
+                        Func.fetchAll()
+                            .then(([func]) => {
+                                response.render('gestion_usuarios', {
+                                    usuarios: usuarios, 
+                                    roles: roles,
+                                    func: func,
+                                    mensaje: mensaje,
+                                    bandera: bandera,
+                                    permisos: request.session.permisos,
+                                    tituloDeHeader: "Gestión de usuarios",
+                                    tituloBarra: "Usuarios",
+                                    backArrow: {display: 'block', link: '/gestionAdmin'},
+                                    forwArrow: arrows[1]
+                                });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                request.session.mensaje = 'Error de comunicacion con el Servidor'
+                        });
+                    })
+                    .catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
+        request.session.mensaje = undefined;
+        request.session.bandera = undefined;
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+      }
 };
     
 exports.postNuevoUsuario = (request,response) => {
@@ -155,8 +163,6 @@ exports.postNuevoRoll = (request, response) => {
 };
 
 exports.postModRoll = (request, response) => {
-    console.log("Petición asíncrona");
-
     Rol_Func.fetchJoin(request.body.idRol)
         .then(([funciones]) => {
             return response.status(200).json({
