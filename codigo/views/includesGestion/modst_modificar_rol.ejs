@@ -4,6 +4,7 @@
         <li><strong><br>Roles</strong></li>
         <li>
             <div class="input-field m4">
+                <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
                 <select onchange="modRol(this.value)">
                     <option value="" disabled selected>Elige un rol</option>
                     <% for (let rol of roles) { %>

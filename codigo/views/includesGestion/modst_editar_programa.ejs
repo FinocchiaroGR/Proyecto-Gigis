@@ -1,7 +1,8 @@
 <!-- Modal Structure Editar Programa-->
 <% for (let programa of programas) { %>  
     <div id="EditarPrograma-<%=programa.idPrograma%>" class="modal">
-      <form action="/gestionAdmin/gestionProgramas/editarPrograma" method="POST" enctype="multipart/form-data">
+      <form action="/gestionAdmin/gestionProgramas/editarPrograma/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Editar: <%=programa.nombrePrograma%></h3>
           <input type="hidden" name="idPrograma" value="<%=programa.idPrograma%>">
@@ -57,6 +58,7 @@
     <!-- Modal Structure Agregar Nivel-->
     <div id="agregarNivel-<%=programa.idPrograma%>" class="modal">
       <form action="/gestionAdmin/gestionProgramas/agregarNivel" method="POST">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Agregar Nivel</h3>
           <label> * Campos obligatorios.</label>

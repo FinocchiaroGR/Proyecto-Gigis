@@ -6,6 +6,9 @@ const arrows = Arrow.fetchAll();
 
 exports.nivelObjetivos = (request, response, next) => {
   const registro_exitoso = request.session.registro_exitoso === undefined ? false : request.session.registro_exitoso;
+  const permisos = request.session.permisos;
+  const permisoGestionPrograma = permisos.includes(16) || permisos.includes(18) || permisos.includes(19);
+  if(permisoGestionPrograma) { 
   Nivel.fetchNombrePrograma(request.params.nivel_id)
     .then(([programa,fieldData]) => {
       Objetivo.objetivosPorNivel(request.params.nivel_id)
@@ -16,6 +19,7 @@ exports.nivelObjetivos = (request, response, next) => {
           tituloBarra: tituloBarra,
           idNivel: request.params.nivel_id,
           objetivos: objetivos,
+          permisos: request.session.permisos,
           registro_exitoso: registro_exitoso,
           backArrow: { display: 'block', link: '/gestionAdmin/gestionProgramas' },
           forwArrow: arrows[1],
@@ -26,6 +30,11 @@ exports.nivelObjetivos = (request, response, next) => {
     }).catch((err) => {
       console.log(err);
     });
+  }
+  else {
+    response.status(404);
+    response.send('Lo sentimos, este sitio no existe');
+  }
     request.session.registro_exitoso = undefined;
 };
 
@@ -75,33 +84,43 @@ exports.eliminarObjetivo  = (request, response, next) => {
 exports.get = (request, response, next) => {
   const error = request.session.error === undefined ? false : request.session.error;
   const registro_exitoso = request.session.registro_exitoso === undefined ? false : request.session.registro_exitoso;
-  Programa.fetchAll()
-    .then(([programas, fieldData]) => {
-      Nivel.fetchAll()
-        .then(([niveles, fieldData2]) => {
-          response.render('gestion_programas', {
-            tituloDeHeader: 'Gestión de programas',
-            tituloBarra: 'Programas',
-            programas: programas,
-            niveles: niveles,
-            error: error,
-            registro_exitoso: registro_exitoso,
-            backArrow: { display: 'block', link: '/gestionAdmin' },
-            forwArrow: arrows[1],
+  const permisos = request.session.permisos;
+  const permisoGestionPrograma = permisos.includes(1) || permisos.includes(2) || permisos.includes(16) || permisos.includes(18) || permisos.includes(19);
+  if(permisoGestionPrograma) { 
+    Programa.fetchAll()
+      .then(([programas, fieldData]) => {
+        Nivel.fetchAll()
+          .then(([niveles, fieldData2]) => {
+            response.render('gestion_programas', {
+              tituloDeHeader: 'Gestión de programas',
+              tituloBarra: 'Programas',
+              programas: programas,
+              niveles: niveles,
+              error: error,
+              registro_exitoso: registro_exitoso,
+              permisos: request.session.permisos,
+              backArrow: { display: 'block', link: '/gestionAdmin' },
+              forwArrow: arrows[1],
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+    else {
+      response.status(404);
+      response.send('Lo sentimos, este sitio no existe');
+    }
     request.session.error = undefined;
     request.session.registro_exitoso = undefined;
 };
 
 exports.postNuevoPrograma = (request, response, next) => {
+  request.session.registro_exitoso = undefined;
   const programa = new Programa(request.body.nombreProgra, request.body.puntajeMax,request.file.path);
   programa.save()
     .then(() => {
@@ -167,6 +186,7 @@ exports.agregarNivel = (request, response, next) => {
   const nuevoNivel = new Nivel(request.body.nombreNivel, request.body.idPrograma);
   nuevoNivel.save()
     .then(() => {
+      request.session.registro_exitoso = 'El nivel fue registrado correctamente.';
       response.redirect('./')
     }).catch((err) => {
       console.log(err);

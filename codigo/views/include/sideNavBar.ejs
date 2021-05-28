@@ -23,6 +23,9 @@
               </button>
               <div class="divider"></div>
             </li>
+            <% const permisoGetionAdmin = permisos.includes(1) || permisos.includes(2) || permisos.includes(3) || permisos.includes(4) || permisos.includes(6) || permisos.includes(9) || permisos.includes(10) || permisos.includes(11) || permisos.includes(12) || permisos.includes(13) || permisos.includes(16) || permisos.includes(17) || permisos.includes(18) || permisos.includes(19);
+            if(permisoGetionAdmin) { 
+            %>
             <li class="center row hide-on-large-only">
               <button class="wideBtn blue lighten-1" style="padding: 0%; border-width: 0px;">
                 <a href="/gestionAdmin">
@@ -41,6 +44,10 @@
               </button>
               <div class="divider"></div>
             </li>
+          <% } %>
+          <% const permisoProgramas = permisos.includes(15);
+            if(permisoProgramas) { 
+          %>
             <li class="center row hide-on-large-only">
               <button class="wideBtn blue lighten-1" style="padding: 0%; border-width: 0px;">
                 <a href="/programas">
@@ -59,7 +66,10 @@
               </button>
               <div class="divider"></div>
             </li>
-            
+            <% } %>
+            <% const permisoConsultas = permisos.includes(5) || permisos.includes(6) || permisos.includes(7) || permisos.includes(14);
+            if(permisoConsultas) { 
+            %>
             <li class="center row hide-on-large-only">
               <button class="wideBtn blue lighten-1" style="padding: 0%; border-width: 0px;">
                 <a href="/consultas">
@@ -76,7 +86,7 @@
                 </a>
               </button>
             </li>
-            
+            <% } %>
         </ul>
         <ul id="slide-out" class="sidenav green">
           <li><div class="user-view">
