@@ -3,9 +3,9 @@
 <%- include('include/sideNavBar.ejs') %>
 
 <form action="/consultas" method="POST">
+    <% if (permisos.includes(5)) { %>
     <!-- Titulo elegir programa y selección de ciclo-->
-    <div class="row">
-            
+    <div class="row">    
         <!-- Elegir ciclo de inicio y final-->
         <div class="col s8 push-s4 "><br>
             <div class="row valign-wrapper">
@@ -184,9 +184,13 @@
             </div>
         </div>
     </div>
+    <% } %>
+
     <div class="row">
+        <br>
         <div class="col s4 offset-s1">
             <div class="row center">
+                <% if (permisos.includes(14)) { %>
                 <div>
                     <select class="browser-default js-example-basic-single" name="buscador" id="buscador">
                         <option value="1">Hola1</option>
@@ -198,13 +202,16 @@
                         <option value="7">Alo7</option>
                     </select>
                 </div>
+                <% } %>
             </div>
         </div>
         <!--Boton consultar-->
         <div class="col s6 offset-s1">
             <div class="row center">
                 <div>
-                    <button type="submit" class="waves-effect btn-large light-blue darken-2"> Realizar Consulta </button>
+                    <% if (permisos.includes(5)||permisos.includes(14)) { %>
+                        <button type="submit" class="waves-effect btn-large light-blue darken-2"> Realizar Consulta </button>
+                    <% } %>
                 </div>
             </div>
         </div>

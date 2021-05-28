@@ -68,11 +68,13 @@
         <%- include('includesConsultas/tabla_consultas.ejs') %>
 
         <br><br>
-        <form action="/consultas/Resultados" method="post">
-            <div class="row">
-                <button type="submit" class="waves-effect right waves-light btn-large"> Descargar archivo </button>
-            </div>
-        </form>
+        <% if (permisos.includes(7)) { %>
+            <form action="/consultas/Resultados" method="post">
+                <div class="row">
+                    <button type="submit" class="waves-effect right waves-light btn-large"> Descargar archivo </button>
+                </div>
+            </form>
+        <% } %>
     </div>
 
 <%- include('include/footer.ejs') %>
