@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-  </div>
 
   <div class="row">
     <div class="col s12 m12">
@@ -58,11 +57,10 @@
             </li>
         <% } %>  
         </ul>       
-     </div> 
+    </div> 
   <input type="text" id="fechaLimite" value="<%= fechaLimite[0].fechaFinal %>" style="visibility:hidden;">
 </div>
-</div>  
-</div>
+<input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
 </main>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -137,6 +135,7 @@
     }
 
     const enviarJSONs = () => {
+        const csrf = document.getElementById('_csrf').value;
         let fechaInicial =  document.getElementById("from").value;
         let fechaFinal = document.getElementById("to").value;
         let data = {
@@ -148,12 +147,12 @@
 
         fetch('/gestionAdmin/gestionCiclos/agregar-ciclo',{
             method: 'POST',
-            headers: {'Content-Type':'application/json'},
+            headers: {'Content-Type':'application/json',
+                    'csrf-token': csrf},
             body:JSON.stringify(data)
         }).then(result => {
           return result.json();
         }).then(data => {
-            console.log(data.ciclo.idCiclo);
             let liga = "/gestionAdmin/gestionCiclos/inscribir/"+data.ciclo.idCiclo;
             window.location= liga;
         });

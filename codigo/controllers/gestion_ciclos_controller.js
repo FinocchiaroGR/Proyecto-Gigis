@@ -148,7 +148,6 @@ exports.postInscribir = (request,response,next) => {
     request.session.error = undefined;
     Objetivo.deleteObj(request.body.objetivos[0].login, request.body.objetivos[0].idGrupo,request.body.objetivos[0].idNivel)
         .then(() => {
-            console.log(request.body.objetivos);
             for (let participante of request.body.objetivos){
                 let PGO = new Participantes_Grupos_Objetivos(participante.login, participante.idGrupo,participante.idNivel, participante.idObjetivo);
                 PGO.save()

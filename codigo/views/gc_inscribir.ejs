@@ -38,7 +38,8 @@
 </div>
 
   <input type="hidden" id="error" value="<%= error %>">
-  <input type="hidden" id="bandera" value="<%= bandera %>">    
+  <input type="hidden" id="bandera" value="<%= bandera %>"> 
+  <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >    
 <%- include('include/footer.ejs') %>
 
 <script>
@@ -146,6 +147,8 @@ const buscar = (idGrupo) => {
 };
 
 const registroObjetivos = (login, idGrupo) => {
+  //El token de protección CSRF
+  const csrf = document.getElementById('_csrf').value;
   let data = {
     idGrupo: idGrupo,
     login: login
@@ -155,8 +158,8 @@ const registroObjetivos = (login, idGrupo) => {
   fetch('/gestionAdmin/gestionCiclos/select-nivel', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json'
-          //'csrf-token': csrf
+          'Content-Type': 'application/json',
+          'csrf-token': csrf
       },
       body: JSON.stringify(data)
   }).then(result => {
@@ -206,6 +209,8 @@ const registroObjetivos = (login, idGrupo) => {
     }
     
     function mostratObj() {
+        //El token de protección CSRF
+        const csrf = document.getElementById('_csrf').value;
         let idNivelObj = document.getElementById(idselect).value;
         let data2 = {
           idNivelObj: idNivelObj,
@@ -218,8 +223,8 @@ const registroObjetivos = (login, idGrupo) => {
         fetch('/gestionAdmin/gestionCiclos/mostrar-obj', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
-                //'csrf-token': csrf
+                'Content-Type': 'application/json',
+                'csrf-token': csrf
             },
             body: JSON.stringify(data2)
         }).then(result => {
@@ -319,8 +324,8 @@ const registroObjetivos = (login, idGrupo) => {
           fetch('/gestionAdmin/gestionCiclos/inscribir',{
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
-                //'csrf-token': csrf
+                'Content-Type': 'application/json',
+                'csrf-token': csrf
             },
             body: JSON.stringify(obj)
           }).then(result => {
