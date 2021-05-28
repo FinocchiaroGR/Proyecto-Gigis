@@ -37,7 +37,7 @@ exports.get = ((request,response,next) => {
     const error = request.session.error === undefined ? false : request.session.error;
     const bandera = request.session.bandera === undefined ? false : request.session.bandera;
     const permisos = request.session.permisos;
-    const permisoGestionUsuarios = permisos.includes(20) || permisos.includes(21);
+    const permisoGestionUsuarios = permisos.includes(20) || permisos.includes(6);
     if(permisoGestionUsuarios) {
         Participante.fetchAll('participante')
             .then(([participantes, fieldData1]) => {

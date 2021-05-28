@@ -2,8 +2,8 @@
 2,Modificar datos programa
 3,Inscribir participantes
 4,Agregar ciclo
-5,Generar comparativa de programas
-6,Generar reporte programa individual
+5,Consultar programas
+6,Editar participante
 7,Generar archivo de descarga
 8,Registrar usuario
 9,Modificar usuario
@@ -18,5 +18,4 @@
 18,Agregar objetivos
 19,Eliminar objetivos
 20,Registrar participante
-21,Editar participante
 

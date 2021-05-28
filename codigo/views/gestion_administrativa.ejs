@@ -18,7 +18,7 @@
                     </div>
                 </a>
             <% } %>
-            <% const permisoGestionParticipantes = permisos.includes(20) || permisos.includes(21);
+            <% const permisoGestionParticipantes = permisos.includes(20) || permisos.includes(6);
             if(permisoGestionParticipantes) { 
             %>
                 <a href="<%= tabGestion[1].ruta %>">
@@ -50,6 +50,9 @@
                     </div>
                 </a>
             <% } %>
+            <% const permisoGestionCiclo = permisos.includes(3) || permisos.includes(4) || permisos.includes(11);
+            if(permisoGestionCiclo) { 
+            %>
                 <a href="<%= tabGestion[3].ruta %>">
                     <div class="col s12 m4">
                         <div class="card">
@@ -62,7 +65,7 @@
                         </div>
                     </div>
                 </a>
-
+            <% } %>
         </div>
  
 <%- include('include/footer.ejs') %>

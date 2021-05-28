@@ -7,7 +7,9 @@
     </div>
     <div class="col">
         <div class="input-field">
-            <br><a class="waves-effect waves-light btn-small light-green accent-4" href="./agregar-ciclo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% if (permisos.includes(4)) { %>
+                <br><a class="waves-effect waves-light btn-small light-green accent-4" href="./agregar-ciclo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% } %>
         </div>
     </div>
     <div class="col s12">

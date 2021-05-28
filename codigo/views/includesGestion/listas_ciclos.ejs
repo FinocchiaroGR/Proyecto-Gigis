@@ -24,7 +24,7 @@
                     <div class="collection">
                         <% for (let ciclo of ciclos) { %>
                             <% if (ciclo.fechaInicial.getFullYear() === p.anio) { %>
-                                <a onclick="verPerfilCiclo(<%= ciclo.idCiclo %>)" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
+                                <a href="" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
                             <% } %>        
                         <% } %>
                     </div>
@@ -32,17 +32,19 @@
             </li>       
     <% } %>
 </ul>
-
+<input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
 
 <script>
     const verPerfilCiclo = (idcicloparam) => {
+        const csrf = document.getElementById('_csrf').value;
         let data = {
             idcicloparam: idcicloparam,
         };
 
         fetch('/gestionAdmin/gestionCiclos/perfil-ciclo',{
             method: 'POST',
-            headers: {'Content-Type':'application/json'},
+            headers: {'Content-Type':'application/json',
+                    'csrf-token': csrf},
             body:JSON.stringify(data),
         }).then(result => {
             window.location = '/gestionAdmin/gestionCiclos/inscribir/'+ idcicloparam ;

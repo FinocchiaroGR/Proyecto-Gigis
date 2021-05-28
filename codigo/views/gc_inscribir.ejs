@@ -22,15 +22,17 @@
                       <i class="material-icons left">more_vert</i>
                   </span>
               </div>
-              <div class="collapsible-body">
-                  <div class="collection">
-                      <% for (let terapeuta of terapeutas) { %>
-                        <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
-                          <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+              <% if (permisos.includes(3)) { %>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        <% for (let terapeuta of terapeutas) { %>
+                          <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
+                            <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                          <% } %>
                         <% } %>
-                      <% } %>
-                  </div>
-              </div>
+                    </div>
+                </div>
+              <% }%>
           </li>
       <% } %>
     </ul>

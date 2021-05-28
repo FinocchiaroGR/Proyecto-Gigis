@@ -75,18 +75,25 @@ exports.getInscribir = (request,response,next) => {
 
 exports.getInsPar = (request,response,next) => {
     request.session.grupoinscripcion = request.params.idGrupo;
-    Participante.fetchActivos()
-        .then(([participantes, fieldData1]) => {
-            Participantes_Grupos_Objetivos.fetchLoginIncritos(request.params.idGrupo)
-                .then(([inscritos, fieldData]) => {
-                    return response.status(200).json({
-                        participantes: participantes,
-                        inscritos: inscritos
-                    });
-                })
-                .catch((err) => console.log(err));
-        })
-        .catch((err) => console.log(err));
+    const permisos = request.session.permisos;
+    if(permisos.includes(4)) {
+        Participante.fetchActivos()
+            .then(([participantes, fieldData1]) => {
+                Participantes_Grupos_Objetivos.fetchLoginIncritos(request.params.idGrupo)
+                    .then(([inscritos, fieldData]) => {
+                        return response.status(200).json({
+                            participantes: participantes,
+                            inscritos: inscritos
+                        });
+                    })
+                    .catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
 };
 
 exports.getBuscarPar = (request,response,next) => {
@@ -179,34 +186,41 @@ exports.postInscribir = (request,response,next) => {
 };
 
 exports.getAgrCiclo = (request,response,next) => {
-    request.session.idcicloparam =undefined;
-    Programa.fetchAll()
-    .then(([programas, fieldData1]) => {
-        Usuario.fetchNomTerapeutas()
-        .then(([terapeutas, fieldData1]) => {
-            Ciclo.fetchFechaFinalUltimoCiclo()
-            .then(([fechaLimite, fieldData1]) => {
-                Grupo.fetchIdUltimoGrupo()
-                    .then(([idUltimoGrupo, fieldData1]) => {
-                    request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
-                    response.render('gc_agregar_ciclo', {
-                        fechaLimite: fechaLimite,
-                        programas: programas,
-                        terapeutas: terapeutas,
-                        permisos: request.session.permisos,
-                        tituloDeHeader: "Nuevo ciclo",
-                        tituloBarra: "Nuevo ciclo",
-                        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-                        forwArrow: arrows[1]
-                    });
-                    })
-                    .catch(err => console.log(err)); 
+    const permisos = request.session.permisos;
+    if(permisos.includes(4)) {
+        request.session.idcicloparam =undefined;
+        Programa.fetchAll()
+        .then(([programas, fieldData1]) => {
+            Usuario.fetchNomTerapeutas()
+            .then(([terapeutas, fieldData1]) => {
+                Ciclo.fetchFechaFinalUltimoCiclo()
+                .then(([fechaLimite, fieldData1]) => {
+                    Grupo.fetchIdUltimoGrupo()
+                        .then(([idUltimoGrupo, fieldData1]) => {
+                        request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
+                        response.render('gc_agregar_ciclo', {
+                            fechaLimite: fechaLimite,
+                            programas: programas,
+                            terapeutas: terapeutas,
+                            permisos: request.session.permisos,
+                            tituloDeHeader: "Nuevo ciclo",
+                            tituloBarra: "Nuevo ciclo",
+                            backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+                            forwArrow: arrows[1]
+                        });
+                        })
+                        .catch(err => console.log(err)); 
+                })
+                .catch(err => console.log(err));
             })
             .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
 };
 
 exports.postAgrCiclo= (request,response,next) => {
@@ -258,35 +272,43 @@ exports.postPerfilCiclo = (request,response,next) => {
 
 exports.get = (request,response,next) => {
     const estado = request.session.estadogc === undefined ? 'vacio' : request.session.estadogc;
-    Ciclo.fetchIdUltimo()
-        .then(([idUltimoCiclo, fieldData1]) => {
-            request.session.idlastciclo = idUltimoCiclo[0].idCiclo;
-            Ciclo.fetchAll()
-            .then(([ciclos, fieldData1]) => {
-                Ciclo.fetchCiclosAnioActual()
-                    .then(([ciclos_aactual, fieldData1]) => {
-                        Ciclo.fetchAniosPasados()
-                            .then(([a_pasados, fieldData1]) => {
-                                response.render('gestion_ciclos', {
-                                    estado: estado,
-                                    ciclos: ciclos,
-                                    a_pasados:a_pasados,
-                                    ciclos_aactual: ciclos_aactual,
-                                    mes: mes,
-                                    permisos: request.session.permisos,
-                                    tituloDeHeader: "Gestión de ciclos",
-                                    tituloBarra: "Ciclos",
-                                    backArrow: {display: 'block', link: '/gestionAdmin'},
-                                    forwArrow: arrows[1]
-                                });
-                            })
-                            .catch((err) => console.log(err));
-                    })
-                    .catch((err) => console.log(err));
-            })
-            .catch((err) => console.log(err));
-        }).catch( err => {
-            console.log(err);  
-        }); 
+    const permisos = request.session.permisos;
+    const permisoGestionCiclos = permisos.includes(3) || permisos.includes(4) || permisos.includes(11);
+    if(permisoGestionCiclos) { 
+        Ciclo.fetchIdUltimo()
+            .then(([idUltimoCiclo, fieldData1]) => {
+                request.session.idlastciclo = idUltimoCiclo[0].idCiclo;
+                Ciclo.fetchAll()
+                .then(([ciclos, fieldData1]) => {
+                    Ciclo.fetchCiclosAnioActual()
+                        .then(([ciclos_aactual, fieldData1]) => {
+                            Ciclo.fetchAniosPasados()
+                                .then(([a_pasados, fieldData1]) => {
+                                    response.render('gestion_ciclos', {
+                                        estado: estado,
+                                        ciclos: ciclos,
+                                        a_pasados:a_pasados,
+                                        ciclos_aactual: ciclos_aactual,
+                                        mes: mes,
+                                        permisos: request.session.permisos,
+                                        tituloDeHeader: "Gestión de ciclos",
+                                        tituloBarra: "Ciclos",
+                                        backArrow: {display: 'block', link: '/gestionAdmin'},
+                                        forwArrow: arrows[1]
+                                    });
+                                })
+                                .catch((err) => console.log(err));
+                        })
+                        .catch((err) => console.log(err));
+                })
+                .catch((err) => console.log(err));
+            }).catch( err => {
+                console.log(err);  
+            }); 
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
     request.session.estadogc = undefined;
 };
