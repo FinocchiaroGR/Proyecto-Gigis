@@ -5,7 +5,7 @@
 <div class="row valign-wrapper" id="cambiar-contraseña">
   <div class="col s6 offset-s3">
     <form action="/usuarios/cambiar-pass" method="POST">
-
+      <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
       <div class="input-field">
         <i class="material-icons prefix">lock</i>
         <input type="text" id="contraseña-antigua" name="antigua" required>
@@ -15,7 +15,7 @@
 
       <div class="input-field">
         <i class="material-icons prefix">lock</i>
-        <input type="text" id="contraseña-nueva" name="nueva" required>
+        <input type="text" id="contraseña-nueva" name="nueva" required minlength="8">
         <label for="contraseña-nueva">Nueva Contraseña</label>
       </div>
       <br>

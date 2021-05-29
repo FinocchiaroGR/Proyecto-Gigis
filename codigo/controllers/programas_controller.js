@@ -130,8 +130,7 @@ exports.get = (request, response, next) => {
       .catch((err) => console.log(err));
   }
   else {
-    response.status(404);
-    response.send('Lo sentimos, este sitio no existe');
+    return response.redirect('/consultas');
   }
 };
 

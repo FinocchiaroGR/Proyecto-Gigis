@@ -203,8 +203,7 @@ exports.getConsultas = ((request, response, next) => {
         });
     }
     else {
-      response.status(404);
-      response.send('Lo sentimos, este sitio no existe');
+        return response.redirect('/gestionAdmin');
     }
 });
 
