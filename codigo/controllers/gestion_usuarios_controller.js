@@ -5,13 +5,16 @@ const Usuario_Rol = require('../models/usuarios_roles');
 const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
-const Grupos_Terapeutas = require('../models/grupos_terapeutas')
+const Grupos_Terapeutas = require('../models/grupos_terapeutas');
+const { request, response } = require('express');
 
 const arrows = Arrow.fetchAll();
 
 exports.get = (request, response) => {
     const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
     const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const windowM = request.session.windowM === undefined ? undefined : request.session.windowM;
+    const banderaW = request.session.banderaW === undefined ? undefined : request.session.banderaW;
     Usuario.fetchListaSin('participante')
         .then(([usuarios]) => {
             Rol.fetchAll()
@@ -24,6 +27,8 @@ exports.get = (request, response) => {
                                 func: func,
                                 mensaje: mensaje,
                                 bandera: bandera,
+                                windowM: windowM,
+                                banderaW: banderaW,
                                 tituloDeHeader: "Gestión de usuarios",
                                 tituloBarra: "Usuarios",
                                 backArrow: {display: 'block', link: '/gestionAdmin'},
@@ -40,6 +45,8 @@ exports.get = (request, response) => {
         .catch((err) => console.log(err));
     request.session.mensaje = undefined;
     request.session.bandera = undefined;
+    request.session.windowM = undefined;
+    request.session.banderaW = undefined; 
 };
     
 exports.postNuevoUsuario = (request,response) => {
@@ -271,45 +278,36 @@ exports.postModUser = (request, response) => {
 };
 
 exports.postUpdateUser = (request, response) => {
-    //baja permanente
     let login = request.body.login;
-    console.log(login);
     let oldEmail = request.body.oldEmail;
-    console.log(oldEmail);
-    let password = request.body.password;
-    console.log(password);
+    let password = request.body.password === '' ? null : request.body.password;
     let nombre = request.body.nombre;
-    console.log(nombre);
     let apellidoP = request.body.apellidoP === '' ? null : request.body.apellidoP;
-    console.log(apellidoP);
     let apellidoM = request.body.apellidoM === '' ? null : request.body.apellidoM;
-    console.log(apellidoM);
-    let titulo = request.body.titulo === '' ? null : request.body.titulo;
-    console.log(titulo);
-    let path = request.file.path === '' ? null : request.file.path;
-    console.log(path);
     let lengthRoles = request.body.lengthRoles;
-    console.log(lengthRoles);
-    let estatus = request.body.estatusSelect;
-    console.log(estatus);
     let tBool = request.body.tBool === 'true' ? true : false;
-    console.log(tBool);
     let roles = [];
     
     for (let i = 2; i <= lengthRoles; i++) {
         roles.push(request.body[`Rol_${i}`] === undefined ? null : i);
     }
 
+    if (password != null) {
+        Usuario.actualizarPassword(password, oldEmail)
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
     if (tBool == true && roles[0] == null) {
         Grupos_Terapeutas.fetchIfTerapeutaHaveGroups(oldEmail)
             .then(([numGrupos]) => {
-                console.log(numGrupos);
                 if (numGrupos[0].num_groups == 0){
                     Terapeuta.deleteById(oldEmail)
                         .then(() => {
                             Usuario_Rol.deleteById(oldEmail)
                                 .then(() => {
-                                    Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                                    Usuario.updateUser(login, nombre, apellidoP, apellidoM, oldEmail)
                                         .then(() => {
                                             for (rol of roles){ 
                                                 if (rol != null && rol != 2) {
@@ -339,11 +337,10 @@ exports.postUpdateUser = (request, response) => {
                         .then(() => {
                             Usuario_Rol.deleteById(oldEmail)
                                 .then(() => {
-                                    Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                                    Usuario.updateUser(login, nombre, apellidoP, apellidoM, oldEmail)
                                         .then(() => {
                                             for (rol of roles){ 
                                                 if (rol != null) {
-                                                    console.log(rol);
                                                     let usuario_rol = new Usuario_Rol(login, rol);
                                                     usuario_rol.save()
                                                         .catch((err) => {
@@ -356,7 +353,9 @@ exports.postUpdateUser = (request, response) => {
                                                 .catch((err) => {
                                                     console.log(err);
                                                 })
-                                            request.session.mensaje = 'El rol fue actualizado correctamente';
+                                            request.session.windowM = 'El usuario fue actualizado exitosamente. Pero no se pudo remover el rol Terapueta porque este usuario tiene o tuvo grupos asignados.';
+                                            request.session.banderaW = true;
+                                            request.session.mensaje = 'El usuario fue actualizado correctamente';
                                             request.session.bandera = false; 
                                             response.redirect('/gestionAdmin/gestionUsuarios');
                                         }).catch((err) => {
@@ -374,13 +373,15 @@ exports.postUpdateUser = (request, response) => {
             })
     }
     else if (tBool == true && roles[0] == 2) {
+        let titulo = request.body.titulo === '' ? null : request.body.titulo;
+        let path = request.file === undefined ? null : request.file.path;
+        let estatus = request.body.estatusSelect;
         Usuario_Rol.deleteById(oldEmail)
             .then(() => {
-                Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                Usuario.updateUser(login, nombre, apellidoP, apellidoM, oldEmail)
                     .then(() => {
                         for (rol of roles){ 
                             if (rol != null) {
-                                console.log(rol);
                                 let usuario_rol = new Usuario_Rol(login, rol);
                                 usuario_rol.save()
                                     .catch((err) => {
@@ -388,9 +389,15 @@ exports.postUpdateUser = (request, response) => {
                                     })
                             }
                         }
-                        Terapeuta.updateTerapeuta(login,titulo,path,estatus)
+                        Terapeuta.updateTerapeuta(login,titulo,estatus)
                             .then(() => {
-                                request.session.mensaje = 'El rol fue actualizado correctamente';
+                                if (path != null) {
+                                    Terapeuta.updateTerapeutaCv(path, login)
+                                        .catch((err) => {
+                                            console.log(err);
+                                        })
+                                }
+                                request.session.mensaje = 'El usuario fue actualizado correctamente';
                                 request.session.bandera = false; 
                                 response.redirect('/gestionAdmin/gestionUsuarios');
                             }).catch((err) => {
@@ -404,13 +411,14 @@ exports.postUpdateUser = (request, response) => {
             })
     }
     else if (tBool == false && roles[0] == 2) {
+        let titulo = request.body.titulo === '' ? null : request.body.titulo;
+        let path = request.file === undefined ? null : request.file.path;
         Usuario_Rol.deleteById(oldEmail)
             .then(() => {
-                Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                Usuario.updateUser(login, nombre, apellidoP, apellidoM, oldEmail)
                     .then(() => {
                         for (rol of roles){ 
                             if (rol != null) {
-                                console.log(rol);
                                 let usuario_rol = new Usuario_Rol(login, rol);
                                 usuario_rol.save()
                                     .catch((err) => {
@@ -418,8 +426,13 @@ exports.postUpdateUser = (request, response) => {
                                     })
                             }
                         }
-                        let terapeuta = new Terapeuta(login,titulo,path,estatus);
+                        let terapeuta = new Terapeuta(login,titulo,path,'A');
                         terapeuta.save()
+                            .then(() => {
+                                request.session.mensaje = 'El usuario fue actualizado correctamente';
+                                request.session.bandera = false; 
+                                response.redirect('/gestionAdmin/gestionUsuarios');
+                            })
                             .catch((err) => {
                                 console.log(err);
                             })
@@ -433,11 +446,10 @@ exports.postUpdateUser = (request, response) => {
     else {
         Usuario_Rol.deleteById(oldEmail)
             .then(() => {
-                Usuario.updateUser(login, password, nombre, apellidoP, apellidoM, oldEmail)
+                Usuario.updateUser(login, nombre, apellidoP, apellidoM, oldEmail)
                     .then(() => {
                         for (rol of roles){ 
                             if (rol != null) {
-                                console.log(rol);
                                 let usuario_rol = new Usuario_Rol(login, rol);
                                 usuario_rol.save()
                                     .catch((err) => {
@@ -445,6 +457,9 @@ exports.postUpdateUser = (request, response) => {
                                     })
                             }
                         }
+                        request.session.mensaje = 'El usuario fue actualizado correctamente';
+                        request.session.bandera = false; 
+                        response.redirect('/gestionAdmin/gestionUsuarios');
                     }).catch((err) => {
                         console.log(err);
                     })
@@ -452,4 +467,17 @@ exports.postUpdateUser = (request, response) => {
                 console.log(err);
             })
     }
+};
+
+exports.postDeleteUser = (request, response) => {
+    let login = request.body.login;
+    Usuario_Rol.deleteById(login)
+    .then(() => {
+        request.session.mensaje = 'El usuario fue eliminado';
+        request.session.bandera = false; 
+        response.redirect('/gestionAdmin/gestionUsuarios');
+    })
+    .catch((err) => {
+        console.log(err);
+    })
 };

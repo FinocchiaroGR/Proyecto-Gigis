@@ -15,8 +15,7 @@ const rutasGestionCiclos = require('./gestionCiclos');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(express.static(path.join(__dirname,'..', 'public')));
 
-router.use('/gestionUsuarios', isAuth, rutasGestionUsuarios);       //Quitar isAuth para registrar sus usuarios
-                                                                    //y tambien revisar router de gestionUsuarios
+router.use('/gestionUsuarios', isAuth, rutasGestionUsuarios);
 
 router.use('/gestionParticipantes', isAuth, rutasGestionParticipantes);
 

@@ -60,14 +60,9 @@ module.exports = class Usuario {
     );
   }
 
-  static updateUser(newLogin, password, nombre, apellidoP, apellidoM, oldLogin) {
-    return bcrypt.hash(password, 12)
-    .then( (password) => {
-        return db.execute('UPDATE `usuarios` SET `login` = ?, `password` = ?, `nombreUsuario` = ?, `apellidoPaterno` = ?, `apellidoMaterno` = ? WHERE `usuarios`.`login` = ?',
-          [newLogin, password, nombre, apellidoP, apellidoM, oldLogin]);
-    }).catch( err => {
-        console.log(err); 
-    });
+  static updateUser(newLogin, nombre, apellidoP, apellidoM, oldLogin) {
+    return db.execute('UPDATE `usuarios` SET `login` = ?, `nombreUsuario` = ?, `apellidoPaterno` = ?, `apellidoMaterno` = ? WHERE `usuarios`.`login` = ?',
+      [newLogin, nombre, apellidoP, apellidoM, oldLogin]);
   }
 
   static actualizarPassword(password, login) {
