@@ -14,7 +14,6 @@ exports.logout = (request, response, next) => {
 exports.getlogin = (request, response, next) => {
     response.render('login', {
         tituloDeHeader: 'Ingresar',
-        link: "https://dsagr.org/wp-content/uploads/2016/03/iStock_000066042813_Full.jpg",
         error: request.session.error === undefined ? false : request.session.error,
         imagen: '/media/gigis_logo_escrito.png'
     });

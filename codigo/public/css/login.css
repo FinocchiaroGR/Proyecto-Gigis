@@ -2,33 +2,17 @@ blogin{
 	color:rgb(0, 0, 0);
 	font-size:10pt;
 }
-.section1{
-	background-color:#11181e;
-	width:50%;
-	float:left;
-	height:100vh;
-	border-right: 1vw solid #F5E5D6; 
-    box-sizing: border-box;
-    margin:0;
-    padding:0;	
-}
-.section2{
-	background-color:#f1c40f;
-	width:50%;
-	float:left;
-	height:100vh;
-	margin:0;
-	padding:0;
-  box-sizing: border-box;
-}
-.centered {
-    position: absolute;
-    top: 60%;
-    width: 80%;
-    left: 75%;
-    transform: translate(-50%, -75%);
-    max-width: 420px;
 
+.portada{
+  background-image: url(/media/portada2.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100vh;
+}
+
+.centered {
+    max-width: 420px;
 }
 
 .centeredimage {
