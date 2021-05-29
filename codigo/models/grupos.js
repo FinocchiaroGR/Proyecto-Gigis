@@ -34,7 +34,7 @@ module.exports = class Grupo {
 
   static fetchGruposCicloActual() {
     return db.execute(
-      'SELECT G.idGrupo,numeroGrupo,G.idPrograma FROM grupos G ,ciclos C, programas P WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE'
+      'SELECT G.idGrupo,numeroGrupo,G.idPrograma, T.login FROM grupos G ,ciclos C, programas P, grupos_terapeutas T WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND T.idGrupo = G.idGrupo AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE'
     );
   }
 
