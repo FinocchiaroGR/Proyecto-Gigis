@@ -69,10 +69,12 @@ exports.postlogin = (request, response, next) => {
 
 exports.cambiarContraseña = (request, response, next) => {
     const error = request.session.error === undefined ? false : request.session.error;
+    const permisos = request.session.permisos;
     response.render('cambiar_contraseña', {
         tituloDeHeader: 'Cambiar contraseña',
         tituloBarra: 'Cambiar Contraseña',
         error: error,
+        permisos: permisos,
         backArrow: { display: 'none', link: '/programas' },
         forwArrow: arrows[0]
     });

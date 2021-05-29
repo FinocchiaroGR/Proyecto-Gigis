@@ -24,11 +24,11 @@
                       <i class="material-icons left">more_vert</i>
                   </span>
               </div>
-              <% if (permisos.includes(3)) { %>
+              <% if (permisos.includes(3)||permisos.includes(21)) { %>
                 <div class="collapsible-body">
                     <div class="collection">
                         <% for (let terapeuta of terapeutas) { %>
-                          <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
+                          <% if (terapeuta.idPrograma === programa.idPrograma && ((permisos.includes(21) && usuario === terapeuta.login) || permisos.includes(3))) {%> 
                             <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
                           <% } %>
                         <% } %>

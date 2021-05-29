@@ -28,7 +28,7 @@ module.exports = class Rol_Funcion {
   }
 
   static fetchJoin(idRol) {
-    return db.execute('select F.*, case when RF.idfuncion is null then 0 else 1 end as foo FROM funciones F LEFT JOIN roles_funciones RF ON RF.idfuncion = F.idFuncion AND RF.idRol = ?',
+    return db.execute('select F.*, case when RF.idfuncion is null then 0 else 1 end as foo FROM funciones F LEFT JOIN roles_funciones RF ON RF.idfuncion = F.idFuncion AND RF.idRol = ? ORDER BY(F.requisitoFuncional)',
     [idRol]
     );
   }

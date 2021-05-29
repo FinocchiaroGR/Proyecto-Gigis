@@ -40,6 +40,7 @@ const abvMes = [
 ];
 
 exports.getInscribir = (request,response,next) => {
+    const usuario = request.session.user;
     const error = request.session.error === undefined ? 'false' : request.session.error;
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
@@ -55,6 +56,7 @@ exports.getInscribir = (request,response,next) => {
                     .then(([programas, fieldData1]) => {
                         response.render('gc_inscribir', {
                             error: error,
+                            usuario: usuario,
                             bandera: bandera,
                             terapeutas: terapeutas,
                             programas: programas,
