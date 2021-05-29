@@ -54,9 +54,9 @@ module.exports = class Objetivo {
         [login, idGrupo, idNivel])
     }
 
-    static deleteObj(login, idGrupo, idNivel) {
-        return db.execute ('DELETE FROM participantes_grupos_objetivo WHERE login = ? AND idGrupo = ? AND idNivel = ?',
-        [login, idGrupo, idNivel])
+    static deleteObj(login, idGrupo) {
+        return db.execute ('DELETE FROM participantes_grupos_objetivo WHERE login = ? AND idGrupo = ?',
+        [login, idGrupo])
     }
 }
 

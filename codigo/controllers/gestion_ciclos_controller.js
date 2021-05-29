@@ -56,6 +56,7 @@ exports.getInscribir = (request,response,next) => {
                     .then(([programas, fieldData1]) => {
                         response.render('gc_inscribir', {
                             error: error,
+                            idciclo: idciclop,
                             usuario: usuario,
                             bandera: bandera,
                             terapeutas: terapeutas,
@@ -155,7 +156,7 @@ exports.postMostrarObj = (request,response,next) => {
 
 exports.postInscribir = (request,response,next) => {
     request.session.error = undefined;
-    Objetivo.deleteObj(request.body.objetivos[0].login, request.body.objetivos[0].idGrupo,request.body.objetivos[0].idNivel)
+    Objetivo.deleteObj(request.body.objetivos[0].login, request.body.objetivos[0].idGrupo)
         .then(() => {
             for (let participante of request.body.objetivos){
                 let PGO = new Participantes_Grupos_Objetivos(participante.login, participante.idGrupo,participante.idNivel, participante.idObjetivo);
@@ -184,6 +185,30 @@ exports.postInscribir = (request,response,next) => {
             console.log(err);
             return response.status(500).json({message: "Internal Server Error"});
         })
+      
+};
+
+exports.postBaja = (request,response,next) => {
+    request.session.error = undefined;
+    Objetivo.deleteObj(request.body.login, request.body.idGrupo)
+        .then(() => {
+            Usuario.fetchNombre(request.body.login)
+            .then(([nombre,fieldData]) => {
+              return response.status(200).json({
+                nombre: nombre,
+                grupo: request.body.idGrupo,
+                error: request.session.error
+              });
+            }).catch((err) => {
+                console.log(err);
+                return response.status(500).json({message: "Error el servidor."});
+            })
+        })
+        .catch( err => {
+            request.session.error = 'No se pudo inscribir correctamente al participante.';
+            response.redirect('/gestionAdmin/inscribir');
+            console.log(err);
+        });
       
 };
 

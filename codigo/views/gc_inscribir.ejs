@@ -8,7 +8,7 @@
       <div class = "right">
         <br><br>
         <% if (permisos.includes(11)) { %>
-        <a  href= "/gestionAdmin/gestionCiclos/editar-ciclo" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
+        <a  href= "/gestionAdmin/gestionCiclos/editar-ciclo" class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
         <% } %>
         <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
       </div>
@@ -21,7 +21,7 @@
                   <%= programa.nombrePrograma %>
                   <span class="badge">
                       <!-- Modal Editar -->
-                      <i class="material-icons left">more_vert</i>
+                      <i class="material-icons left">expand_more</i>
                   </span>
               </div>
               <% if (permisos.includes(3)||permisos.includes(21)) { %>
@@ -43,6 +43,7 @@
 
   <input type="hidden" id="error" value="<%= error %>">
   <input type="hidden" id="bandera" value="<%= bandera %>"> 
+  <input type="hidden" id="idciclo" value="<%= idciclo %>">
   <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >    
 <%- include('include/footer.ejs') %>
 
@@ -58,13 +59,15 @@
   }
 
   const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
+    let idCiclo = document.getElementById("idciclo").value;
     fetch('/gestionAdmin/gestionCiclos/participantes/'+idGrupo, {
         method: 'GET'
     }).then(result => {
         return result.json(); //Regresa otra promesa
     }).then(data => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
+        let html = '<br><br><a  href= "/gestionAdmin/gestionCiclos/inscribir/'+idCiclo+'" class="waves-effect waves-light btn-small light-green accent-4 right"><i class="material-icons left">fast_forward</i>Continuar</a>'+
+        '<h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
         '<div class="row">'+
           '<div class="col s12 m6 l6 ">'+
             '<table id = "tablita">'+
@@ -205,14 +208,14 @@ const registroObjetivos = (login, idGrupo) => {
       selectNivel.options[(data.inscrito[0].idNivel-data.niveles[0].idNivel)+1].selected=true;
       let idNivelObj = data.inscrito[0].idNivel;
       M.AutoInit();
-      mostratObj(); 
+      mostrarObj(); 
     }
     
     document.getElementById(idselect).onchange = () => {
-      mostratObj();
+      mostrarObj();
     }
     
-    function mostratObj() {
+    function mostrarObj() {
         //El token de protección CSRF
         const csrf = document.getElementById('_csrf').value;
         let idNivelObj = document.getElementById(idselect).value;
@@ -255,9 +258,11 @@ const registroObjetivos = (login, idGrupo) => {
                           '</tr>'; 
                         let todosobj= 0;
                         let selectobj = 0;
+                        let participanteInscrito = false;
                         for (let obj of data2.objetivos){ 
                           todosobj += 1;
                           if(obj.paloma === 1){
+                            participanteInscrito = true;
                             selectobj += 1;
                               html2+= '<tr>'+
                                 '<td>'+ obj.descripcion + '</td>'+
@@ -283,8 +288,31 @@ const registroObjetivos = (login, idGrupo) => {
                         }
                 html2 += '</tbody> '+ 
                         '</table>'+
-                        '<br>'+
-                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right" id = "inscribir">Inscribir</button>';            
+                        '<br>';
+                if( participanteInscrito!=true){
+                  html2 += '<button class="btn-formulario btn waves-effect blue lighten-1 right" id = "inscribir">'+
+                    '<i class="material-icons right">send</i>Inscribir</button>';
+                }
+                else{
+                  html2 += '<button class="btn-formulario btn waves-effect blue lighten-1 right" id = "inscribir">'+
+                  ' <i class="material-icons right">send</i>Actualizar</button>'+
+                  '<label class = "right" style="visibility:hidden">**</label>'+
+                  '<button class="modal-trigger btn-formulario btn blue lighten-1 right" href = "#baja">'+
+                  '<i class="material-icons right">delete</i>Dar de baja</button>'+
+                  '<div id="baja" class="modal">'+
+                      '<div class="modal-content">'+
+                        '<h5>¿Está seguro de eliminar el registro del participante en el programa? </h5>'+
+                      '</div>' +
+                      '<div class="modal-footer container">'+
+                        '<button  class="modal-close btn-flat grey lighten-1 boton-md" id="darDeBaja">Dar de baja</button>'+
+                        '<label style="visibility:hidden">**</label>'+
+                        '<button  class="modal-close btn-flat grey lighten-1 boton-md">Cancelar</button>'+
+                        '<label style="visibility:hidden">**</label><br>'+
+                      '</div>'+
+                  '</div>';
+                }
+               
+                                  
                 
           let id2 = "objetivos-participante-grupo-"+idGrupo;
           document.getElementById(id2).innerHTML = html2;
@@ -348,6 +376,42 @@ const registroObjetivos = (login, idGrupo) => {
             document.getElementById(id).innerHTML = html;
             M.toast({html: mensaje,classes: color}) 
             document.getElementById('paloma-'+login).className = "material-icons left light-green-text text-accent-4";
+            M.AutoInit();
+          }).catch(err => {
+            console.log(err);
+          });
+        }
+
+        document.getElementById("darDeBaja").onclick = () => {
+          
+          let data2 = {
+            login: login,
+            idGrupo: idGrupo
+          };
+          console.log(data2);
+          fetch('/gestionAdmin/gestionCiclos/baja',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'csrf-token': csrf
+            },
+            body: JSON.stringify(data2)
+          }).then(result => {
+            return result.json();
+          }).then (objetivos => {
+            let html = '', mensaje = '', color = '';
+            if (objetivos.error === undefined){
+              mensaje = 'Se ha dado de baja a '+objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno +' del programa.';
+              color = 'grey';
+            }
+            else{
+              mensaje = objetivos.error.toString();
+              color = 'black';
+            }
+            let id = "niveles-participante-"+objetivos.grupo; 
+            document.getElementById(id).innerHTML = html;
+            M.toast({html: mensaje,classes: color}) 
+            document.getElementById('paloma-'+login).className = "material-icons left grey-text text-lighten-3";
             M.AutoInit();
           }).catch(err => {
             console.log(err);

@@ -3,11 +3,11 @@
 <ul class="collapsible"> 
     <% for (let ciclo of ciclos_aactual) { %>
         <li>
-            <div class="collapsible-header">
-                <a onclick="verPerfilCiclo(<%= ciclo.idCiclo %>)" class = "black-text" style="cursor: pointer;">
+            <div class="collapsible-header" onclick="verPerfilCiclo(<%= ciclo.idCiclo %>)">
+                <a  class = "black-text" >
                     <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
                 </a>
-                <span class="badge">
+                <span class="badge" >
                     <%= ciclo.fechaInicial.getFullYear() %>
                 </span>
             </div>
