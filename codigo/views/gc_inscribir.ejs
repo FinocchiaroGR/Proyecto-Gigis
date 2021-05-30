@@ -8,9 +8,16 @@
       <div class = "right">
         <br><br>
         <% if (permisos.includes(11)) { %>
-        <a  href= "/gestionAdmin/gestionCiclos/editar-ciclo" class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
+        <!-- Boton Modificar ciclo -->
+        <a  onclick="modificarCiclo()"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
         <% } %>
         <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
+        <!-- Modal Modificar ciclo-->
+        <div id="modificarCiclo" class="modal">
+          <div id="modalModCiclo">
+
+          </div>
+        </div><!-- Modificar ciclo-->
       </div>
     </div>
     <p><strong>Programas disponibles</strong></p>
@@ -41,10 +48,13 @@
   </div>
 </div>
 
+  <a  href= "#modificarCiclo" class = "modal-trigger" id="modCiclo" type="hidden"></a>
   <input type="hidden" id="error" value="<%= error %>">
   <input type="hidden" id="bandera" value="<%= bandera %>"> 
   <input type="hidden" id="idciclo" value="<%= idciclo %>">
-  <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >    
+  <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" > 
+
+     
 <%- include('include/footer.ejs') %>
 
 <script>
@@ -144,7 +154,7 @@ const buscar = (idGrupo) => {
             '<tr>';
           colorPalomita = 'grey-text text-lighten-3';
         }
-        '</tbody>';     
+        html+='</tbody>';     
         document.getElementById('tablita').innerHTML = html;
         M.AutoInit();
 
@@ -305,9 +315,7 @@ const registroObjetivos = (login, idGrupo) => {
                       '</div>' +
                       '<div class="modal-footer container">'+
                         '<button  class="modal-close btn-flat grey lighten-1 boton-md" id="darDeBaja">Dar de baja</button>'+
-                        '<label style="visibility:hidden">**</label>'+
-                        '<button  class="modal-close btn-flat grey lighten-1 boton-md">Cancelar</button>'+
-                        '<label style="visibility:hidden">**</label><br>'+
+                        '             <button  class="modal-close btn-flat grey lighten-1 boton-md">Cancelar</button>';
                       '</div>'+
                   '</div>';
                 }
@@ -429,7 +437,157 @@ const registroObjetivos = (login, idGrupo) => {
   });
   }
 
+  const modificarCiclo = () => {
+    let idCiclo = document.getElementById("idciclo").value;
+    fetch('/gestionAdmin/gestionCiclos/editar-ciclo/'+idCiclo, {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+      console.log(data);
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        let html = '<div class="modal-content">'+
+                    '<h3>Modificar el ciclo '+data.ciclonombre+'</h3>'+
+                    '<ul>'+
+                      '<li>'+
+                        '<strong>Fecha inicial:</strong>'+
+                      '</li>'+
+                      '<li>'+
+                        '<div class="input-field">'+
+                          '<input type="text"  id="from" name="fechaInicial" class="datepickerInicial">'+
+                          '<label for="from">Elige la fecha de inicio</label>'+
+                        '</div>'+
+                      '</li>'+
+                      '<li>'+
+                        '<strong>Fecha final:</strong><br>'+
+                      '</li>'+
+                      '<li>'+
+                        '<div class="input-field">'+
+                          '<input type="text"  id="to" name="fechaFinal" class="datepickerFinal">'+
+                          '<label for="to">Elige la fecha de finalización</label>'+
+                        '</div>'+
+                      '</li>'+
+                    '</ul>'+
+                  '</div><div class="modal-footer container">'+
+                  '<button  id = "actualizarCiclo" class="modal-close waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>      '+
+                  '<label style="visibility:hidden">**</label>'+
+                '</div>'+
+                '<br>';     
+        document.getElementById('modalModCiclo').innerHTML = html;
+        inicializarDatePickers(data);
+        M.AutoInit();
+        document.getElementById("modCiclo").click();
+
+    }).catch(err => {
+        console.log(err);
+    });
+};
+
+function inicializarDatePickers(data){
+ //DATE PICKER 
+// Spanish overwrite
+inter_es = {
+	cancel: "Cancelar",
+	done: "Ok",
+	months: [
+		"Enero",
+		"Febrero",
+		"Marzo",
+		"Abril",
+		"Mayo",
+		"Junio",
+		"Julio",
+		"Agosto",
+		"Septiembre",
+		"Octubre",
+		"Noviembre",
+		"Diciembre"
+	],
+	monthsShort: [
+		"Ene",
+		"Feb",
+		"Mar",
+		"Abr",
+		"May",
+		"Jun",
+		"Jul",
+		"Ago",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dic"
+	],
+	weekdays: [
+		"Domingo",
+		"Lunes",
+		"Martes",
+		"Miércoles",
+		"Jueves",
+		"Viernes",
+		"Sábado"
+	],
+	weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+	weekdaysAbbrev: ["D", "L", "M", "M", "J", "V", "S"]
+  };
+
+  // Create default dates
+  let date = new Date(data.fechaLimite[0].fechaFinal);
+  // set default date for #from (1 week from today)
+  let nextWeekFrom = new Date(data.ciclo[0].fechaInicialF);
+  // Default date for #to
+  let nextWeekTo = new Date(data.ciclo[0].fechaFinalF);
+  //Set min date for #from
+  let minDateFrom = new Date(data.fechaLimite[0].fechaFinal);
+  //Set min date for #to
+  let minDateTo = new Date(data.fechaLimite[0].fechaFinal);
+
+  // SET OPTIONS FOR FROM DATEPICKER
+  var optionsFrom = {
+    format: 'yyyy-mm-dd',
+    i18n: inter_es,
+    minDate: new Date(minDateFrom),
+    defaultDate: new Date(nextWeekFrom),
+    setDefaultDate: true,
+    container: 'body',
+    onSelect: function(el) {
+      const ell = new Date(el);
+      const setMM = ell.getDate() + 1;
+      const setM = new Date(ell.setDate(setMM));
+      setMinTo(setM);
+    }
+  };
 
 
+  // SET OPTIONS FOR TO DATEPICKER
+  var optionsTo = {
+    format: 'yyyy-mm-dd',
+    i18n: inter_es,
+    minDate: new Date(minDateTo),
+    defaultDate: new Date(nextWeekTo),
+    setDefaultDate: true,
+    container: 'body',
+  };
+
+
+  // INITIATE DATEPICKERS
+  $(document).ready(function() {
+    var $from = $("#from").datepicker(optionsFrom);
+    var $to = $("#to").datepicker(optionsTo);
+  });
+
+
+  // FUNCTION TO SET MINIMUM DATE WHEN FROM DATE SELECTED
+  var setMinTo = function(vad) {
+    // Get the current date set on #to datepicker
+    var instance = M.Datepicker.getInstance($("#to"));
+    instance.options.minDate = vad;
+
+    // Check if the #from date is greater than the #to date and modify by 1 day if true.
+    if (new Date(instance) < vad) {
+      instance.setDate(vad);
+      $("#to").val(instance.toString());
+    }
+  };
+}
 
 </script>

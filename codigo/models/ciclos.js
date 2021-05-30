@@ -88,7 +88,7 @@ module.exports = class Ciclo {
   }
 
   static fetchUnoPorId(idCiclo){
-    return db.execute('SELECT * FROM ciclos WHERE idCiclo = ?', 
+    return db.execute('SELECT *, DATE_FORMAT(fechaInicial, "%Y,%m,%d") fechaInicialF, DATE_FORMAT(fechaFinal, "%Y,%m,%d") fechaFinalF FROM ciclos WHERE idCiclo = ?', 
     [idCiclo]);
   }
 
@@ -96,6 +96,12 @@ module.exports = class Ciclo {
     return db.execute('SELECT MAX(idCiclo) AS idCiclo FROM ciclos');
   }
   
+  static fetchFechaFinalUltimoCicloSinContar(idCiclo){
+    return db.execute(
+      'SELECT DATE_FORMAT(fechaFinal, "%Y,%m,%d") fechaFinal FROM ciclos WHERE fechaFinal IN (SELECT MAX(fechaFinal) AS ultimaFecha FROM ciclos WHERE idCiclo != ?)',
+      [idCiclo]
+    );
+  }
 
 
 };

@@ -3,14 +3,27 @@
 <ul class="collapsible"> 
     <% for (let ciclo of ciclos_aactual) { %>
         <li>
-            <div class="collapsible-header" onclick="verPerfilCiclo(<%= ciclo.idCiclo %>)">
-                <a  class = "black-text" >
-                    <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
-                </a>
-                <span class="badge" >
-                    <%= ciclo.fechaInicial.getFullYear() %>
-                </span>
-            </div>
+            <% if (ciclo.idCiclo === idUltimoCiclo) { 
+                let ruta = '/gestionAdmin/gestionCiclos/inscribir/'+ idUltimoCiclo; %>
+                <div class="collapsible-header" >
+                    <a  class = "black-text" href="<%= ruta %>">
+                        <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
+                    </a>
+                    <span class="badge" >
+                        <%= ciclo.fechaInicial.getFullYear() %>
+                    </span>
+                </div>
+            <% }else{ %>
+                <div class="collapsible-header" href="">
+                    <a  class = "black-text" href="/gestionAdmin/gestionCiclos/perfil-ciclo">
+                        <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
+                    </a>
+                    <span class="badge" >
+                        <%= ciclo.fechaInicial.getFullYear() %>
+                    </span>
+                </div>
+
+            <% } %>
         </li>
     <% } %>
 </ul>
@@ -24,7 +37,7 @@
                     <div class="collection">
                         <% for (let ciclo of ciclos) { %>
                             <% if (ciclo.fechaInicial.getFullYear() === p.anio) { %>
-                                <a href="" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
+                                <a  href="/gestionAdmin/gestionCiclos/perfil-ciclo" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
                             <% } %>        
                         <% } %>
                     </div>
@@ -34,22 +47,4 @@
 </ul>
 <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
 
-<script>
-    const verPerfilCiclo = (idcicloparam) => {
-        const csrf = document.getElementById('_csrf').value;
-        let data = {
-            idcicloparam: idcicloparam,
-        };
 
-        fetch('/gestionAdmin/gestionCiclos/perfil-ciclo',{
-            method: 'POST',
-            headers: {'Content-Type':'application/json',
-                    'csrf-token': csrf},
-            body:JSON.stringify(data),
-        }).then(result => {
-            window.location = '/gestionAdmin/gestionCiclos/inscribir/'+ idcicloparam ;
-        })
-
-        
-    }
-</script>
