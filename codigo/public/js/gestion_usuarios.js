@@ -72,8 +72,6 @@ const modRol = (idRol) => {
                 return result.json();
                 
             }).then(data => {
-                console.log("Starting...");
-                console.log(data);
 
                 let html =  '<div id="childDiv">' +
                                 '<form action="/gestionAdmin/gestionUsuarios/update-roll" method="POST">' +
@@ -191,11 +189,11 @@ const modUser = (login) => {
                                 '<li><div class="input-field">' +
                                     '<input  id="passwordMod" name="password"  type="password" class="validate" value="" placeholder="Modicar contraseña">' +
                                     '<div id="spanpass"><span toggle="#passwordMod" class="material-icons field-icon grey-text" onclick="showPassMod(this)">visibility_off</span></div>' +
-                                '</div></li>' +
-                                '<li><strong><br>Roles</strong></li>' +
-                                '<li><table style="margin:5px;">';
+                                '</div></li>';
 
-                                    if (permisos.includes(13)) {
+                                    if (data.permisos.includes(13)) {
+                                        html += '<li><strong><br>Roles</strong></li>' +
+                                                '<li><table style="margin:5px;">';
                                         for (let rol of data.roles) { 
                                             if (rol.idRol != 1) { 
                                                 if (rol.foo == 1) {
@@ -243,7 +241,10 @@ const modUser = (login) => {
                                         }
                                     }
                                 
-                                html +=    '</table></li><div id="datosTerapeuta">';
+                                html += '</table><input hidden name="lengthRoles" value="' + data.roles.length + '">' +
+                                        '<input hidden name="oldEmail" value="' + data.usuarios[0].login + '">' +
+                                        '<input hidden name="tBool" value="' + data.tBool + '">' +
+                                        '</li><div id="datosTerapeuta">';
 
                                 if(data.tBool == true) {
                                     html += '<div id="childDiv1"><li><strong><br>Formación profesional</strong></li>' + 
@@ -332,9 +333,7 @@ const modUser = (login) => {
                                     
                                 }
             html += 
-                    '<input hidden name="lengthRoles" value="' + data.roles.length + '">' +
-                    '<input hidden name="oldEmail" value="' + data.usuarios[0].login + '">' +
-                    '<input hidden name="tBool" value="' + data.tBool + '">' +
+                    
                     '</div></ul></div></form>' +
                 '<form id="deleteUser" action="/gestionAdmin/gestionUsuarios/eliminar-usuario" method="POST">' +
                     '<input type="hidden" id="_csrf" name="_csrf" value="' + csrf + '">' +
@@ -342,7 +341,7 @@ const modUser = (login) => {
                     '<input hidden name="tBool2" value="' + data.tBool + '">' +
                 '</form><div class="modal-footer">' +
                     '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 right" boton-md" style="margin:5px;" form="saveModUser">Actualizar</button>';
-            if (permisos.includes(17)) {
+            if (data.permisos.includes(17)) { 
                 html +=    '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right" style="margin:5px;" form="deleteUser" onclick="return confirm(\'¿Estás seguro de eliminar este usuario?\')">Eliminar</button>';
             }
             html += '</div>';

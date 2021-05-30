@@ -120,7 +120,6 @@ exports.postNuevoRoll = (request, response) => {
         request.body.Funcion_20 === undefined ? null : 20,
         request.body.Funcion_21 === undefined ? null : 21
     ]
-    let i = funciones.length;
     for (let funcion of funciones){
         if (funcion != null){
             error = false;
@@ -130,7 +129,6 @@ exports.postNuevoRoll = (request, response) => {
         request.session.mensaje = 'No hay funciones registradas';
         request.session.bandera = true; 
         response.redirect('/gestionAdmin/gestionUsuarios');
-        console.log(request.session.mensaje);
     }
     else
     {
@@ -189,7 +187,6 @@ exports.postModRoll = (request, response) => {
 
 exports.postUpdateRoll = (request, response) => {
     const idRol = request.body.idRol;
-    console.log(request.body.idRol);
 
     let funciones = [
         request.body.Funcion_1 === undefined ? null : 1,
@@ -259,7 +256,8 @@ exports.postModUser = (request, response) => {
                                     usuarios : usuarios,
                                     roles : roles,
                                     terapeuta : terapeuta,
-                                    tBool : tBool
+                                    tBool : tBool,
+                                    permisos: request.session.permisos
                                 })
                             })
                             .catch((err) => {
@@ -273,7 +271,8 @@ exports.postModUser = (request, response) => {
                         return response.status(200).json({
                             usuarios : usuarios,
                             roles : roles,
-                            tBool : tBool
+                            tBool : tBool,
+                            permisos: request.session.permisos
                         });
                     }
                 })
@@ -487,11 +486,8 @@ exports.postUpdateUser = (request, response) => {
 exports.postDeleteUser = (request, response) => {
     let oldEmail = request.body.oldEmail2;
     let tBool = request.body.tBool2;
-    console.log('si llegamos : ' +request.body.tBool2);
-    console.log('si llegamos : ' +request.body.oldEmail2);
 
     if (tBool == 'true') {
-        console.log('aqui');
         Grupos_Terapeutas.fetchIfTerapeutaHaveGroups(oldEmail)
             .then(([numGrupos]) => {
                 if (numGrupos[0].num_groups == 0){
