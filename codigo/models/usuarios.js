@@ -65,6 +65,16 @@ module.exports = class Usuario {
       [newLogin, nombre, apellidoP, apellidoM, oldLogin]);
   }
 
+  static deleteById(login) {
+    return db.execute('DELETE FROM usuarios WHERE login = ?',
+    [login]);
+  }
+  
+  static changeLogin(login, alt) {
+    return db.execute('UPDATE `usuarios` SET `login` = ? WHERE `usuarios`.`login` = ?', 
+    [alt, login]);
+  }
+
   static actualizarPassword(password, login) {
     return bcrypt.hash(password, 12)
     .then( (password) => {

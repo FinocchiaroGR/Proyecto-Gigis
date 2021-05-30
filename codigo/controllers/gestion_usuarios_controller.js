@@ -60,7 +60,7 @@ exports.postNuevoUsuario = (request,response) => {
                 usuario_rol.save()
                     .then(() => {
                         if (rol === '2'){ 
-                            const cv_path  = request.file.path === ''? null :  request.file.path;
+                            const cv_path  = request.file === undefined ? null :  request.file.path;
                             const titulo = request.body.titulo === ''? null :  request.body.titulo;
                             const terapeuta = new Terapeuta(request.body.correo, titulo,  cv_path, 'A');
                             terapeuta.save()
@@ -470,14 +470,81 @@ exports.postUpdateUser = (request, response) => {
 };
 
 exports.postDeleteUser = (request, response) => {
-    let login = request.body.login;
-    Usuario_Rol.deleteById(login)
-    .then(() => {
-        request.session.mensaje = 'El usuario fue eliminado';
-        request.session.bandera = false; 
-        response.redirect('/gestionAdmin/gestionUsuarios');
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+    let oldEmail = request.body.oldEmail;
+    let tBool = request.body.tBool;
+    console.log(request.body.tBool);
+
+    if (tBool == 'true') {
+        console.log('aqui');
+        Grupos_Terapeutas.fetchIfTerapeutaHaveGroups(oldEmail)
+            .then(([numGrupos]) => {
+                if (numGrupos[0].num_groups == 0){
+                    Terapeuta.deleteById(oldEmail)
+                        .then(() => {
+                            Usuario_Rol.deleteById(oldEmail)
+                                .then(() => {
+                                    Usuario.deleteById(oldEmail)
+                                        .then(() => {
+                                            request.session.mensaje = 'El usuario fue eliminado';
+                                            request.session.bandera = false; 
+                                            response.redirect('/gestionAdmin/gestionUsuarios');
+                                        })
+                                        .catch((err) => {
+                                            console.log(err);
+                                        })
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                })
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+                else {
+                    Usuario_Rol.deleteById(oldEmail)
+                        .then(() => {
+                            Terapeuta.changeStatusToB(oldEmail)
+                                .then(() => {
+                                    let timestamp = new Date().getUTCMilliseconds();
+                                        Usuario.changeLogin(oldEmail, timestamp)
+                                            .then(() => {
+                                                request.session.mensaje = 'El usuario fue eliminado';
+                                                request.session.bandera = false; 
+                                                response.redirect('/gestionAdmin/gestionUsuarios');
+                                            })
+                                            .catch((err) => {
+                                                console.log(err);
+                                            })
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                })
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+    else {
+        Usuario_Rol.deleteById(oldEmail)
+            .then(() => {
+                Usuario.deleteById(oldEmail)
+                    .then(() => {
+                        request.session.mensaje = 'El usuario fue eliminado';
+                        request.session.bandera = false; 
+                        response.redirect('/gestionAdmin/gestionUsuarios');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
 };

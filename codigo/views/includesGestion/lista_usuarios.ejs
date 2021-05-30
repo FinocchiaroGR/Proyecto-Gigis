@@ -140,11 +140,17 @@
                             '<li><strong><br>Formación profesional</strong></li>' +
                             '<li>' +
                                 '<div class="input-field">';
-                                    if (!$.trim(data.terapeuta)) {
-                                        html += '<input id="titulo" name="titulo" type="text" class="validate" value="" placeholder="No se ha registrado un título">';
+                                    if ($.trim(data.terapeuta)) {
+                                        if (data.terapeuta[0].titulo != null) {
+                                            html += '<input id="titulo" name="titulo" type="text" class="validate" value="' + data.terapeuta[0].titulo + '" placeholder="Título">';
+                                        }
+                                        else {
+                                            html += '<input id="titulo" name="titulo" type="text" class="validate" value="" placeholder="No se ha registrado un título">';
+                                        }
+                                        
                                     }
                                     else{
-                                        html += '<input id="titulo" name="titulo" type="text" class="validate" value="' + data.terapeuta[0].titulo + '" placeholder="Título">';
+                                        html += '<input id="titulo" name="titulo" type="text" class="validate" value="" placeholder="No se ha registrado un título">';
                                     }
                             html +=
                                 '</div>' +
@@ -166,11 +172,17 @@
                                     }
                                     html +=
                                     '<div class="file-path-wrapper">';
-                                        if (!$.trim(data.terapeuta)) {
-                                            html += '<input class="file-path validate" type="text" placeholder="No se ha subido ningún archivo">';
+                                        if ($.trim(data.terapeuta)) {
+                                            if (data.terapeuta[0].cv != null) {
+                                                html += '<input class="file-path validate" type="text" placeholder="' + data.terapeuta[0].cv + '">';
+                                            }
+                                            else {
+                                                html += '<input class="file-path validate" type="text" placeholder="No se ha subido ningún archivo">';
+                                            }
+                                            
                                         }
                                         else {
-                                            html += '<input class="file-path validate" type="text" placeholder="' + data.terapeuta[0].cv + '">';
+                                            html += '<input class="file-path validate" type="text" placeholder="No se ha subido ningún archivo">';
                                         }
                                     html += '</div>' +
                                     '<br>' +
