@@ -12,12 +12,18 @@
             <td  style="cursor: pointer;"><a href="<%= usuario.login%>-perfil" class = "black-text"><%= usuario.nombreUsuario %> <%= usuario.apellidoPaterno %></a></td>
             <td><%= usuario.nombre %></td>
 
-            <% if (permisos.includes(9)) { %>
-                <td>
-                    <a href="<%= usuario.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
-                </td>
+            <% if (permisos.includes(9)) { %>  
+            <td>
+                <!-- Modal Modificar Usuario -->
+                <a class=" modal-trigger black-text white right" href="#modificarUsuario" id="<%= usuario.login %>" onclick="modUser(this.id);"><i class="material-icons">create</i></a>
+            </td>
             <% } %>
         </tr>
     <% } %>
+    <!-- Modal Structure Modificar Usuario-->
+    <div id="modificarUsuario" class="modal">
+        <div id="despliega_usuario"><div id="childDiv"></div></div>
+    </div><!-- Fin Modal Structure Modificar Usuario -->
+    
     </tbody>
 </table>

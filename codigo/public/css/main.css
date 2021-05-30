@@ -123,6 +123,11 @@ border-bottom: 1px solid #e53935;
 box-shadow: 0 1px 0 0 #e53935 !important;
 }
 
+.input-field input[type=password].valid {
+    border-bottom: 1px solid #ffcc80!important;
+    box-shadow: 0 1px 0 0 #ffcc80!important;
+    }
+
 /* label underline focus password color */
 .input-field input[type=password]:focus {
     border-bottom: 1px solid #ffcc80!important;
@@ -197,4 +202,13 @@ box-shadow: 0 1px 0 0 #e53935 !important;
 #cambiar-contraseña {
     position: relative;
     top: 1.5em;
+}
+
+span.field-icon {
+    float: right;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+    z-index: 2;
 }

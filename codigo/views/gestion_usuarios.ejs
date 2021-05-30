@@ -63,15 +63,20 @@
     </div>
 </div>    
 <input type="hidden" id="bandera" value="<%= bandera%>">
+<input type="hidden" id="banderaW" value="<%= banderaW%>">
 
 <%- include('include/footer.ejs') %>
 
 <script>
   let bandera = document.getElementById('bandera').value;
+  let banderaW = document.getElementById('banderaW').value;
   if (bandera == 'true'){
     M.toast({html: '<%- mensaje %>', length:7500, classes: 'black'})
   }
   if (bandera == 'false'){
     M.toast({html: '<%- mensaje %>',  length:6500, classes: 'grey'})
+  }
+  if (banderaW == 'true'){
+    window.alert('<%- windowM %>');
   }
 </script>

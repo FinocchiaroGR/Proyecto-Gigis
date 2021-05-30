@@ -21,10 +21,9 @@
                         
                         <div class="input-field col s12">
                             <label for="password">Clave</label>
-                            <input class="input-field" type="password" name="password">
+                            <input class="input-field" id="password" name="password" type="password" name="password">
+                            <div id="spanpass"><span toggle="#password" class="material-icons field-icon grey-text" onclick="showPassLogin(this)">visibility_off</span></div>
                         </div>
-
-
                         <div class="input-field col s12">
                             <button style="color: rgb(255, 255, 255); width: 100%;" class="btn light-blue darken-1 waves-effect waves-light" type="submit" name="action">Entrar
                                 <i class="material-icons right">send</i>

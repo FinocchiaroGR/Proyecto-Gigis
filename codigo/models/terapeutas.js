@@ -1,3 +1,4 @@
+const { response } = require('express');
 const db = require('../util/database');
 
 module.exports = class Terapeuta{
@@ -22,4 +23,28 @@ module.exports = class Terapeuta{
     return db.execute('SELECT * FROM terapeutas');
   }
 
+  static fetchById(login) {
+    return db.execute('Select * From terapeutas Where login = ?',
+      [login]
+    );
+  }
+
+  static deleteById(login) {
+    return db.execute('DELETE FROM terapeutas WHERE login = ?',
+    [login]);
+  }
+
+  static changeStatusToB(login) {
+    return db.execute("UPDATE terapeutas SET estatus = 'B' WHERE login = ?",
+    [login]);
+  }
+
+  static updateTerapeuta(login, titulo, estatus) {
+    return db.execute('UPDATE terapeutas SET titulo = ?, estatus = ? WHERE terapeutas.login = ?', 
+    [titulo, estatus, login]);
+  }
+  static updateTerapeutaCv(cv, login) {
+    return db.execute('UPDATE terapeutas SET cv = ? WHERE terapeutas.login = ?', 
+    [cv, login]);
+  }
 }
