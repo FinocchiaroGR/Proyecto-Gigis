@@ -208,6 +208,8 @@ exports.getConsultas = ((request, response, next) => {
     else {
         return response.redirect('/gestionAdmin');
     }
+    request.session.mensaje = undefined;
+    request.session.bandera = undefined;
 });
 
 exports.postConsultas = ((request, response, next) => {
