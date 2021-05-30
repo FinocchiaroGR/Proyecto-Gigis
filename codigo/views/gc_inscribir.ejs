@@ -68,6 +68,7 @@
     M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
   }
 
+  //Despliega la lista de participantes activos
   const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
     let idCiclo = document.getElementById("idciclo").value;
     fetch('/gestionAdmin/gestionCiclos/participantes/'+idGrupo, {
@@ -117,7 +118,8 @@
                     '<div class="asignar-nivel" id="niveles-participante-'+idGrupo+'">'+
                     '</div>'+
                   '</div>'+
-                '</div>';        
+                '</div>'+
+                '<input type="hidden" id="nombreProg" value="'+ programa +'">';        
         document.getElementById('contenido').innerHTML = html;
         M.AutoInit();
     }).catch(err => {
@@ -125,6 +127,7 @@
     });
 };
 
+//Funcion para el buscador de participantes
 const buscar = (idGrupo) => {
     let criterio = document.getElementById("buscarP").value;
     console.log(criterio);
@@ -163,6 +166,7 @@ const buscar = (idGrupo) => {
     });
 };
 
+//Sección para objetivos
 const registroObjetivos = (login, idGrupo) => {
   //El token de protección CSRF
   const csrf = document.getElementById('_csrf').value;
@@ -218,14 +222,16 @@ const registroObjetivos = (login, idGrupo) => {
       selectNivel.options[(data.inscrito[0].idNivel-data.niveles[0].idNivel)+1].selected=true;
       let idNivelObj = data.inscrito[0].idNivel;
       M.AutoInit();
-      mostrarObj(); 
+      mostrarObj(data.usuarios[0].nombreUsuario); 
     }
     
     document.getElementById(idselect).onchange = () => {
-      mostrarObj();
+      mostrarObj(data.usuarios[0].nombreUsuario);
     }
     
-    function mostrarObj() {
+    //Mostrar objetivos dependiendo del nivel seleccionado
+    function mostrarObj(participante) {
+        const programa = document.getElementById('nombreProg').value;
         //El token de protección CSRF
         const csrf = document.getElementById('_csrf').value;
         let idNivelObj = document.getElementById(idselect).value;
@@ -309,13 +315,14 @@ const registroObjetivos = (login, idGrupo) => {
                   '<label class = "right" style="visibility:hidden">**</label>'+
                   '<button class="modal-trigger btn-formulario btn blue lighten-1 right" href = "#baja">'+
                   '<i class="material-icons right">delete</i>Dar de baja</button>'+
+                  //Modal para dar de baja en un ciclo a un participante
                   '<div id="baja" class="modal">'+
                       '<div class="modal-content">'+
-                        '<h5>¿Está seguro de eliminar el registro del participante en el programa? </h5>'+
+                        '<h5>¿Estás seguro de eliminar el registro de '+participante+' en '+programa+'? </h5>'+
                       '</div>' +
                       '<div class="modal-footer container">'+
                         '<button  class="modal-close btn-flat grey lighten-1 boton-md" id="darDeBaja">Dar de baja</button>'+
-                        '             <button  class="modal-close btn-flat grey lighten-1 boton-md">Cancelar</button>';
+                        '             <button  class="modal-close btn-flat grey lighten-1 boton-md">Cancelar</button>               ';
                       '</div>'+
                   '</div>';
                 }
