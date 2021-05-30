@@ -6,7 +6,8 @@
         <div class="row">
             <div class="input-field col s12" >
               <i class="material-icons prefix">search</i>
-              <input type="text" id="buscarUsuario" class="autocomplete" placeholder="Buscar usuario">
+              <input type="text" id="buscarUsuario" class="autocomplete" oninput="buscarUsuario('<%=permisos %>')">
+              <label for="buscarUsuario">Buscar usuario</label>
             </div>
         </div>
     </div>

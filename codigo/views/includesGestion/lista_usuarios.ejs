@@ -6,7 +6,7 @@
         <th data-field="editar"></th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tablaUsuarios">
     <% for (let usuario of usuarios) { %>  
         <tr>
             <td  style="cursor: pointer;"><a href="<%= usuario.login%>-perfil" class = "black-text"><%= usuario.nombreUsuario %> <%= usuario.apellidoPaterno %></a></td>

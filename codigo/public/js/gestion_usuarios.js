@@ -449,7 +449,7 @@ const mostrarDatosTerapeuta = () => {
 
 const quitarDatosTerapeuta = (alreadyCh) => {
 
-    if (window.confirm("Estas seguro/a de querrer quitarle este rol?\r\nLa información sobre este usuario terapeuta se perderá.")) {
+    if (window.confirm("¿Estás seguro de quitarle el rol de terapeuta?\r\nLa información adicional (currículum y título profesional) se perderá.")) {
         document.getElementById('datosTerapeuta').removeChild(document.getElementById("childDiv1"));
 
         let html2 = 
@@ -468,4 +468,40 @@ const quitarDatosTerapeuta = (alreadyCh) => {
         return false
     }
  
+};
+
+const buscarUsuario = (permisos) => {
+    let criterio = document.getElementById("buscarUsuario").value;
+    console.log(criterio);
+    fetch('/gestionAdmin/gestionUsuarios/buscar/'+criterio, {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        let html = '';
+        for (let usuario of data.usuarios) { 
+            html += '<tr>'+
+                '<td  style="cursor: pointer;"><a href="'+ usuario.login+'-perfil" class = "black-text">'+ usuario.nombreUsuario +' '+ usuario.apellidoPaterno+'</a></td>'+
+                '<td>'+ usuario.nombre +'</td>';
+    
+                if (permisos.includes(9)) {   
+                html += '<td>'+
+                    // Modal Modificar Usuario 
+                    '<a class=" modal-trigger black-text white right" href="#modificarUsuario" id="'+ usuario.login + '" onclick="modUser(this.id);"><i class="material-icons">create</i></a>'+
+                '</td>';
+                }
+            html+='</tr>';
+        }
+        //Modal Structure Modificar Usuario
+        html += '<div id="modificarUsuario" class="modal">'+
+            '<div id="despliega_usuario"><div id="childDiv"></div></div>'+
+        '</div>';//Fin Modal Structure Modificar Usuario
+
+        document.getElementById('tablaUsuarios').innerHTML = html;
+        M.AutoInit();
+
+    }).catch(err => {
+        console.log(err);
+    });
 };

@@ -57,6 +57,18 @@ exports.get = (request, response) => {
     request.session.windowM = undefined;
     request.session.banderaW = undefined; 
 };
+
+
+exports.getBuscar  = (request, response, next) => {
+    Usuario.fetchPorCriterio(request.params.criterio)
+      .then(([usuarios,fieldData]) => {
+            return response.status(200).json({
+              usuarios:usuarios,
+            });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
     
 exports.postNuevoUsuario = (request,response) => {
     let apellidoP = request.body.apellidoP === ''? null :  request.body.apellidoP;

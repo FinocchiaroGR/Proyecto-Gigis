@@ -95,5 +95,12 @@ module.exports = class Usuario {
     return db.execute('SELECT idRol FROM usuarios_roles WHERE login = ?', [login]);
   }
 
+  static fetchPorCriterio(criterio) {
+    return db.execute(
+      'SELECT U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno, U.login, R.nombre FROM roles R, usuarios_roles UR, usuarios U LEFT JOIN participantes P ON  U.login = P.login WHERE R.idRol = UR.idRol  AND UR.login = U.login AND  R.idRol != 1 AND(U.nombreUsuario LIKE ? OR U.apellidoPaterno LIKE ? OR U.apellidoMaterno LIKE ?) AND P.login IS NULL',
+      ['%'+criterio+'%','%'+criterio+'%','%'+criterio+'%']
+      );
+  }
+
 
 }
