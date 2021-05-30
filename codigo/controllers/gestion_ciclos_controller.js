@@ -300,8 +300,44 @@ exports.postPerfilCiclo = (request,response,next) => {
 exports.getEditarCiclo = (request,response,next) => {
     const permisos = request.session.permisos;
     if(permisos.includes(11)) {
-        response.status(500);
-        response.send('Hola');
+        Programa.fetchAll()
+        .then(([programas, fieldData1]) => {
+            Usuario.fetchNomTerapeutas()
+            .then(([terapeutas, fieldData1]) => {
+                Ciclo.fetchFechaFinalUltimoCicloSinContar(request.params.idCiclo)
+                .then(([fechaLimite, fieldData1]) => {
+                    Grupo.fetchIdUltimoGrupo()
+                        .then(([idUltimoGrupo, fieldData1]) => {
+                            request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo; 
+                            Programa.fetchPorIdCiclo(request.params.idCiclo)
+                                .then(([programasreg, fieldData1]) => {
+                                    Ciclo.fetchUnoPorId(request.params.idCiclo)
+                                        .then(([ciclo, fieldData1]) => {
+                                            let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
+                                            let ciclonombre = meses + ' '+ ciclo[0].fechaInicial.getFullYear(); 
+                                            return response.status(200).json({
+                                                fechaLimite: fechaLimite,
+                                                programas: programas,
+                                                programasreg: programasreg,
+                                                terapeutas: terapeutas,
+                                                permisos: request.session.permisos,
+                                                ciclonombre: ciclonombre,
+                                                ciclo:ciclo,
+                                                backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+                                                forwArrow: arrows[1]
+                                            });
+                                        })
+                                        .catch((err) => console.log(err));
+                                })
+                                .catch((err) => console.log(err));
+                        })
+                        .catch(err => console.log(err)); 
+                })
+                .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
     }
     else {
         response.status(404);
