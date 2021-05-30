@@ -7,6 +7,7 @@ const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
 const Objetivo = require('../models/objetivos');
 const Participantes_Grupos_Objetivos = require('../models/participantes_grupos_objetivos');
+const { permisos } = require('../models/usuarios');
 
 const arrows = Arrow.fetchAll();
 const mes = [
@@ -45,7 +46,8 @@ exports.getInscribir = (request,response,next) => {
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
     let idlastCiclo = parseInt(request.session.idlastciclo) + 1;
-    const idciclop =  request.session.idcicloparam === undefined ? idlastCiclo : request.session.idcicloparam;
+    console.log(request.params.idCiclo);
+    const idciclop =  request.params.idCiclo === undefined ? idlastCiclo : request.params.idCiclo;
     Ciclo.fetchUnoPorId(idciclop)
     .then(([ciclo, fieldData1]) => {
         let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
@@ -289,11 +291,14 @@ exports.postAgrCiclo= (request,response,next) => {
 };
 
 
-exports.postPerfilCiclo = (request,response,next) => {
-    request.session.idcicloparam = parseInt(request.body.idcicloparam); 
-    request.session.error = undefined; 
-    request.session.bandera =undefined;
-    return response.status(300).json();
+exports.getPerfilCiclo = (request,response,next) => {
+    response.render('perfil_usuario',{
+        permisos:request.session.permisos,
+        tituloDeHeader: "Gestión de ciclos",
+        tituloBarra: "Ciclos",
+        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+        forwArrow: arrows[1]
+    });
 
 };
 
@@ -323,8 +328,6 @@ exports.getEditarCiclo = (request,response,next) => {
                                                 permisos: request.session.permisos,
                                                 ciclonombre: ciclonombre,
                                                 ciclo:ciclo,
-                                                backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-                                                forwArrow: arrows[1]
                                             });
                                         })
                                         .catch((err) => console.log(err));
@@ -362,6 +365,7 @@ exports.get = (request,response,next) => {
                                     response.render('gestion_ciclos', {
                                         estado: estado,
                                         ciclos: ciclos,
+                                        idUltimoCiclo: idUltimoCiclo[0].idCiclo,
                                         a_pasados:a_pasados,
                                         ciclos_aactual: ciclos_aactual,
                                         mes: mes,
