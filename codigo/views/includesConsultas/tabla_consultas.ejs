@@ -3,22 +3,28 @@
     <table class="striped highlight responsive-table">
       <thead>
         <tr class="center-aligned">
-
+          <% let archivo = new Object(); %>
           <td>Participantes</td>
-
+          <% archivo.participante = 'Participante'; %>
           <% if(mostrarSexEdad) { %>
             <td>Sexo</td>
+            <% archivo.sexo = 'Sexo'; %>
             <td>Edad</td>
+            <% archivo.edad = 'Edad'; %>
           <% } %>
 
           <% if(mostrarCalif) { %>
 
             <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini %> </td>
+            <% let calificacion_inicial = 'calificacion_inicial_' + ciclos.ini;
+               archivo[calificacion_inicial] = 'Calificacion Inicial ' + programas[listaProg[0]-1].nombrePrograma + ' Ciclo-' + ciclos.ini; %>
 
             <% let cicloCont = 0, progCont = 0; %>
             <% for(let i = 0; i<cantCol; i++) { %>
               <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini+cicloCont %> </td>
-              
+              <% let calificacion_final = 'calificacion_final_' + cicloCont;
+                 let ciclo =  ciclos.ini+cicloCont;
+                 archivo[calificacion_final] = 'Calificacion Final ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclo; %>
               <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
               <% } else { %>
@@ -26,13 +32,22 @@
               <% } %>
 
             <% } %>
+
             <td>Calificación Inicial</td>
+            <% archivo.calificacion_inicial = 'Calificación Inicial'; %>
+
             <td>Calificación Final</td>
+            <% archivo.calificacion_final = 'Calificación Final'; %>
+
             <td>Promedio</td>
+            <% archivo.promedio = 'Promedio'; %>
+
             <td>Avance</td>
+            <% archivo.avance = 'Avance'; %>
           <% } %>
         </tr>
       </thead>
+      <%console.log(archivo) %>
       <% for(let i = 0; i < cantPart; i++) { %>
         <tr>
 
