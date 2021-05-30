@@ -197,64 +197,66 @@ const modUser = (login) => {
                                   '<input  id="passwordMod" name="password"  type="password" class="validate" value="" placeholder="Modicar contraseña">' +
                                   '<div id="spanpass"><span toggle="#passwordMod" class="material-icons field-icon grey-text" onclick="showPassMod(this)">visibility_off</span></div>' +
                               '</div>' +
-                          '</li>' +
-                          '<li><strong><br>Roles</strong></li>' +
+                          '</li>';
+            if (permisos.includes(13)) {
+                          html+='<li><strong><br>Roles</strong></li>' +
                           '<li>' +
                               '<table>';
 
-          for (let rol of data.roles) { 
-              if (rol.idRol != 1) { 
-                  if (rol.foo == 1) {
-                      if (rol.idRol == 2) {
-                          html +=     
-                              '<tr id="terapeuta">' +
-                                  '<td id="childT">' +
-                                      '<label>'+
-                                          '<input type="checkbox" checked="checked" id="alreadyCh" onclick="quitarDatosTerapeuta(this.id)" name="Rol_' + rol.idRol + '">' +
-                                          '<span>' + rol.nombre + '</span>' +
-                                      '</label>' +
-                                  '</td>' +
-                              '</tr></div></div>';      
-                      }
-                      else {
-                          html +=     
-                              '<tr>' +
-                                  '<td>' +
-                                      '<label>'+
-                                          '<input type="checkbox" checked="checked" name="Rol_' + rol.idRol + '">' +
-                                          '<span>' + rol.nombre + '</span>' +
-                                      '</label>' +
-                                  '</td>' +
-                              '</tr>';
-                      }
-                                                  
-                  }
-                  else {
-                      if (rol.idRol == 2) {
-                          html +=     
-                              '<tr id="terapeuta">' +
-                                  '<td id="childT">' +
-                                      '<label>'+
-                                          '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
-                                          '<span>' + rol.nombre + '</span>' +
-                                      '</label>' +
-                                  '</td>' +
-                              '</tr></div></div>';       
-                      }
-                      else {
-                          html +=     
-                              '<tr>' +
-                                  '<td>' +
-                                      '<label>'+
-                                          '<input type="checkbox" name="Rol_' + rol.idRol + '">' +
-                                          '<span>' + rol.nombre + '</span>' +
-                                      '</label>' +
-                                  '</td>' +
-                              '</tr>';
-                      }
-                  }
-              } 
-          }
+                for (let rol of data.roles) { 
+                    if (rol.idRol != 1) { 
+                        if (rol.foo == 1) {
+                            if (rol.idRol == 2) {
+                                html +=     
+                                    '<tr id="terapeuta">' +
+                                        '<td id="childT">' +
+                                            '<label>'+
+                                                '<input type="checkbox" checked="checked" id="alreadyCh" onclick="quitarDatosTerapeuta(this.id)" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr></div></div>';      
+                            }
+                            else {
+                                html +=     
+                                    '<tr>' +
+                                        '<td>' +
+                                            '<label>'+
+                                                '<input type="checkbox" checked="checked" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr>';
+                            }
+                                                        
+                        }
+                        else {
+                            if (rol.idRol == 2) {
+                                html +=     
+                                    '<tr id="terapeuta">' +
+                                        '<td id="childT">' +
+                                            '<label>'+
+                                                '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr></div></div>';       
+                            }
+                            else {
+                                html +=     
+                                    '<tr>' +
+                                        '<td>' +
+                                            '<label>'+
+                                                '<input type="checkbox" name="Rol_' + rol.idRol + '">' +
+                                                '<span>' + rol.nombre + '</span>' +
+                                            '</label>' +
+                                        '</td>' +
+                                    '</tr>';
+                            }
+                        }
+                    } 
+                }
+            }
                                 
           html += 
               '</table><input hidden name="lengthRoles" value="' + data.roles.length + '"><input hidden name="oldEmail" value="' + data.usuarios[0].login + '"><input hidden name="tBool" value="' + data.tBool + '"></li><div id="datosTerapeuta">';
@@ -349,9 +351,11 @@ const modUser = (login) => {
           }
           html +=                 
               '</div></ul></div><div class="modal-footer container">' +
-                  '<div class="modal-footer container">' +
-                      '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md" formaction="" onclick="eliminarUsuario(this)">Eliminar</button>' +
-                      '           <button  type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>' +
+                  '<div class="modal-footer container">';
+                if (permisos.includes(17)) {
+                    html+=  '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md" formaction="" onclick="eliminarUsuario(this)">Eliminar</button>';
+                }
+                 html += '           <button  type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>' +
                   '</div>' +
                   '<br>' +
               '</form>';
