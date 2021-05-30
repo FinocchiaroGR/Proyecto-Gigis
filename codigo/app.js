@@ -54,10 +54,9 @@ app.use('/programas', rutasProgramas);
 app.use('/gestionAdmin', rutasGestionAdmin);
 
 app.get('/', (request, response, next) => {
-    console.log('Prueba home');
-    //response.redirect('/gestionAdmin');
-    response.status(200);
-    response.send('No hay home');
+    response.status(301);
+    return response.redirect('/programas');
+
 });
 
 app.use((request, response, next) => {
