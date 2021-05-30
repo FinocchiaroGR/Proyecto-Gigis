@@ -52,7 +52,7 @@ exports.get = (request, response) => {
 exports.postNuevoUsuario = (request,response) => {
     let apellidoP = request.body.apellidoP === ''? null :  request.body.apellidoP;
     let apellidoM = request.body.apellidoM === ''? null :  request.body.apellidoM;
-    const usuario = new Usuario(request.body.correo, request.body.contra, request.body.nombre, apellidoP, apellidoM);
+    const usuario = new Usuario(request.body.correo, request.body.password, request.body.nombre, apellidoP, apellidoM);
     usuario.save()
         .then(() => {
             for (let rol of request.body.selRol){
@@ -280,8 +280,8 @@ exports.postModUser = (request, response) => {
 exports.postUpdateUser = (request, response) => {
     let login = request.body.login;
     let oldEmail = request.body.oldEmail;
-    let password = request.body.password === '' ? null : request.body.password;
     let nombre = request.body.nombre;
+    let password = request.body.password === '' ? null : request.body.password;
     let apellidoP = request.body.apellidoP === '' ? null : request.body.apellidoP;
     let apellidoM = request.body.apellidoM === '' ? null : request.body.apellidoM;
     let lengthRoles = request.body.lengthRoles;
