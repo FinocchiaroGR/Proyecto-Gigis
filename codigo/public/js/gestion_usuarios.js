@@ -240,6 +240,54 @@ const modUser = (login) => {
                                             } 
                                         }
                                     }
+                                    else{
+                                        html +='<li><table style="margin:5px;">';
+                                        for (let rol of data.roles) { 
+                                            if (rol.idRol != 1) { 
+                                                if (rol.foo == 1) {
+                                                    if (rol.idRol == 2) {
+                                                        html +=     
+                                                            '<tr style = "display:none" id="terapeuta" id="childT"><td>' +
+                                                                    '<label>'+
+                                                                        '<input type="checkbox" checked="checked" id="alreadyCh" onclick="quitarDatosTerapeuta(this.id)" name="Rol_' + rol.idRol + '">' +
+                                                                        '<span>' + rol.nombre + '</span>' +
+                                                                    '</label>' +
+                                                                '</td></tr></div></div>'; 
+                                                    }
+                                                    else {
+                                                        html +=     
+                                                            '<tr style = "display:none"><td>' +
+                                                                '<label>'+
+                                                                    '<input type="checkbox" checked="checked" name="Rol_' + rol.idRol + '">' +
+                                                                    '<span>' + rol.nombre + '</span>' +
+                                                                '</label>' +
+                                                            '</td></tr>';
+                                                    }
+                                                    
+                                                }
+                                                else {
+                                                    if (rol.idRol == 2) {
+                                                        html +=     
+                                                            '<tr style = "display:none" id="terapeuta"><td id="childT">' +
+                                                                '<label>'+
+                                                                    '<input type="checkbox" onclick="mostrarDatosTerapeuta()" name="Rol_' + rol.idRol + '">' +
+                                                                    '<span>' + rol.nombre + '</span>' +
+                                                                '</label>' +
+                                                            '</td></tr></div></div>';       
+                                                    }
+                                                    else {
+                                                        html +=     
+                                                            '<tr style = "display:none"><td>' +
+                                                                '<label>'+
+                                                                    '<input type="checkbox" name="Rol_' + rol.idRol + '">' +
+                                                                    '<span>' + rol.nombre + '</span>' +
+                                                                '</label>' +
+                                                            '</td></tr>';
+                                                    }
+                                                }
+                                            } 
+                                        }
+                                    }
                                 
                                 html += '</table><input hidden name="lengthRoles" value="' + data.roles.length + '">' +
                                         '<input hidden name="oldEmail" value="' + data.usuarios[0].login + '">' +

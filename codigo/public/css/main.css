@@ -212,3 +212,10 @@ span.field-icon {
     cursor: pointer;
     z-index: 2;
 }
+
+.sidenav .user-view .nombreNav {
+    padding-bottom: 0px!important;
+    margin-bottom: 0%;
+    margin-top: 0%;
+    position:relative;
+}
