@@ -12,6 +12,7 @@
 
     <br><br>
     <form action="/consultas/Grupo/<%= datoGrupo.idGrupo %>" method="post">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
         <div class="row">
             <button type="submit" class="waves-effect right waves-light btn-large"> Descargar archivo </button>
         </div>

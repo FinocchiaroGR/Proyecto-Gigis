@@ -49,10 +49,13 @@ function selCard(evt) {
     let data = {
         listaProg : listaProg,
     };
-
+    //El token de protección CSRF
+    const csrf = document.getElementById('_csrf').value;
     fetch('/Consultas/SelProgram',{
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: {'Content-Type':'application/json',
+                   'csrf-token': csrf
+                 },
         body:JSON.stringify(data)
     }).then(result => {
         return result.json();
@@ -73,10 +76,13 @@ function todosProg(){
     let data = {
         listaProg : listaProg,
     };
-
+    //El token de protección CSRF
+    const csrf = document.getElementById('_csrf').value;
     fetch('/Consultas/SelProgram',{
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: {'Content-Type':'application/json',
+                  'csrf-token': csrf
+                 },
         body:JSON.stringify(data)
     }).then(result => {
         return result.json();
@@ -96,10 +102,13 @@ function ningunProg(){
     let data = {
         listaProg : listaProg,
     };
-
+    //El token de protección CSRF
+    const csrf = document.getElementById('_csrf').value;
     fetch('/Consultas/SelProgram',{
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: {'Content-Type':'application/json',
+                  'csrf-token': csrf
+                 },
         body:JSON.stringify(data)
     }).then(result => {
         return result.json();

@@ -28,6 +28,7 @@ exports.getResultados = ((request, response, next) => {
                             response.render('consultas_Resultados', {
                                 tituloDeHeader: "Consulta - Resultados",
                                 tituloBarra: "Resultados de consulta",
+                                permisos: permiso,
                                 //metadata
                                 cantProg : metaData.TotProg,
                                 cantCiclos : metaData.TotCicl,
@@ -115,6 +116,7 @@ exports.getResultadosGrupo = ((request, response, next) => {
                 response.render('consultas_Programa', {
                     tituloDeHeader: 'Resultados ' + rows_Gen.nombrePrograma,
                     tituloBarra: 'Resultados - Programa ' + rows_Gen.idPrograma + ' - Ciclo ' + rows_Gen.idCiclo,
+                    permisos: permiso,
                     mostrarSexEdad: bools.mostrarSexEdad,
                     mostrarCalif: bools.mostrarCalif,
                     col_Datos : fieldData_dato,
@@ -169,6 +171,7 @@ exports.getConsultas = ((request, response, next) => {
                         bandera: bandera,
                         tituloDeHeader: "Consultas",
                         tituloBarra: "Consultas",
+                        permisos: permiso,
                         años: rows_CantAno,
                         fechasDeCiclos: rows_Fechas,
                         programasConsutas: rows_Programas,

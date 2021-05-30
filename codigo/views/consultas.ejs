@@ -3,6 +3,7 @@
 <%- include('include/sideNavBar.ejs') %>
 
 <form action="/consultas" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
     <% if (permisos.includes(5)) { %>
     <!-- Titulo elegir programa y selección de ciclo-->
     <div class="row">    
