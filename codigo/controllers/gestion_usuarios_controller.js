@@ -485,9 +485,10 @@ exports.postUpdateUser = (request, response) => {
 };
 
 exports.postDeleteUser = (request, response) => {
-    let oldEmail = request.body.oldEmail;
-    let tBool = request.body.tBool;
-    console.log(request.body.tBool);
+    let oldEmail = request.body.oldEmail2;
+    let tBool = request.body.tBool2;
+    console.log('si llegamos : ' +request.body.tBool2);
+    console.log('si llegamos : ' +request.body.oldEmail2);
 
     if (tBool == 'true') {
         console.log('aqui');

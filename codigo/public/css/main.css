@@ -96,10 +96,10 @@ box-shadow: 0 1px 0 0 #ffcc80!important;
 border-bottom: 1px solid #ffcc80!important;
 box-shadow: 0 1px 0 0 #ffcc80!important;
 }
-/* invalid color */
-.input-field input[type=text].invalid {
-border-bottom: 1px solid #e53935;
-box-shadow: 0 1px 0 0 #e53935 !important;
+/* invalid disable text color bottom line */
+.input-field input[type=text].invalid:disabled {
+    border-bottom: 1px solid #ffcc80!important;
+    box-shadow: 0 1px 0 0 #ffcc80!important;
 }
 
 /* label focus mail color */
