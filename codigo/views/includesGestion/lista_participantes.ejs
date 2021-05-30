@@ -6,10 +6,10 @@
         <th data-field="editar"></th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tablaParticipantes">
     <% for (let participante of participantes) { %>  
         <tr>
-            <td  style="cursor: pointer;"><a href="<%= participante.ruta %>" class = "black-text"><%= participante.nombreUsuario %></a></td>
+            <td  style="cursor: pointer;"><a href="perfil-<%= participante.login %>" class = "black-text"><%= participante.nombreUsuario %></a></td>
             <% if (participante.estatus === 'A')  { %>  
                 <td>Activo</td>
             <% }else if(participante.estatus === 'I'){ %>  

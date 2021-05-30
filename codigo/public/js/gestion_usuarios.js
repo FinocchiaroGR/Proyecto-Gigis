@@ -505,3 +505,41 @@ const buscarUsuario = (permisos) => {
         console.log(err);
     });
 };
+
+const buscarParticipante = (permisos) => {
+    let criterio = document.getElementById("buscarParticipante").value;
+    console.log(criterio);
+    fetch('/gestionAdmin/gestionParticipantes/buscar/'+criterio, {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        let html = '';
+        for (let participante of data.participantes) { 
+            html += '<tr>'+
+            '<td  style="cursor: pointer;"><a href="perfil-'+ participante.login+' " class = "black-text">'+ participante.nombreUsuario+'</a></td>';
+            if (participante.estatus === 'A')  {   
+                html+= '<td>Activo</td>';
+            }else if(participante.estatus === 'I'){   
+                html += '<td>Inactivo</td>';
+            }else if(participante.estatus === 'B'){
+                html +='<td>Baja permanente</td>';
+            } 
+    
+                if (permisos.includes(6)) {   
+                html += '<td>'+
+                    // Modal Modificar Par
+                    '<a class=" modal-trigger black-text white right" href="#modificarParticipante" id="'+ participante.login + '" onclick="modPar(this.id);"><i class="material-icons">create</i></a>'+
+                '</td>';
+                }
+            html+='</tr>';
+        }
+
+        document.getElementById('tablaParticipantes').innerHTML = html;
+        M.AutoInit();
+
+    }).catch(err => {
+        console.log(err);
+    });
+};

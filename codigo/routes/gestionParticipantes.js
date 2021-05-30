@@ -14,6 +14,8 @@ subrouter.post('/editar-participante', isAuth, gestionParticController.postEditP
 
 subrouter.get('/perfil-participante', isAuth, gestionParticController.getPerfilPartic);
 
+subrouter.get('/buscar/:criterio', isAuth, gestionParticController.getBuscar);
+
 subrouter.get('/', isAuth, gestionParticController.get);
 
 subrouter.post('/', isAuth, gestionParticController.post);

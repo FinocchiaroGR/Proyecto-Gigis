@@ -33,6 +33,18 @@ exports.getPerfilPartic = ((request,response,next) => {
     });
 });
 
+exports.getBuscar  = (request, response, next) => {
+    Participante.fetchPorCriterio(request.params.criterio)
+        .then(([participantes, fieldData]) => {
+            return response.status(200).json({
+                participantes: participantes
+            });
+        })   
+        .catch(err => {
+            console.log(err)
+        });
+  }
+
 exports.get = ((request,response,next) => {
     const error = request.session.error === undefined ? false : request.session.error;
     const bandera = request.session.bandera === undefined ? false : request.session.bandera;
