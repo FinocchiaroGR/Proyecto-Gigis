@@ -55,4 +55,9 @@ module.exports = class Participante {
           ['%'+criterio+'%','%'+criterio+'%','%'+criterio+'%']
           );
       }
+    static fetchById(login) {
+        return db.execute('Select * From participantes Where login = ?',
+          [login]
+        );
+    }
 }

@@ -30,4 +30,10 @@ module.exports = class Rol {
     [login]
     );
   }
+
+  static fetchRolNameByLogin(login) {
+    return db.execute('SELECT R.* FROM roles R, usuarios_roles UR WHERE UR.idRol = R.idRol AND UR.login = ? GROUP BY R.idRol',
+    [login]
+    );
+  }
 }
