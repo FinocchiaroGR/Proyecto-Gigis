@@ -188,8 +188,16 @@
     <% } %>
 
     <div class="row">
+        <br>
+        <div class="col s5 offset-s1">
+            <div class="row center">
+                <% if (permisos.includes(14)) { %>
+                   <a href="/consultas/historial"> <button type="submit" class="waves-effect btn-large light-blue darken-2"> Historial por alumno </button></a>
+                <% } %>
+            </div>
+        </div>
         <!--Boton consultar-->
-        <div class="col s6 offset-s6">
+        <div class="col s5 offset-s1">
             <div class="row center">
                 <div>
                     <% if (permisos.includes(5)||permisos.includes(14)) { %>
@@ -203,6 +211,9 @@
 
 <input type="hidden" id="bandera" value="<%= bandera%>">
 
+
+<%- include('include/footer.ejs') %>
+
 <script>
     let bandera = document.getElementById('bandera').value;
     if (bandera == 'true'){
@@ -212,6 +223,3 @@
       M.toast({html: '<%- mensaje %>',  length:6500, classes: 'grey'})
     }
   </script>
-
-<%- include('include/footer.ejs') %>
-

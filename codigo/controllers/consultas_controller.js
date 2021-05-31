@@ -277,7 +277,7 @@ exports.getHistorial = ((request, response, next) => {
                     });
                     request.session.mensaje = undefined;
                     request.session.bandera = undefined;
-                    console.log("Consultas");
+                    console.log("Consultas - Historial");
                     response.status(201);
                 }).catch(err => {
                     request.session.mensaje = 'Error de comunicacion con el servidor';
