@@ -241,7 +241,6 @@ const registroObjetivos = (login, idGrupo) => {
           idGrupo: idGrupo
         };
 
-        console.log(data2);
         //función que manda la petición asíncrona
         fetch('/gestionAdmin/gestionCiclos/mostrar-obj', {
             method: 'POST',
@@ -403,7 +402,6 @@ const registroObjetivos = (login, idGrupo) => {
             login: login,
             idGrupo: idGrupo
           };
-          console.log(data2);
           fetch('/gestionAdmin/gestionCiclos/baja',{
             method: 'POST',
             headers: {
@@ -451,7 +449,6 @@ const registroObjetivos = (login, idGrupo) => {
     }).then(result => {
         return result.json(); //Regresa otra promesa
     }).then(data => {
-      console.log(data);
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
         let html = '<div class="modal-content">'+
                     '<h3>Modificar el ciclo '+data.ciclonombre+'</h3>'+
@@ -466,7 +463,7 @@ const registroObjetivos = (login, idGrupo) => {
                         '</div>'+
                       '</li>'+
                       '<li>'+
-                        '<strong>Fecha final:</strong><br>'+
+                        '<strong>Fecha final:</strong>'+
                       '</li>'+
                       '<li>'+
                         '<div class="input-field">'+
@@ -474,7 +471,9 @@ const registroObjetivos = (login, idGrupo) => {
                           '<label for="to">Elige la fecha de finalización</label>'+
                         '</div>'+
                       '</li>'+
-                    '</ul>'+
+                      '<li>';
+                      
+           html+=   '</ul>'+
                   '</div><div class="modal-footer container">'+
                   '<button  id = "actualizarCiclo" class="modal-close waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>      '+
                   '<label style="visibility:hidden">**</label>'+
@@ -485,11 +484,52 @@ const registroObjetivos = (login, idGrupo) => {
         M.AutoInit();
         document.getElementById("modCiclo").click();
 
+        document.getElementById("actualizarCiclo").onclick = () => {
+          //El token de protección CSRF
+          const csrf = document.getElementById('_csrf').value;
+          let fechaInicial = document.getElementById('from').value;
+          let fechaFinal = document.getElementById('to').value;
+          let data = {
+            fechaInicial: fechaInicial,
+            fechaFinal: fechaFinal,
+            idCiclo: idCiclo
+          };
+          fetch('/gestionAdmin/gestionCiclos/editar-ciclo',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'csrf-token': csrf
+            },
+            body: JSON.stringify(data)
+          }).then(result => {
+            return result.json();
+          }).then (msj => {
+            document.getElementById('barTitulo').innerHTML = msj.ciclonombre;
+            let mensaje = '', color = '';
+            if (msj.error === undefined){
+              mensaje = 'Se han actualizado correctamente las fechas del ciclo.';
+              color = 'grey';
+            }
+            else{
+              mensaje = msj.error.toString();
+              color = 'black';
+            }
+            M.toast({html: mensaje,classes: color}); 
+            M.AutoInit();
+          }).catch(err => {
+            console.log(err);
+          });
+        }
+
     }).catch(err => {
         console.log(err);
     });
-};
+  };
+  
+  
 
+
+//Función para las fechas
 function inicializarDatePickers(data){
  //DATE PICKER 
 // Spanish overwrite
