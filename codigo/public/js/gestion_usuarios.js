@@ -583,23 +583,23 @@ const checkInfoPerfil = (login) => {
                 if ($.trim(data.terapeuta)) {
                     if(data.terapeuta[0].cv != null) {
                         html += '<li><strong><h4>Currículum:</h4></strong></li>' +
-                                '<div class="waves-effect waves-light btn-small white black-text col s1">' +
+                                '<div class="waves-effect waves-light btn-small white black-text col s2">' +
                                 '<a href="../../' + data.terapeuta[0].cv + '" target="_blank"><i class="material-icons black-text">file_download</i></a>' +
                                 '</div>';
                         let fileName = data.terapeuta[0].cv.split('/');
-                        html += '<div><input class="file-path col s11" disabled type="text" placeholder="' + fileName[2] + '"></div>';
+                        html += '<div class="col s10 "><input class="file-path" style="border-bottom: 0px; color: #9e9e9e;" disabled type="text" placeholder="' + fileName[2] + '"></div>';
                     }
                     else {
                         html += '<li><strong><h4>Currículum:</h4></strong></li>' +
                                 '<li class="grey-text">' +
-                                    '<h6 style="margin-left: 2%;">No se encuentró un Currículum</h6>' +
+                                    '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
                                 '</li>';
                     }
                 }
                 else {
                     html += '<li><strong><h4>Currículum:</h4></strong></li>' +
                             '<li class="grey-text">' +
-                                '<h6 style="margin-left: 2%;">No se encuentró un Currículum</h6>' +
+                                '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
                             '</li>';
                 }
 
