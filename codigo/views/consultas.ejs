@@ -188,26 +188,8 @@
     <% } %>
 
     <div class="row">
-        <br>
-        <div class="col s4 offset-s1">
-            <div class="row center">
-                <% if (permisos.includes(14)) { %>
-                <div>
-                    <select class="browser-default js-example-basic-single" name="buscador" id="buscador">
-                        <option value="1">Hola1</option>
-                        <option value="2">Hola2</option>
-                        <option value="3">Hola3</option>
-                        <option value="4">Hola4</option>
-                        <option value="5">Hola5</option>
-                        <option value="6">Hola6</option>
-                        <option value="7">Alo7</option>
-                    </select>
-                </div>
-                <% } %>
-            </div>
-        </div>
         <!--Boton consultar-->
-        <div class="col s6 offset-s1">
+        <div class="col s6 offset-s6">
             <div class="row center">
                 <div>
                     <% if (permisos.includes(5)||permisos.includes(14)) { %>
@@ -221,9 +203,6 @@
 
 <input type="hidden" id="bandera" value="<%= bandera%>">
 
-
-<%- include('include/footer.ejs') %>
-
 <script>
     let bandera = document.getElementById('bandera').value;
     if (bandera == 'true'){
@@ -233,3 +212,6 @@
       M.toast({html: '<%- mensaje %>',  length:6500, classes: 'grey'})
     }
   </script>
+
+<%- include('include/footer.ejs') %>
+

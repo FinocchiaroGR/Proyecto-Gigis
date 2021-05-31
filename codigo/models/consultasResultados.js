@@ -1,4 +1,3 @@
-const database = require('../util/database');
 const db = require('../util/database');
 
 const color = ['red', 'blue', 'green', 'yellow'];

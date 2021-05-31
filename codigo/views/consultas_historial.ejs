@@ -1,0 +1,23 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>
+
+<div class="col s4 offset-s1">
+    <div class="row center">
+        <% if (permisos.includes(14)) { %>
+        <div>
+            <select class="browser-default js-example-basic-single" style="width: 50%" name="buscador" id="buscador">
+                <option value="1">Hola1</option>
+                <option value="2">Hola2</option>
+                <option value="3">Hola3</option>
+                <option value="4">Hola4</option>
+                <option value="5">Hola5</option>
+                <option value="6">Hola6</option>
+                <option value="7">Alo7</option>
+            </select>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('include/footer.ejs') %>

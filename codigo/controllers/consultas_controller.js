@@ -2,6 +2,8 @@ const Arrow = require('../models/arrow');
 const Ciclo = require('../models/ciclos');
 const Programas = require('../models/programas');
 const DatosConsultas = require('../models/consultasResultados');
+const Historial = require('../models/consultasHistorial');
+const Participante = require('../models/participantes');
 
 let datosConsultas = new DatosConsultas();
 const arrows = Arrow.fetchAll();
@@ -156,7 +158,7 @@ exports.getConsultas = ((request, response, next) => {
     const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
     const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
     const permiso = request.session.permisos;
-    const tienePermiso = permiso.includes(5) || permiso.includes(14);
+    const tienePermiso = permiso.includes(5);
     if(tienePermiso){     
         DatosConsultas.prepConsulta();
 
@@ -208,8 +210,6 @@ exports.getConsultas = ((request, response, next) => {
     else {
         return response.redirect('/gestionAdmin');
     }
-    request.session.mensaje = undefined;
-    request.session.bandera = undefined;
 });
 
 exports.postConsultas = ((request, response, next) => {
@@ -246,4 +246,59 @@ exports.postSelProgram = ((request, response, next) => {
     datosConsultas.setListaProg(request.body.listaProg);
     //listaProgam = request.body.listaProg;
     //console.table(listaProgam);
+});
+
+exports.getHistorial = ((request, response, next) => {
+    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const permiso = request.session.permisos;
+    const tienePermiso = permiso.includes(14);
+    if(tienePermiso){     
+        Ciclo.fetchFechaCiclo(0)
+        .then(([rows_Fechas, fieldData_Fechas]) => {
+            Ciclo.fetchCantPorAno(0)
+            .then(([rows_CantAno, fieldData_CantAno]) => {
+                Participante.fetchAll()
+                .then(([rows_Participantes, fieldData_Prog]) => {
+                    response.render('consultas', {
+                        mensaje: mensaje,
+                        bandera: bandera,
+                        tituloDeHeader: "Consultas",
+                        tituloBarra: "Consultas",
+                        permisos: permiso,
+                        años: rows_CantAno,
+                        fechasDeCiclos: rows_Fechas,
+                        participantes: rows_Participantes,
+                        numPart: rows_Participantes.length,
+                        meses: DatosConsultas.fetchMeses(),
+                        permisos: request.session.permisos,
+                        backArrow: {display: 'block', link: '/consultas'},
+                        forwArrow: arrows[1]
+                    });
+                    request.session.mensaje = undefined;
+                    request.session.bandera = undefined;
+                    console.log("Consultas");
+                    response.status(201);
+                }).catch(err => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
+                    response.redirect('/consultas');
+                    console.log(err);
+                });
+            }).catch(err => {
+                request.session.mensaje = 'Error de comunicacion con el servidor';
+                request.session.bandera = true;
+                response.redirect('/consultas');
+                console.log(err);
+            });
+        }).catch(err => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/consultas');
+            console.log(err);
+        });
+    }
+    else {
+        return response.redirect('/gestionAdmin');
+    }
 });
