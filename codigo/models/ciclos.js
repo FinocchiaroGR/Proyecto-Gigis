@@ -102,6 +102,4 @@ module.exports = class Ciclo {
       [idCiclo]
     );
   }
-
-
 };

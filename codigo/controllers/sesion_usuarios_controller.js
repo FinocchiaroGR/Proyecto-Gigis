@@ -1,7 +1,6 @@
 const Usuario = require('../models/usuarios');
 const Arrow = require('../models/arrow');
 const bcrypt = require('bcryptjs');
-const { permisos } = require('../models/usuarios');
 const arrows = Arrow.fetchAll();
 
 

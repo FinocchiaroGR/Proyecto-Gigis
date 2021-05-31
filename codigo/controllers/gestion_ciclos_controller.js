@@ -7,7 +7,6 @@ const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
 const Objetivo = require('../models/objetivos');
 const Participantes_Grupos_Objetivos = require('../models/participantes_grupos_objetivos');
-const { permisos } = require('../models/usuarios');
 
 const arrows = Arrow.fetchAll();
 const mes = [

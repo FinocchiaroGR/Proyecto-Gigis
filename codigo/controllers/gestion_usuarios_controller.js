@@ -6,7 +6,6 @@ const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
 const Grupos_Terapeutas = require('../models/grupos_terapeutas');
-const { request, response } = require('express');
 
 const arrows = Arrow.fetchAll();
 

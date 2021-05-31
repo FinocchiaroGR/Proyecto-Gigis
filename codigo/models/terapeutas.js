@@ -1,4 +1,3 @@
-const { response } = require('express');
 const db = require('../util/database');
 
 module.exports = class Terapeuta{
