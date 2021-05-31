@@ -46,7 +46,6 @@ exports.getInscribir = (request,response,next) => {
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
     let idlastCiclo = parseInt(request.session.idlastciclo) + 1;
-    console.log(request.params.idCiclo);
     const idciclop =  request.params.idCiclo === undefined ? idlastCiclo : request.params.idCiclo;
     Ciclo.fetchUnoPorId(idciclop)
     .then(([ciclo, fieldData1]) => {
