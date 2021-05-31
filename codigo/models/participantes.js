@@ -45,14 +45,32 @@ module.exports = class Participante {
 
     static fetchActivos() {
         return db.execute(
-          'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A"'
-          );
+          'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A"');
       }
     
-      static fetchPorCriterio(criterio) {
+    static fetchPorCriterio(criterio) {
         return db.execute(
-          'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, estatus, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A" AND (nombreUsuario LIKE ? OR apellidoPaterno LIKE ? OR apellidoMaterno LIKE ?)',
-          ['%'+criterio+'%','%'+criterio+'%','%'+criterio+'%']
-          );
+            'SELECT nombreUsuario, apellidoPaterno, apellidoMaterno, estatus, U.login FROM  usuarios U, participantes P WHERE   U.login = P.login AND P.estatus = "A" AND (nombreUsuario LIKE ? OR apellidoPaterno LIKE ? OR apellidoMaterno LIKE ?)',
+            ['%'+criterio+'%','%'+criterio+'%','%'+criterio+'%']);
+    }
+
+    static fetchOneUsuarioParticipante(login) {
+        return db.execute('SELECT U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno, U.login, P.estatus, P.sexo, P.fechaNacimiento, P.telefonoPadre FROM  usuarios U, participantes P WHERE U.login = P.login AND U.login = ? GROUP BY U.login',
+        [login]);
+    }
+    
+    static updateParticipante(estatus, sex, fecha, tel, login) {
+        return db.execute('UPDATE `participantes` SET `estatus` = ?, `sexo` = ?, `fechaNacimiento` = ?, `telefonoPadre` = ?  WHERE `participantes`.`login` = ?',
+          [estatus, sex, fecha, tel, login]);
+    }
+
+    static deleteById(login) {
+        return db.execute('DELETE FROM participantes WHERE login = ?',
+        [login]);
+    }
+
+    static changeStatusToB(login) {
+        return db.execute("UPDATE participantes SET estatus = 'B' WHERE login = ?",
+        [login]);
       }
 }

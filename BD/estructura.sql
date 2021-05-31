@@ -179,7 +179,7 @@ ADD CONSTRAINT `cfparticipantes_login_usuarios`
 FOREIGN KEY (`login`) 
 REFERENCES `usuarios`(`login`) 
 ON DELETE RESTRICT
-ON UPDATE RESTRICT;
+ON UPDATE CASCADE;
 
 ALTER TABLE `grupos` 
 ADD CONSTRAINT `cfgrupos_idprograma_programas` 

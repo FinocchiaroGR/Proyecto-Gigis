@@ -47,4 +47,8 @@ module.exports = class Participante_Grupo_Objetivo {
         [idGrupo, login]);
     }
 
+    static fetchIfParticipanteHaveGroups(login) {
+        return db.execute('SELECT COUNT(*) AS num_groups FROM participantes_grupos_objetivo WHERE login = ?',
+        [login]);
+    }
 }

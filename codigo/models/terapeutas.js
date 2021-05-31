@@ -43,6 +43,7 @@ module.exports = class Terapeuta{
     return db.execute('UPDATE terapeutas SET titulo = ?, estatus = ? WHERE terapeutas.login = ?', 
     [titulo, estatus, login]);
   }
+  
   static updateTerapeutaCv(cv, login) {
     return db.execute('UPDATE terapeutas SET cv = ? WHERE terapeutas.login = ?', 
     [cv, login]);

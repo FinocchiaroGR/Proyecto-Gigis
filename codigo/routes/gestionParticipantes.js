@@ -8,9 +8,9 @@ subrouter.use(express.static(path.join(__dirname,'..', 'public')));
 const gestionParticController = require('../controllers/gestion_participantes_controller');
 const isAuth = require('../util/is-auth.js');
 
-subrouter.get('/editar-participante', isAuth, gestionParticController.getEditPartic);
-
-subrouter.post('/editar-participante', isAuth, gestionParticController.postEditPartic);
+subrouter.post('/modificar-participante', isAuth, gestionParticController.postModPar);
+subrouter.post('/update-participante', isAuth, gestionParticController.postUpdatePar);
+subrouter.post('/delete-participante', isAuth, gestionParticController.deleteParticipante);
 
 subrouter.get('/perfil-participante', isAuth, gestionParticController.getPerfilPartic);
 

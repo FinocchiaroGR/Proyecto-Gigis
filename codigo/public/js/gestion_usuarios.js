@@ -1,5 +1,3 @@
-
-
 $(document).ready(function(){
     $('.modal').modal();
 
@@ -8,53 +6,55 @@ $(document).ready(function(){
 // Or with jQuery
 
 $(document).ready(function(){
-  $('select').formSelect();
+    $('select').formSelect();
 });
 // jQuery date picker 
 $(document).ready(function(){
-  const hoy = new Date();
-  const maxYear = hoy.getFullYear();
-  const minYear = hoy.getFullYear()-65;
-  $('.datepickerP').datepicker({ 
-    format: 'yyyy-mm-dd',
-    firstDay: true,
-    maxDate: new Date(),
-    yearRange: [minYear,maxYear], 
-    container: 'body',
-    //En español
-    i18n: {
-        cancel: 'Cancelar',
-        done: 'Aceptar',
-        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-        monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-        weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-        weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-        weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
-    }
-})
+    const hoy = new Date();
+    const maxYear = hoy.getFullYear();
+    const minYear = hoy.getFullYear()-65;
+    $('.datepickerP').datepicker({ 
+        format: 'yyyy-mm-dd',
+        firstDay: true,
+        maxDate: new Date(),
+        yearRange: [minYear,maxYear], 
+        container: 'body',
+        //En español
+        i18n: {
+            cancel: 'Cancelar',
+            done: 'Aceptar',
+            months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+            weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+        }
+    })
 });
 
 
+
+
 function camposTerapeuta(opcion){
-  if (opcion.value === '2'){
-    document.getElementById("campoT1").style.display = "block";
-    document.getElementById("campoT2").style.display = "block";
-    document.getElementById("campoT3").style.display = "block";
-    document.getElementById("campoT4").style.display = "block";
-  }else{
-    document.getElementById("campoT1").style.display = "none";
-    document.getElementById("campoT2").style.display = "none";
-    document.getElementById("campoT3").style.display = "none";
-    document.getElementById("campoT4").style.display = "none";
-  }
+    if (opcion.value === '2'){
+        document.getElementById("campoT1").style.display = "block";
+        document.getElementById("campoT2").style.display = "block";
+        document.getElementById("campoT3").style.display = "block";
+        document.getElementById("campoT4").style.display = "block";
+    }else{
+        document.getElementById("campoT1").style.display = "none";
+        document.getElementById("campoT2").style.display = "none";
+        document.getElementById("campoT3").style.display = "none";
+        document.getElementById("campoT4").style.display = "none";
+    }
 }
 
 //Generar contraseña
 function generarContra(){
-  let especiales = ['!','#',"$","%","&","*","(",")","+","/"];
-  let indice = Math.floor(Math.random() * ((9+1) - 0) + 0);
-  let correo = document.getElementById("correo");
-  document.getElementById("passwordAdd").value = correo.value.split('@')[0]+ new Date().getMilliseconds()+ especiales[indice];
+    let especiales = ['!','#',"$","%","&","*","(",")","+","/"];
+    let indice = Math.floor(Math.random() * ((9+1) - 0) + 0);
+    let correo = document.getElementById("correo");
+    document.getElementById("passwordAdd").value = correo.value.split('@')[0]+ new Date().getMilliseconds()+ especiales[indice];
 }
 
 
@@ -185,9 +185,9 @@ const modUser = (login) => {
                                     '<input id="login" name="login" type="email" class="validate" value="' + data.usuarios[0].login + '" placeholder="correo@mail.com" required>' +
                                     '<span class="helper-text" data-error="Introduce un correo válido"></span>' +
                                 '</div></li>' +
-                                '<li><strong>Cambiar contraseña</strong></li>' +
+                                '<li><strong><br>Cambiar contraseña</strong></li>' +
                                 '<li><div class="input-field">' +
-                                    '<input  id="passwordMod" name="password"  type="password" class="validate" value="" placeholder="Modicar contraseña">' +
+                                    '<input  id="passwordMod" name="password"  type="password" class="validate" value="" placeholder="Modificar contraseña">' +
                                     '<div id="spanpass"><span toggle="#passwordMod" class="material-icons field-icon grey-text" onclick="showPassMod(this)">visibility_off</span></div>' +
                                 '</div></li>';
 
@@ -542,4 +542,153 @@ const buscarParticipante = (permisos) => {
     }).catch(err => {
         console.log(err);
     });
+};
+
+const modPar = (login) => {
+    const csrf = document.getElementById('_csrf').value;
+    let data = {login: login};
+        fetch('/gestionAdmin/gestionParticipantes/modificar-participante', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'csrf-token': csrf
+            },
+            body: JSON.stringify(data)
+        }).then(result => {
+            return result.json();  
+        }).then(data => {
+            let html =  
+                '<form id="saveModPar" action="/gestionAdmin/gestionParticipantes/update-participante" method="POST">' +
+                    '<input type="hidden" id="_csrf" name="_csrf" value="' + csrf + '" >' +
+                    '<div class="modal-content">' +
+                        '<h3>Modificar participante</h3><ul>' +
+                            '<li><strong>Cambiar nombre</strong></li>' +
+                            '<li><div class="input-field">' +
+                                '<input id="nombre" name="nombre" type="text" class="validate" value="' + data.participante[0].nombreUsuario + '" placeholder="Nombre(s)" required>' +
+                            '</div></li>' +
+                            '<li><strong><br>Cambiar apellido paterno</strong></li>' +
+                            '<li><div class="input-field">';
+
+                                if (data.participante[0].apellidoPaterno != null) {
+                                    html += '<input id="apellidoP" name="apellidoP" type="text" class="validate" value="' + data.participante[0].apellidoPaterno + '" placeholder="Apellido paterno">';
+                                }
+                                else {
+                                    html += '<input id="apellidoP" name="apellidoP" type="text" class="validate" value="" placeholder="Apellido paterno">';
+                                }
+                                
+                            html += '</div></li>' +
+                            '<li><strong><br>Cambiar apellido materno</strong></li>' +
+                            '<li><div class="input-field">';
+
+                                if (data.participante[0].apellidoMaterno != null) {
+                                    html += '<input id="apellidoM" name="apellidoM" type="text" class="validate" value="' + data.participante[0].apellidoMaterno + '" placeholder="Apellido materno">';
+                                }
+                                else {
+                                    html += '<input id="apellidoM" name="apellidoM" type="text" class="validate" value="" placeholder="Apellido materno">';
+                                }
+                                
+                            html += '</div></li>' +
+                            '<li><strong><br>Sexo</strong></li>' +
+                            '<li><div class="input-field m4" required>' +
+                            '<select id="selectSex" name="selectSex" required>';
+
+                                if (data.participante[0].sexo == 'H') {
+                                    
+                                    html += '<option value="M">Femenino</option>' +
+                                    '<option selected value="H">Masculino</option>';
+                                }
+                                else {
+                                    html += '<option selected value="M">Femenino</option>' +
+                                    '<option value="H">Masculino</option>';
+                                }
+                                   
+                            html += '</select></div></li>' +
+                            '<li><strong><br>Cambiar correo o nombre de usuario</strong></li>' +
+                            '<li><div class="input-field">' +
+                                '<input id="login" name="login" type="text" class="validate" value="' + data.participante[0].login + '" placeholder="Correo o usuario" required>' +
+                            '</div></li>' +
+                            '<li><strong><br>Cambiar contraseña</strong></li>' +
+                            '<li><div class="input-field">' +
+                                '<input  id="passwordMod" name="password"  type="text" class="validate" value="" placeholder="Modificar contraseña">' +
+                            '</div></li>' +
+                            '<li><strong><br>Cambiar Fecha de nacimiento</strong></li>' +
+                            '<li><div class="input-field">';
+                            
+                             let bDay = data.participante[0].fechaNacimiento.split('T');
+
+                            html +=
+                                '<input type="text" value="' + bDay[0] + '" id="bDay" name="bDay" class="datepickerPar" required>' +
+                            '</div></li>' +
+                            '<li><strong><br>Cambiar teléfono del responsable</strong></li>' +
+                            '<li><div class="input-field">';
+                                if (data.participante[0].telefonoPadre != null) {
+                                    html += '<input id="tel" name="tel" type="text" value="' + data.participante[0].telefonoPadre + '" class="validate" placeholder="Número telefónico" minlength="10" maxlength="10">';
+                                }
+                                else {
+                                    html += '<input id="tel" name="tel" type="text" value="" class="validate" placeholder="Número telefónico no registrado" minlength="10" maxlength="10">';
+                                }
+                            html += '</div></li>' +
+                            '<li><strong><br>Status</strong></li>' +
+                            '<li><div class="input-field m4">' +
+                            '<select name="estatusSelect" id="estatusSelect" required>';
+
+                                if (data.participante[0].estatus == 'A'){
+                                    html += 
+                                        '<option selected value="A">Activo</option>' +
+                                        '<option value="I">Inactivo</option>' +
+                                        '<option value="B">Baja permanente</option></select></div></li>';
+                                }
+                                else if (data.participante[0].estatus == 'B') {
+                                    html += 
+                                        '<option value="A">Activo</option>' +
+                                        '<option value="I">Inactivo</option>' +
+                                        '<option selected value="B">Baja permanente</option></select></div></li>';
+                            
+                        
+                                }
+                                else if (data.participante[0].estatus == 'I') {
+                                    html += 
+                                        '<option value="A">Activo</option>' +
+                                        '<option selected value="I">Inactivo</option>' +
+                                        '<option value="B">Baja permanente/option></select></div></li>';
+                                }
+
+                html += '</ul><input hidden name="oldEmail" value="' + data.participante[0].login + '">' +
+                '</div></form>' +
+                '<form id="deletePar" action="/gestionAdmin/gestionParticipantes/delete-participante" method="POST">' +
+                '<input hidden name="login" value="' + data.participante[0].login + '">' +
+                '<input type="hidden" id="_csrf" name="_csrf" value="' + csrf + '">' +
+                '</form><div class="modal-footer">' +
+                '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 right" boton-md" style="margin:5px;" form="saveModPar">Actualizar</button>';
+            html += '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right" style="margin:5px;" form="deletePar" onclick="return confirm(\'¿Estás seguro de eliminar este participante?\')">Eliminar</button>';
+            html += '</div>';
+
+            const hoy = new Date();
+            const maxYear = hoy.getFullYear();
+            const minYear = hoy.getFullYear()-65;
+                        
+            document.getElementById('despliega_participante').innerHTML = html;
+            M.FormSelect.init(document.getElementById('selectSex'));
+            M.FormSelect.init(document.getElementById('estatusSelect'));
+            M.Datepicker.init(document.getElementById('bDay'), {
+                    format: 'yyyy-mm-dd',
+                    firstDay: true,
+                    maxDate: new Date(),
+                    yearRange: [minYear,maxYear], 
+                    container: 'body',
+                    i18n: {
+                        cancel: 'Cancelar',
+                        done: 'Aceptar',
+                        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                        monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                        weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+                        weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+                        weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+                    }
+                })
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+
 };

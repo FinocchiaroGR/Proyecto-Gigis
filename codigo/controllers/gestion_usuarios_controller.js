@@ -101,7 +101,7 @@ exports.postNuevoUsuario = (request,response) => {
             response.redirect('/gestionAdmin/gestionUsuarios/');
         }).catch( err => {
             console.log(err);
-            request.session.mensaje = "Ya existe un usuario registrado con el correo que ingresaste.";
+            request.session.mensaje = "Ya existe un usuario registrado con el correo que ingresaste";
             request.session.bandera = true; 
             response.redirect('/gestionAdmin/gestionUsuarios');    
         });
@@ -349,6 +349,9 @@ exports.postUpdateUser = (request, response) => {
                                             response.redirect('/gestionAdmin/gestionUsuarios');
                                         }).catch((err) => {
                                             console.log(err);
+                                            request.session.mensaje = 'Ya existe un usuario registrado con el correo que ingresaste';
+                                            request.session.bandera = true; 
+                                            response.redirect('/gestionAdmin/gestionParticipantes');
                                         })
                                 }).catch((err) => {
                                     console.log(err);
@@ -386,6 +389,9 @@ exports.postUpdateUser = (request, response) => {
                                             response.redirect('/gestionAdmin/gestionUsuarios');
                                         }).catch((err) => {
                                             console.log(err);
+                                            request.session.mensaje = 'Ya existe un usuario registrado con el correo que ingresaste';
+                                            request.session.bandera = true; 
+                                            response.redirect('/gestionAdmin/gestionParticipantes');
                                         })
                                 }).catch((err) => {
                                     console.log(err);
@@ -431,6 +437,9 @@ exports.postUpdateUser = (request, response) => {
                             })
                     }).catch((err) => {
                         console.log(err);
+                        request.session.mensaje = 'Ya existe un usuario registrado con el correo que ingresaste';
+                        request.session.bandera = true; 
+                        response.redirect('/gestionAdmin/gestionParticipantes');
                     })
             }).catch((err) => {
                 console.log(err);
@@ -464,6 +473,9 @@ exports.postUpdateUser = (request, response) => {
                             })
                     }).catch((err) => {
                         console.log(err);
+                        request.session.mensaje = 'Ya existe un usuario registrado con el correo que ingresaste';
+                        request.session.bandera = true;
+                        response.redirect('/gestionAdmin/gestionParticipantes');
                     })
             }).catch((err) => {
                 console.log(err);
@@ -491,6 +503,9 @@ exports.postUpdateUser = (request, response) => {
                     })
             }).catch((err) => {
                 console.log(err);
+                request.session.mensaje = 'Ya existe un usuario registrado con el correo que ingresaste';
+                request.session.bandera = true; 
+                response.redirect('/gestionAdmin/gestionParticipantes');
             })
     }
 };

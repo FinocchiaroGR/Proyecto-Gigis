@@ -19,10 +19,15 @@
             <% } %>
             <td>
             <% if (permisos.includes(6)) { %>
-                <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+                <a class=" modal-trigger black-text white right" href="#modificarParticipante" id="<%= participante.login %>" onclick="modPar(this.id);"><i class="material-icons">create</i></a>
             <% } %>
             </td>
         </tr>
     <% } %>
+    <!-- Modal Structure Modificar Participante-->
+    <div id="modificarParticipante" class="modal">
+        <div id="despliega_participante"><div id="childDiv"></div></div>
+    </div><!-- Fin Modal Structure Modificar Participante -->
+
     </tbody>
 </table>
