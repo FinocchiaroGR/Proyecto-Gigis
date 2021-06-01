@@ -8,6 +8,16 @@ document.addEventListener('DOMContentLoaded', function() {
   var instances = M.Tooltip.init(elems);
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('.modal');
+  var instances = M.Modal.init(elems);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+var elems = document.querySelectorAll('select');
+var instances = M.FormSelect.init(elems);
+});
+
 const showPassLogin = (ico) => {
   var input = $($(ico).attr("toggle"));
   if (input.attr("type") == "password") {

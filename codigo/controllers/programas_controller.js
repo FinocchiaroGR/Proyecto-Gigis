@@ -108,9 +108,21 @@ exports.get = (request, response, next) => {
   const permiso = request.session.permisos;
   const rol = request.session.rol;
   const usuario = request.session.user;
+  const programasParticipante = [];
+
   if(permiso.includes(15)){ 
     Programa.fetchProgramasCicloActual()
       .then(([programas, fieldData1]) => {
+        (async() => { 
+          for (let programa of programas) {
+            await Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(programa.idPrograma)
+              .then(([participantes, fieldData3]) => {
+                for (let participante of participantes)
+                  if (usuario === participante.login)
+                    programasParticipante.push(programa.idPrograma)
+              })
+              .catch((err) => console.log(err));
+          }
         Grupo.fetchGruposCicloActual()
           .then(([grupos, fieldData2]) => {
             response.render('programas', {
@@ -120,12 +132,14 @@ exports.get = (request, response, next) => {
               grupos: grupos,
               rol: rol,
               usuario: usuario,
+              programasParticipante: programasParticipante,
               permisos: request.session.permisos,
               backArrow: arrows[0],
               forwArrow: arrows[1],
             });
           })
           .catch((err) => console.log(err));
+        })();
       })
       .catch((err) => console.log(err));
   }
