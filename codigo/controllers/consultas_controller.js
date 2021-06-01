@@ -2,6 +2,8 @@ const Arrow = require('../models/arrow');
 const Ciclo = require('../models/ciclos');
 const Programas = require('../models/programas');
 const DatosConsultas = require('../models/consultasResultados');
+const Historial = require('../models/consultasHistorial');
+const Participante = require('../models/participantes');
 
 let datosConsultas = new DatosConsultas();
 const arrows = Arrow.fetchAll();
@@ -156,7 +158,7 @@ exports.getConsultas = ((request, response, next) => {
     const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
     const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
     const permiso = request.session.permisos;
-    const tienePermiso = permiso.includes(5) || permiso.includes(14);
+    const tienePermiso = permiso.includes(5);
     if(tienePermiso){     
         DatosConsultas.prepConsulta();
 
@@ -208,8 +210,6 @@ exports.getConsultas = ((request, response, next) => {
     else {
         return response.redirect('/gestionAdmin');
     }
-    request.session.mensaje = undefined;
-    request.session.bandera = undefined;
 });
 
 exports.postConsultas = ((request, response, next) => {
@@ -246,4 +246,76 @@ exports.postSelProgram = ((request, response, next) => {
     datosConsultas.setListaProg(request.body.listaProg);
     //listaProgam = request.body.listaProg;
     //console.table(listaProgam);
+});
+
+exports.getHistorial = ((request, response, next) => {
+    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const permiso = request.session.permisos;
+    const tienePermiso = permiso.includes(14);
+    if(tienePermiso){     
+        Ciclo.fetchFechaCiclo(0)
+        .then(([rows_Fechas, fieldData_Fechas]) => {
+            Ciclo.fetchCantPorAno(0)
+            .then(([rows_CantAno, fieldData_CantAno]) => {
+                Participante.fetchAll()
+                .then(([rows_Participantes, fieldData_Prog]) => {
+                    response.render('consultas_Historial', {
+                        mensaje: mensaje,
+                        bandera: bandera,
+                        tituloDeHeader: "Historial - Consultas",
+                        tituloBarra: "Historial por alumno",
+                        permisos: permiso,
+                        años: rows_CantAno,
+                        fechasDeCiclos: rows_Fechas,
+                        participantes: rows_Participantes,
+                        numPart: rows_Participantes.length,
+                        meses: DatosConsultas.fetchMeses(),
+                        permisos: request.session.permisos,
+                        backArrow: {display: 'block', link: '/consultas'},
+                        forwArrow: arrows[1]
+                    });
+                    request.session.mensaje = undefined;
+                    request.session.bandera = undefined;
+                    console.log("Consultas - Historial");
+                    response.status(201);
+                }).catch(err => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
+                    response.redirect('/consultas');
+                    console.log(err);
+                });
+            }).catch(err => {
+                request.session.mensaje = 'Error de comunicacion con el servidor';
+                request.session.bandera = true;
+                response.redirect('/consultas');
+                console.log(err);
+            });
+        }).catch(err => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/consultas');
+            console.log(err);
+        });
+    }
+    else {
+        return response.redirect('/gestionAdmin');
+    }
+});
+
+exports.returnHistorial = ((request, response, next) => {
+
+    Historial.fetchHistorial(
+        request.params.criterio,
+        request.body.inCiclosIni,
+        request.body.chRangoCiclos,
+        request.body.inCiclosFin
+    )
+        .then(([rows, fieldData]) => {
+            //console.table(rows);
+            return response.status(200).json({historial: rows});
+        })
+        .catch(err => {
+            console.log(err)
+        });
 });
