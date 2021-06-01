@@ -73,4 +73,9 @@ module.exports = class Participante {
         return db.execute("UPDATE participantes SET estatus = 'B' WHERE login = ?",
         [login]);
       }
+    static fetchById(login) {
+        return db.execute('Select * From participantes Where login = ?',
+          [login]
+        );
+    }
 }

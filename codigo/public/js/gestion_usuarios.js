@@ -692,3 +692,132 @@ const modPar = (login) => {
         })
 
 };
+
+const checkInfoPerfil = (login) => {
+    const csrf = document.getElementById('_csrf').value;
+    let data = {login: login};
+        fetch('/usuarios/perfil', {
+
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'csrf-token': csrf
+            },
+            body: JSON.stringify(data)
+        }).then(result => {
+            return result.json();  
+        }).then(data => {
+            let html = '';
+            if (data.tBool == true) {
+                if ($.trim(data.terapeuta)) {
+                    if(data.terapeuta[0].titulo != null) {
+                        html += '<li><strong><h5>Título:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">' + data.terapeuta[0].titulo + '</h6>' +
+                                '</li>';
+                    }
+                    else {
+                        html += '<li><strong><h5>Título:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">No se encuentra un título</h6>' +
+                                '</li>';
+                    }
+                }
+                else {
+                    html += '<li><strong><h5>Título:</h5></strong></li>' +
+                            '<li class="grey-text">' +
+                                '<h6 style="margin-left: 2%;">No se encuentra un título</h6>' +
+                            '</li>';
+                }
+
+                if ($.trim(data.terapeuta)) {
+                    if(data.terapeuta[0].cv != null) {
+                        html += '<li><strong><h5>Currículum:</h5></strong></li>' +
+                                '<div class="waves-effect waves-light btn-small white black-text col s2">' +
+                                '<a href="../../' + data.terapeuta[0].cv + '" target="_blank"><i class="material-icons black-text">file_download</i></a>' +
+                                '</div>';
+                        let fileName = data.terapeuta[0].cv.split('/');
+                        html += '<div class="col s10 "><input class="file-path" style="border-bottom: 0px; color-text: #9e9e9e;" disabled type="text" placeholder="' + fileName[2] + '"></div>';
+                    }
+                    else {
+                        html += '<li><strong><h5>Currículum:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
+                                '</li>';
+                    }
+                }
+                else {
+                    html += '<li><strong><h5>Currículum:</h5></strong></li>' +
+                            '<li class="grey-text">' +
+                                '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
+                            '</li>';
+                }
+
+                if ($.trim(data.terapeuta)) {
+                    if (data.terapeuta[0].estatus == 'A') {
+                        html += '<li><strong><h5>Estatus:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">Activo</h6>' +
+                                '</li>';
+                    }
+                    if (data.terapeuta[0].estatus == 'I') {
+                        html += '<li><strong><h5>Estatus:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">Inactivo</h6>' +
+                                '</li>';
+                    }
+                    if (data.terapeuta[0].estatus == 'B') {
+                        html += '<li><strong><h5>Estatus:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">Baja Permanente</h6>' +
+                                '</li>';
+                    }
+                }
+            }
+            if (data.pBool == true) {
+                let bDay = data.participante[0].fechaNacimiento.split('T');
+                html += '<li><strong><h5>Fecha de Nacimiento:</h5></strong></li>' +
+                        '<li class="grey-text">' +
+                            '<h6 style="margin-left: 2%;">' + bDay[0] +'</h6>' +
+                        '</li>';
+                
+                if (data.participante[0].sexo == 'M') {
+                    html += '<li><strong><h5>Sexo:</h5></strong></li>' +
+                            '<li class="grey-text">' +
+                                '<h6 style="margin-left: 2%;">Femenino</h6>' +
+                            '</li>';
+                }
+                else {
+                    html += '<li><strong><h5>Sexo:</h5></strong></li>' +
+                            '<li class="grey-text">' +
+                                '<h6 style="margin-left: 2%;">Masculino</h6>' +
+                            '</li>';
+                }
+
+                if ($.trim(data.terapeuta)) {
+                    if (data.terapeuta[0].estatus == 'A') {
+                        html += '<li><strong><h5>Estatus:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">Activo</h6>' +
+                                '</li>';
+                    }
+                    if (data.terapeuta[0].estatus == 'I') {
+                        html += '<li><strong><h5>Estatus:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">Inactivo</h6>' +
+                                '</li>';
+                    }
+                    if (data.terapeuta[0].estatus == 'B') {
+                        html += '<li><strong><h5>Estatus:</h5></strong></li>' +
+                                '<li class="grey-text">' +
+                                    '<h6 style="margin-left: 2%;">Baja Permanente</h6>' +
+                                '</li>';
+                    }
+                }
+            }
+            
+            document.getElementById('info+').innerHTML = html;
+        }).catch(err => {
+            console.log(err);
+        });
+};

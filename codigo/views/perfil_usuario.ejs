@@ -1,24 +1,63 @@
 <%- include('include/head.ejs') %>
 <%- include('include/titleBar.ejs') %>
 <%- include('include/sideNavBar.ejs') %>     
-<div class="row">
-    <div class="col m1">
-        <h2></h2>
-        <div class="vl"></div>
-    </div>
-    <div class="col s11 m8">
+<div class="row ">
+  <div class="col m1">
+    <h2></h2>
+    <div class="vl"></div>
+  </div>
+    <div class="col m5 s6">
+      <br><br>
+      <div class="row valign-wrapper">
+        <br><br>
         <ul>
-          <li class = "camposPerfil"><strong><br>Correo</strong></li>
-          <li>maguilar@gigis.org</li>
-          <li class = "camposPerfil"><strong><br>Estatus</strong></li>
-          <li>Activo</li>
-          <li class = "camposPerfil"><strong><br>Rol(es)</strong></li>
-          <li>Administrador, gestor</li>
+            <li><strong><h5>Correo:</h5></strong></li>
+            <li class="grey-text">
+                <h6 style="margin-left: 2%;"><%= usuario[0].login %></h6>
+            </li>
+            <li><strong><h5>Nombre:</h5></strong></li>
+            <li class="grey-text">
+               <h6 style="margin-left: 2%;"><%= usuario[0].nombreUsuario %></h6>
+            </li>
+            <% if (usuario[0].apellidoPaterno != null) { %>
+                <li><strong><h5>Apellido Paterno:</h5></strong></li>
+                <li class="grey-text">
+                    <h6 style="margin-left: 2%;"><%= usuario[0].apellidoPaterno %></h6>
+                </li>
+            <% } %>
+            <% if (usuario[0].apellidoMaterno != null) { %>
+                <li><strong><h5>Apellido Materno:</h5></strong></li>
+                <li class="grey-text">
+                    <h6 style="margin-left: 2%;"><%= usuario[0].apellidoMaterno %></h6>
+                </li>
+            <% } %>
+            
+            <% if (roles[0].idRol != 1) { %>
+            <li><strong><h5>Roles:</h5></strong></li>
+            <% } %>
+            <% for(let rol of roles) { %>
+              <% if (rol.idRol != 1) { %>
+                <li class="grey-text">
+                  <h6 style="margin-left: 2%;"><i class="material-icons">check</i>   <%= rol.nombre %></h6>
+                </li>
+              <% } %>
+            <% } %>
         </ul>
+        <input hidden id="login" value="<%= usuario[0].login %>">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%=csrfToken%>" > 
     </div>
-    <div class="col m2">
-      <p></p>
-        <a class="waves-effect waves-light btn-small light-green accent-4" href = "./editar-administrador"><i class="material-icons left">edit</i>Editar</a>
     </div>
-</div>  
+    <div class="col m5 s6">
+      <br><br>
+        <div class="row valign-wrapper">
+              <ul id="info+">
+            </ul>
+        </div>
+    </div>
+  </div>
+
+
 <%- include('include/footer.ejs') %>
+<script>
+$(document).ready(checkInfoPerfil(document.getElementById('login').value))
+</script>
