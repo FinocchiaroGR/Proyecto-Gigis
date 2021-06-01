@@ -13,6 +13,7 @@ exports.nivelObjetivos = (request, response, next) => {
     .then(([programa,fieldData]) => {
       Objetivo.objetivosPorNivel(request.params.nivel_id)
       .then(([objetivos, fieldData2]) =>{
+        console.table(objetivos);
         const tituloBarra = programa[0].nombrePrograma + ' - Nivel: ' + programa[0].nombreNivel;
         response.render('objetivos', {
           tituloDeHeader: 'Objetivos',

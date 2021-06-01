@@ -380,6 +380,7 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
 });
 }
 
+//Funcion para modificar las fechas del ciclo
 const modificarCiclo = () => {
   let idCiclo = document.getElementById("idciclo").value;
   fetch('/gestionAdmin/gestionCiclos/editar-ciclo/'+idCiclo, {
@@ -463,9 +464,6 @@ const modificarCiclo = () => {
       console.log(err);
   });
 };
-
-
-
 
 //Función para las fechas
 function inicializarDatePickers(data){
