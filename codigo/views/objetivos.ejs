@@ -17,7 +17,7 @@
           <div class="input-field col s12">
             <!-- Boton Agregar -->
             <% if (permisos.includes(18)) { %>
-               <a class="waves-effect waves-light btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
+               <a class=" btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
             <% } %>
           </div>
         </div>
@@ -32,7 +32,7 @@
             <ul>
                 <li><strong><br>Descripción *</strong></li>
                 <li>
-                <div class="input">
+                <div class="input-field">
                     <input name="descripcion" type="text" class="validate"  placeholder="Descripción" required>
                 </div>
                 </li>
@@ -40,7 +40,7 @@
         </div>
         <div class="modal-footer">
             <br>
-            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Agregar<i class="material-icons right">send</i></button>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Agregar</button>
         </div>
         </div><!--Fin Modal Structure agregar programa-->
     </form>
@@ -50,7 +50,7 @@
     <li class="collection-header"><h4>Objetivos</h4></li>
     <% let i = 1; %>
     <% for (objetivo of objetivos) { %>  
-        <% if (objetivo.estatus === 1) { %>
+        <% if (objetivo.status === 1) { %>
             <li class="collection-item">
                 <%= i%>.- <%= objetivo.descripcion %>
                 <span class="badge">
@@ -89,7 +89,8 @@
         </div>
         <div class="modal-footer">
             <br>
-            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar<i class="material-icons right">send</i></button>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>
+            <label style="visibility:hidden">**</label>
         </div>
     </div>
 </form><!-- Fin Modal Structure Editar Programa-->
@@ -136,7 +137,7 @@
       let html = '';
       let i = 1;
       for (let objetivo of data.objetivos){
-          if(objetivo.estatus === 1){
+          if(objetivo.status === 1){
             html += '<li class="collection-item">'+
                    i + '.- ' + objetivo.descripcion +
                     '<span class="badge">';

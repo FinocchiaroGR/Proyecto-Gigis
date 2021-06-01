@@ -102,4 +102,11 @@ module.exports = class Ciclo {
       [idCiclo]
     );
   }
+
+  static actualizar(idCiclo, fechaInicial, fechaFinal){
+    return db.execute('UPDATE ciclos SET fechaInicial = ?, fechaFinal = ? WHERE idCiclo = ?',
+    [fechaInicial, fechaFinal, idCiclo]);
+  }
+
+
 };

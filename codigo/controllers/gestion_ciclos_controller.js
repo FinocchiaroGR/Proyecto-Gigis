@@ -44,9 +44,12 @@ exports.getInscribir = (request,response,next) => {
     const error = request.session.error === undefined ? 'false' : request.session.error;
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
-    let idlastCiclo = parseInt(request.session.idlastciclo) + 1;
-    console.log(request.params.idCiclo);
+    //el id del ciclo si fue agregado recientemente
+    const idlastCiclo = parseInt(request.session.idlastciclo) + 1;
+    //el id del ciclo dependiendo si viene de agregar o de la lista
     const idciclop =  request.params.idCiclo === undefined ? idlastCiclo : request.params.idCiclo;
+    //el id del ultimo ciclo
+    let idlastciclop = request.params.idCiclo === undefined ? idlastCiclo: request.session.idlastciclo;
     Ciclo.fetchUnoPorId(idciclop)
     .then(([ciclo, fieldData1]) => {
         let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
@@ -58,6 +61,7 @@ exports.getInscribir = (request,response,next) => {
                         response.render('gc_inscribir', {
                             error: error,
                             idciclo: idciclop,
+                            idlastciclop: idlastciclop,
                             usuario: usuario,
                             bandera: bandera,
                             terapeutas: terapeutas,
@@ -207,7 +211,7 @@ exports.postBaja = (request,response,next) => {
         })
         .catch( err => {
             request.session.error = 'No se pudo inscribir correctamente al participante.';
-            response.redirect('/gestionAdmin/inscribir');
+            response.redirect('/gestionAdmin/gestionCiclos');
             console.log(err);
         });
       
@@ -304,47 +308,50 @@ exports.getPerfilCiclo = (request,response,next) => {
 exports.getEditarCiclo = (request,response,next) => {
     const permisos = request.session.permisos;
     if(permisos.includes(11)) {
-        Programa.fetchAll()
-        .then(([programas, fieldData1]) => {
-            Usuario.fetchNomTerapeutas()
-            .then(([terapeutas, fieldData1]) => {
-                Ciclo.fetchFechaFinalUltimoCicloSinContar(request.params.idCiclo)
-                .then(([fechaLimite, fieldData1]) => {
-                    Grupo.fetchIdUltimoGrupo()
-                        .then(([idUltimoGrupo, fieldData1]) => {
-                            request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo; 
-                            Programa.fetchPorIdCiclo(request.params.idCiclo)
-                                .then(([programasreg, fieldData1]) => {
-                                    Ciclo.fetchUnoPorId(request.params.idCiclo)
-                                        .then(([ciclo, fieldData1]) => {
-                                            let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
-                                            let ciclonombre = meses + ' '+ ciclo[0].fechaInicial.getFullYear(); 
-                                            return response.status(200).json({
-                                                fechaLimite: fechaLimite,
-                                                programas: programas,
-                                                programasreg: programasreg,
-                                                terapeutas: terapeutas,
-                                                permisos: request.session.permisos,
-                                                ciclonombre: ciclonombre,
-                                                ciclo:ciclo,
-                                            });
-                                        })
-                                        .catch((err) => console.log(err));
-                                })
-                                .catch((err) => console.log(err));
-                        })
-                        .catch(err => console.log(err)); 
+        Ciclo.fetchFechaFinalUltimoCicloSinContar(request.params.idCiclo)
+        .then(([fechaLimite, fieldData1]) => {
+            Ciclo.fetchUnoPorId(request.params.idCiclo)
+                .then(([ciclo, fieldData1]) => {
+                    let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
+                    let ciclonombre = meses + ' '+ ciclo[0].fechaInicial.getFullYear(); 
+                    return response.status(200).json({
+                        fechaLimite: fechaLimite,
+                        permisos: request.session.permisos,
+                        ciclonombre: ciclonombre,
+                        ciclo:ciclo,
+                    });
                 })
-                .catch(err => console.log(err));
-            })
-            .catch(err => console.log(err));
-        })
+                .catch((err) => console.log(err));
+        })               
         .catch(err => console.log(err));
     }
     else {
         response.status(404);
         response.send('Lo sentimos, este sitio no existe');
     }
+};
+
+
+exports.postEditarCiclo = (request,response,next) => {
+    request.session.error = undefined;
+    Ciclo.actualizar(request.body.idCiclo, request.body.fechaInicial, request.body.fechaFinal)
+        .then(() => {
+            Ciclo.fetchUnoPorId(request.body.idCiclo)
+                .then(([ciclo, fieldData1]) => {
+                    let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
+                    let ciclonombre = meses + ' '+ ciclo[0].fechaInicial.getFullYear(); 
+                    return response.status(200).json({
+                        error: request.session.error,
+                        ciclonombre: ciclonombre
+                    });
+                })
+                .catch((err) => console.log(err));
+        })
+        .catch( err => {
+            request.session.error = 'No se pudo inscribir correctamente al participante.';
+            response.redirect('/gestionAdmin/gestionCiclos');
+            console.log(err);
+        });
 };
 
 exports.get = (request,response,next) => {
