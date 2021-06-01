@@ -15,16 +15,15 @@
 
           <% if(mostrarCalif) { %>
 
-            <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini %> </td>
-            <% let calificacion_inicial = 'calificacion_inicial_' + ciclos.ini;
-               archivo[calificacion_inicial] = 'Calificacion Inicial ' + programas[listaProg[0]-1].nombrePrograma + ' Ciclo-' + ciclos.ini; %>
-
             <% let cicloCont = 0, progCont = 0; %>
             <% for(let i = 0; i<cantCol; i++) { %>
+              <td> Calificación Inicial <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini+cicloCont %> </td>
               <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini+cicloCont %> </td>
               <% let calificacion_final = 'calificacion_final_' + cicloCont;
                  let ciclo =  ciclos.ini+cicloCont;
-                 archivo[calificacion_final] = 'Calificacion Final ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclo; %>
+                 archivo[calificacion_final] = 'Calificacion Final ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini; %>
+              <% let calificacion_inicial = 'calificacion_inicial_' + ciclos.ini;
+                 archivo[calificacion_inicial] = 'Calificacion Inicial ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini; %>
               <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
               <% } else { %>
@@ -61,18 +60,18 @@
           <% if(mostrarCalif) { %>
             <td><%= Math.round((datos[i][col_Datos[9]['name']]) * 10) / 10 %> </td>
 
-            <% let acumProm=0,contProm = 0,flag=0;%>
-            <% for(let j = 10; j<col_Datos.length; j+=2) { //7 porque es la primera calif Final %>
+            <% let acumProm=0,contProm = 0,flag=0, par=1;%>
+            <% for(let j = 10; j<col_Datos.length; j++) { //7 porque es la primera calif Final %>
 
               <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
 
-              <% if(datos[i][col_Datos[j]['name']] !== null){ %>
+              <% if(datos[i][col_Datos[j]['name']] !== null && par % 2 === 0){ %>
                 <% acumProm += Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10; %>
                 <% contProm++; flag = j; %>
-              <% } %>
+              <% } par++;%>
 
             <% } %>
-            <td><%= Math.round((datos[i][col_Datos[6]['name']] ) * 10) / 10 %></td>
+            <td><%= Math.round((datos[i][col_Datos[10]['name']] ) * 10) / 10 %></td>
             <td><%= Math.round((datos[i][col_Datos[flag]['name']] ) * 10) / 10 %></td>
             <td><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
             <td><%= Math.round(((datos[i][col_Datos[flag]['name']] - datos[i][col_Datos[6]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
@@ -101,8 +100,8 @@
 
               <% let cicloCont = 0, progCont = 0;%>
               <% for(let i = 0; i<cantCol; i++) { %>
-                <td>Calificación <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
-               
+                <td>Calificación Inicial <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+                <td>Calificación Final<br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
                 <% if(((progCont+1) % cantProg) === 0){%>
                   <% progCont = 0; cicloCont++;%>
                 <% }else{ %>
@@ -135,7 +134,7 @@
             <% } %>
             <% if(mostrarCalif) { %><!--Prueba de que se imprimen califs-->
               <% if(!califOava) { %><!--Prueba de que se imprimen calificaciones-->
-                <% for(let j = 10; j < col_Datos.length; j+=2) { %>
+                <% for(let j = 10; j < col_Datos.length; j++) { %>
                   <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
                 <% } %>
               <% } else { %><!--Prueba de que se imprimen avances-->

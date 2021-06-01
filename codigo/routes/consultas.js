@@ -26,6 +26,8 @@ router.post('/SelProgram', isAuth, consultasController.postSelProgram);
 
 router.get('/historial', isAuth, consultasController.getHistorial);
 
+router.post('/historial/:criterio', isAuth, consultasController.returnHistorial);
+
 router.get('/', isAuth, consultasController.getConsultas);
 
 router.post('/', isAuth, consultasController.postConsultas);

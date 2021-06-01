@@ -260,11 +260,11 @@ exports.getHistorial = ((request, response, next) => {
             .then(([rows_CantAno, fieldData_CantAno]) => {
                 Participante.fetchAll()
                 .then(([rows_Participantes, fieldData_Prog]) => {
-                    response.render('consultas', {
+                    response.render('consultas_Historial', {
                         mensaje: mensaje,
                         bandera: bandera,
-                        tituloDeHeader: "Consultas",
-                        tituloBarra: "Consultas",
+                        tituloDeHeader: "Historial - Consultas",
+                        tituloBarra: "Historial por alumno",
                         permisos: permiso,
                         años: rows_CantAno,
                         fechasDeCiclos: rows_Fechas,
@@ -301,4 +301,21 @@ exports.getHistorial = ((request, response, next) => {
     else {
         return response.redirect('/gestionAdmin');
     }
+});
+
+exports.returnHistorial = ((request, response, next) => {
+
+    Historial.fetchHistorial(
+        request.params.criterio,
+        request.body.inCiclosIni,
+        request.body.chRangoCiclos,
+        request.body.inCiclosFin
+    )
+        .then(([rows, fieldData]) => {
+            //console.table(rows);
+            return response.status(200).json({historial: rows});
+        })
+        .catch(err => {
+            console.log(err)
+        });
 });
