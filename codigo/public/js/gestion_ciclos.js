@@ -26,7 +26,7 @@ const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
               '<tr>'+
                 '<div class="input-field col m11">'+
                     '<i class="material-icons prefix">search</i>'+
-                    '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
+                    '<input id="buscarP" type="text" class="validate" oninput="buscarP(&apos;'+idGrupo+'&apos;)">'+
                 '</div>'+
               '</tr>'+
             '</thead>'+
@@ -68,7 +68,7 @@ const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
 };
 
 //Funcion para el buscador de participantes
-const buscar = (idGrupo) => {
+const buscarP = (idGrupo) => {
   let criterio = document.getElementById("buscarP").value;
   fetch('/gestionAdmin/gestionCiclos/buscar/'+criterio, {
       method: 'GET'
