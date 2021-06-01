@@ -9,7 +9,7 @@
     <tbody id="tablaUsuarios">
     <% for (let usuario of usuarios) { %>  
         <tr>
-            <td  style="cursor: pointer;"><a href="<%= usuario.login%>-perfil" class = "black-text"><%= usuario.nombreUsuario %> <%= usuario.apellidoPaterno %></a></td>
+            <td  style="cursor: pointer;"><a href="./perfil/<%= usuario.login%>" class = "black-text"><%= usuario.nombreUsuario %> <%= usuario.apellidoPaterno %></a></td>
             <td><%= usuario.nombre %></td>
 
             <% if (permisos.includes(9)) { %>  

@@ -12,7 +12,7 @@ subrouter.post('/modificar-participante', isAuth, gestionParticController.postMo
 subrouter.post('/update-participante', isAuth, gestionParticController.postUpdatePar);
 subrouter.post('/delete-participante', isAuth, gestionParticController.deleteParticipante);
 
-subrouter.get('/perfil-participante', isAuth, gestionParticController.getPerfilPartic);
+subrouter.get('/perfil/:login', isAuth, gestionParticController.getPerfil);
 
 subrouter.get('/buscar/:criterio', isAuth, gestionParticController.getBuscar);
 

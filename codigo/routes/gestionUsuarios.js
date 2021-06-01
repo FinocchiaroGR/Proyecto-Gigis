@@ -36,6 +36,7 @@ const { isatty } = require('tty');
 
 subrouter.get('/', isAuth, gestionUserController.get);
 subrouter.get('/buscar/:criterio', isAuth, gestionUserController.getBuscar);
+subrouter.get('/perfil/:login', isAuth, gestionUserController.getPerfil);
 
 subrouter.post('/', isAuth, gestionUserController.postNuevoUsuario);
 subrouter.post('/modificar-usuario', isAuth, gestionUserController.postModUser);

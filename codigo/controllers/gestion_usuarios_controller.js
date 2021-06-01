@@ -6,6 +6,7 @@ const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
 const Grupos_Terapeutas = require('../models/grupos_terapeutas');
+const { request, response } = require('express');
 
 const arrows = Arrow.fetchAll();
 
@@ -585,4 +586,28 @@ exports.postDeleteUser = (request, response) => {
                 console.log(err);
             })
     }
+};
+
+exports.getPerfil = (request, response) => {
+    Usuario.fetchOne(request.params.login)
+        .then(([usuario]) => {
+            Rol.fetchRolNameByLogin(request.params.login)
+                .then(([roles]) => {
+                    response.render('perfil_usuario', {
+                        usuario: usuario,
+                        roles : roles,
+                        permisos: request.session.permisos,
+                        tituloDeHeader: "Perfil de usuario",
+                        tituloBarra: "Perfil",
+                        backArrow: {display: 'block', link: '/gestionAdmin/gestionUsuarios'},
+                        forwArrow: arrows[1]
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 };

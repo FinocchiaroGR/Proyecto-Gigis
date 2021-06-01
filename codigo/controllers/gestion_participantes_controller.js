@@ -2,6 +2,7 @@ const Arrow = require('../models/arrow');
 const Usuario = require('../models/usuarios');
 const Participante = require('../models/participantes');
 const Usuario_Rol = require('../models/usuarios_roles');
+const Rol = require('../models/roles');
 const Participantes_Grupos_Objetivos = require('../models/participantes_grupos_objetivos');
 const arrows = Arrow.fetchAll();
 
@@ -174,3 +175,26 @@ exports.post = ((request,response,next) => {
         });
 });
 
+exports.getPerfil = (request, response) => {
+    Usuario.fetchOne(request.params.login)
+        .then(([usuario]) => {
+            Rol.fetchRolNameByLogin(request.params.login)
+                .then(([roles]) => {
+                    response.render('perfil_usuario', {
+                        usuario: usuario,
+                        roles : roles,
+                        permisos: request.session.permisos,
+                        tituloDeHeader: "Perfil de participante",
+                        tituloBarra: "Perfil",
+                        backArrow: {display: 'block', link: '/gestionAdmin/gestionParticipantes'},
+                        forwArrow: arrows[1]
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+};
