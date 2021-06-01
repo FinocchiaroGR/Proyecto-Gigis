@@ -138,3 +138,60 @@ function enableEdad(){
         document.getElementById('inEdadFin').setAttribute("disabled",null);
     }
 }
+
+const buscar = () => {
+
+    const csrf = document.getElementById('_csrf').value;
+    let criterio = document.getElementById("buscador").value;
+    if(criterio === ''){
+        criterio = " ";
+    }
+
+    let data={
+        inCiclosIni : document.getElementById('inCiclosIni').value,
+        chRangoCiclos: document.getElementById('chRangoCiclos').checked,
+        inCiclosFin : document.getElementById('inCiclosFin').value
+    }
+
+    fetch('/consultas/historial/'+criterio, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json',
+                    'csrf-token': csrf},
+        body:JSON.stringify(data)
+    }).then(result => {
+        return result.json(); 
+    }).then(data => {
+        //console.table(data.historial);
+        if(data.historial.length === 0){
+            let html = 'No hay resultados';
+            document.getElementById('tablaHistorial').innerHTML = html;
+        }else {
+            let html = '<table class="striped highlight responsive-table">'+-
+                        +'<thead><tr>'+
+                        '<td>Programa</td>'+
+                        //'<td>Periodo</td>'+
+                        '<td>Profesor</td>'+
+                        '<td>Calificación Inicial</td>'+
+                        '<td>Calificación Final</td>'+
+                        '<td>Avance</td>'+
+                        '</tr></thead>'+
+                        '<tbody>';
+            for (let programa of data.historial) {
+                html += '<tr>'+
+                        '<td>'+programa.nombrePrograma+'</td>'+
+                        //'<td>'+programa.FechaInicial+'-'+programa.FechaFinal+'</td>'+
+                        '<td>'+programa.nombreMaestro+' '+programa.apellidoPMaestro+' '+programa.apellidoMMaestro+'</td>'+
+                        '<td>'+(Math.round((programa.CalifInicial) * 10) / 10)+'</td>'+
+                        '<td>'+(Math.round((programa.CalifFinal) * 10) / 10)+'</td>'+
+                        '<td>'+(Math.round((programa.Avance) * 100) / 100)+'%</td>'+
+                        '</tr>';
+            }
+            html += '</tbody></table>';
+            //console.log(document.getElementById('tablaHistorial').innerHTML);
+            document.getElementById('tablaHistorial').innerHTML = html;
+        }
+        
+    }).catch(err => {
+        console.log(err);
+    });
+}
