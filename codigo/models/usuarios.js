@@ -97,7 +97,7 @@ module.exports = class Usuario {
 
   static fetchPorCriterio(criterio) {
     return db.execute(
-      'SELECT U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno, U.login, R.nombre FROM roles R, usuarios_roles UR, usuarios U LEFT JOIN participantes P ON  U.login = P.login WHERE R.idRol = UR.idRol  AND UR.login = U.login AND  R.idRol != 1 AND(U.nombreUsuario LIKE ? OR U.apellidoPaterno LIKE ? OR U.apellidoMaterno LIKE ?) AND P.login IS NULL',
+      'SELECT U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno, U.login, R.nombre FROM roles R, usuarios_roles UR, usuarios U LEFT JOIN participantes P ON  U.login = P.login WHERE R.idRol = UR.idRol  AND UR.login = U.login AND  R.idRol != 1 AND(U.nombreUsuario LIKE ? OR U.apellidoPaterno LIKE ? OR U.apellidoMaterno LIKE ?) AND P.login IS NULL GROUP BY U.login',
       ['%'+criterio+'%','%'+criterio+'%','%'+criterio+'%']
       );
   }

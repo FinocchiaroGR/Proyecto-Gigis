@@ -7,7 +7,7 @@
     <div class = "row">
       <div class = "right">
         <br><br>
-        <% if (permisos.includes(11)) { %>
+        <% if (permisos.includes(11) && idlastciclop==idciclo ) { %>
         <!-- Boton Modificar ciclo -->
         <a  onclick="modificarCiclo()"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
         <% } %>

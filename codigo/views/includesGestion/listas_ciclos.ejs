@@ -3,8 +3,8 @@
 <ul class="collapsible"> 
     <% for (let ciclo of ciclos_aactual) { %>
         <li>
-            <% if (ciclo.idCiclo === idUltimoCiclo) { 
-                let ruta = '/gestionAdmin/gestionCiclos/inscribir/'+ idUltimoCiclo; %>
+            <% if (ciclo.idCiclo === idUltimoCiclo || ciclo.idCiclo === (idUltimoCiclo-1)) { 
+                let ruta = '/gestionAdmin/gestionCiclos/inscribir/'+ ciclo.idCiclo; %>
                 <div class="collapsible-header" >
                     <a  class = "black-text" href="<%= ruta %>">
                         <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>

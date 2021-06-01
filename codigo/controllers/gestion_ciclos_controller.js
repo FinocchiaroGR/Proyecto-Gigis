@@ -45,8 +45,12 @@ exports.getInscribir = (request,response,next) => {
     const error = request.session.error === undefined ? 'false' : request.session.error;
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
-    let idlastCiclo = parseInt(request.session.idlastciclo) + 1;
+    //el id del ciclo si fue agregado recientemente
+    const idlastCiclo = parseInt(request.session.idlastciclo) + 1;
+    //el id del ciclo dependiendo si viene de agregar o de la lista
     const idciclop =  request.params.idCiclo === undefined ? idlastCiclo : request.params.idCiclo;
+    //el id del ultimo ciclo
+    let idlastciclop = request.params.idCiclo === undefined ? idlastCiclo: request.session.idlastciclo;
     Ciclo.fetchUnoPorId(idciclop)
     .then(([ciclo, fieldData1]) => {
         let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
@@ -58,6 +62,7 @@ exports.getInscribir = (request,response,next) => {
                         response.render('gc_inscribir', {
                             error: error,
                             idciclo: idciclop,
+                            idlastciclop: idlastciclop,
                             usuario: usuario,
                             bandera: bandera,
                             terapeutas: terapeutas,
