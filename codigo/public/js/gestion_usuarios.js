@@ -711,22 +711,22 @@ const checkInfoPerfil = (login) => {
             if (data.tBool == true) {
                 if ($.trim(data.terapeuta)) {
                     if(data.terapeuta[0].titulo != null) {
-                        html += '<li><strong><h5>Título:</h5></strong></li>' +
+                        html += '<li><strong><h5>Título profesional:</h5></strong></li>' +
                                 '<li class="grey-text">' +
                                     '<h6 style="margin-left: 2%;">' + data.terapeuta[0].titulo + '</h6>' +
                                 '</li>';
                     }
                     else {
-                        html += '<li><strong><h5>Título:</h5></strong></li>' +
+                        html += '<li><strong><h5>Título profesional:</h5></strong></li>' +
                                 '<li class="grey-text">' +
-                                    '<h6 style="margin-left: 2%;">No se encuentra un título</h6>' +
+                                    '<h6 style="margin-left: 2%;">No existe título registrado.</h6>' +
                                 '</li>';
                     }
                 }
                 else {
                     html += '<li><strong><h5>Título:</h5></strong></li>' +
                             '<li class="grey-text">' +
-                                '<h6 style="margin-left: 2%;">No se encuentra un título</h6>' +
+                                '<h6 style="margin-left: 2%;">No existe título registrado.</h6>' +
                             '</li>';
                 }
 
@@ -742,14 +742,14 @@ const checkInfoPerfil = (login) => {
                     else {
                         html += '<li><strong><h5>Currículum:</h5></strong></li>' +
                                 '<li class="grey-text">' +
-                                    '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
+                                    '<h6 style="margin-left: 2%;">No existe currículum registrado.</h6>' +
                                 '</li>';
                     }
                 }
                 else {
                     html += '<li><strong><h5>Currículum:</h5></strong></li>' +
                             '<li class="grey-text">' +
-                                '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
+                                '<h6 style="margin-left: 2%;">No existe currículum registrado.</h6>' +
                             '</li>';
                 }
 
