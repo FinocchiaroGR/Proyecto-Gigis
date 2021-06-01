@@ -139,7 +139,7 @@ function enableEdad(){
     }
 }
 
-const buscar = () => {
+const buscarHistorial = () => {
 
     const csrf = document.getElementById('_csrf').value;
     let criterio = document.getElementById("buscador").value;
