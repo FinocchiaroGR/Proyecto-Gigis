@@ -15,7 +15,7 @@
                 </div>
             <% }else{ %>
                 <div class="collapsible-header" href="">
-                    <a  class = "black-text" href="/gestionAdmin/gestionCiclos/perfil-ciclo">
+                    <a  class = "black-text" href="/gestionAdmin/gestionCiclos/perfil-ciclo/<%= ciclo.idCiclo%>" >
                         <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
                     </a>
                     <span class="badge" >
@@ -37,7 +37,7 @@
                     <div class="collection">
                         <% for (let ciclo of ciclos) { %>
                             <% if (ciclo.fechaInicial.getFullYear() === p.anio) { %>
-                                <a  href="/gestionAdmin/gestionCiclos/perfil-ciclo" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
+                                <a  href="/gestionAdmin/gestionCiclos/perfil-ciclo/<%= ciclo.idCiclo%>" class="collection-item" style="cursor: pointer;"> <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %></a>         
                             <% } %>        
                         <% } %>
                     </div>

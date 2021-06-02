@@ -33,8 +33,8 @@ const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
             '<tbody id = "tablita">';
             let colorPalomita = 'grey-text text-lighten-3';
             for (let participante of data.participantes) {
-              let apellidoP =  participante.apellidoPaterno === 'null '? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
-              let apellidoM =  participante.apellidoMaterno === 'null '? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
+              let apellidoP =  participante.apellidoPaterno === null? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
+              let apellidoM =  participante.apellidoMaterno === null? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
               for (let inscrito of data.inscritos){
                 if(inscrito.login === participante.login){
                   colorPalomita = 'light-green-text text-accent-4';
