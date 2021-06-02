@@ -15,7 +15,7 @@
                 </div>
             <% }else{ %>
                 <div class="collapsible-header" href="">
-                    <a  class = "black-text" href="/gestionAdmin/gestionCiclos/perfil-ciclo">
+                    <a  class = "black-text" href="/gestionAdmin/gestionCiclos/perfil-ciclo/<%= ciclo.idCiclo%>" >
                         <%= mes[ciclo.fechaInicial.getMonth()] %> - <%= mes[ciclo.fechaFinal.getMonth()] %>
                     </a>
                     <span class="badge" >
