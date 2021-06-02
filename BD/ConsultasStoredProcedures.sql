@@ -331,15 +331,15 @@ BEGIN
     #Crear tabla temporal de datos
     IF Filtrar_edad = TRUE THEN
         IF Filtrar_sexo = TRUE THEN
-            CALL crearTablaTempDatos1(@Ciclo, @Ciclo, Edad_ini, Edad_fin, Sexo, @programa);
+            CALL crearTablaTempDatos1(@Ciclo, @Ciclo, Edad_ini, Edad_fin, Sexo);
         ELSE
-            CALL crearTablaTempDatos2(@Ciclo, @Ciclo, Edad_ini, Edad_fin, @programa);
+            CALL crearTablaTempDatos2(@Ciclo, @Ciclo, Edad_ini, Edad_fin);
         END IF;
     ELSE
         IF Filtrar_sexo = TRUE THEN
-            CALL crearTablaTempDatos3(@Ciclo, @Ciclo, Sexo, @programa);
+            CALL crearTablaTempDatos3(@Ciclo, @Ciclo, Sexo);
         ELSE
-            CALL crearTablaTempDatos4(@Ciclo, @Ciclo, @programa);
+            CALL crearTablaTempDatos4(@Ciclo, @Ciclo);
         END IF;
     END IF;
 
@@ -363,7 +363,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE OR REPLACE PROCEDURE consultaGenGrupo ( IN `grupo` INT )
+CREATE PROCEDURE consultaGenGrupo ( IN `grupo` INT )
 BEGIN
     SET @programa = (SELECT idPrograma FROM grupos WHERE idGrupo = grupo);
     SET @Ciclo = (SELECT idCiclo FROM grupos WHERE idGrupo = grupo);
