@@ -4,6 +4,7 @@
 
 <div class="row">
   <div>
+    <br>
     <p><strong>Programas que se impartieron</strong></p>
     <ul class="collapsible" id="lista-programas"> 
       <% for (let programa of programas) { %>  
@@ -19,7 +20,7 @@
                     <div class="collection">
                         <% for (let terapeuta of terapeutas) { %>
                           <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
-                            <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Con <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                            <a class="collection-item" >Con <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
                           <% } %>
                         <% } %>
                     </div>

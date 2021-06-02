@@ -300,6 +300,7 @@ exports.getPerfilCiclo = (request,response,next) => {
     const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
     request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
     const idciclop =  request.params.idCiclo;
+    const permisos = request.session.permisos;
     const permisoGestionCiclos = permisos.includes(3) || permisos.includes(4) || permisos.includes(11);
     if(permisoGestionCiclos) { 
         Ciclo.fetchUnoPorId(idciclop)
@@ -318,7 +319,6 @@ exports.getPerfilCiclo = (request,response,next) => {
                                 terapeutas: terapeutas,
                                 programas: programas,
                                 permisos: request.session.permisos,
-                                permisos:request.session.permisos,
                                 tituloDeHeader: "Gestión de ciclos",
                                 tituloBarra: encabezado,
                                 backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
