@@ -125,3 +125,64 @@ const registroPuntajes = (idGrupo, login) => {
       console.log(err);
     });
   };
+
+const mostrarObjetivos = () => {
+    const login = document.getElementById('login-participante-objetivos').value;
+    const idGrupo = document.getElementById('idGrupo-participante-objetivos').value;
+    const csrf = document.getElementById('_csrf').value;
+    let data = {
+      grupo_id: idGrupo,
+      login_participante: login
+    };
+    //función que manda la petición asíncrona
+    fetch('/programas/objetivos-participante', {
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json',
+            'csrf-token': csrf 
+        },
+        body: JSON.stringify(data)
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        let html = '';
+        let numeroObj = 1;
+        let puntajeMax = document.getElementById('puntajeMax').value;
+        //Header puntajes
+        html =  '<br><table class="highlight">' +
+                    '<thead>' +
+                      '<tr>' +
+                        '<th>Objetivos</th>' +
+                        '<th>Calificación</th>' +
+                      '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                for(let objetivo of data.objetivos){
+                    html +=   '<tr>' +
+                                '<td>' +
+                                  numeroObj + '.- ' + objetivo.descripcion + 
+                                '</td>' +
+                                '<td class="left-align">';
+                    if(objetivo.puntajeFinal === null || objetivo.puntajeFinal === 0)  {
+                        html += '-';
+                    }else {
+                        html += objetivo.puntajeFinal;
+                    }
+                    html +=    '</td>' +
+                              '</tr>';
+                    numeroObj++;
+                  }
+        html +=   '</tbody>' +
+                '</table>' +
+                '<br><span style="color: grey;">Nota: La calificación maxima es : ' + puntajeMax + '</span>';
+        document.getElementById('objetivos-participante').innerHTML = html;
+        M.AutoInit();
+    
+    }).catch(err => {
+    console.log(err);
+    });
+}
+
+if(document.getElementById('login-participante-objetivos') !== null)
+    mostrarObjetivos()
