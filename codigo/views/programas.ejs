@@ -7,12 +7,15 @@
   <% for (programa of programas){
     let existeTerapeuta = false; 
     for (grupo of grupos){
-      if(usuario === grupo.login){ 
+      if(usuario === grupo.login && programa.idPrograma === grupo.idPrograma){ 
         existeTerapeuta = true; 
         break;
       }
-    } %>
-    <% if(existeTerapeuta || rol===4){ %>
+    } 
+    let existeParticipante = programasParticipante.includes(programa.idPrograma);
+  %>
+
+    <% if(existeParticipante || existeTerapeuta || rol===4 ){ %>
       <div class="col s12 m6 l4">
         <!------------------Programa 1 ------------------------>
         <div class="card ">
@@ -26,32 +29,34 @@
             <br />
             <p>Ciclo: <%= programa.fechaInicio%> - <%= programa.fechaFinal%></p>
             <p></p>
-            <p>Grupos:</p>
-            <br />
-            <div class="row">
-              <div class="col s12">
-                <div>
-                  <% for (grupo of grupos) { 
-                    if (programa.idPrograma === grupo.idPrograma){ 
-                      switch (grupo.numeroGrupo) { 
-                        case 1: %>
-                          <i class="material-icons medium red-text">looks_one</i>
-                          <% break; 
-                        case 2: %>
-                          <i class="material-icons medium red-text">looks_two</i>
-                          <% break; 
-                        case 3: %>
-                          <i class="material-icons medium red-text">looks_3</i>
-                          <% break; 
-                        case 4: %>
-                          <i class="material-icons medium red-text">looks_4</i>
-                          <% break; 
+            <% if (rol !== 1 ){ %>
+              <p>Grupos:</p>
+              <br />
+              <div class="row">
+                <div class="col s12">
+                  <div>
+                    <% for (grupo of grupos) { 
+                      if (programa.idPrograma === grupo.idPrograma){ 
+                        switch (grupo.numeroGrupo) { 
+                          case 1: %>
+                            <i class="material-icons medium red-text">looks_one</i>
+                            <% break; 
+                          case 2: %>
+                            <i class="material-icons medium red-text">looks_two</i>
+                            <% break; 
+                          case 3: %>
+                            <i class="material-icons medium red-text">looks_3</i>
+                            <% break; 
+                          case 4: %>
+                            <i class="material-icons medium red-text">looks_4</i>
+                            <% break; 
+                          } 
                         } 
-                      } 
-                    } %>
+                      } %>
+                  </div>
                 </div>
               </div>
-            </div>
+            <% } %>
           </div>
         </div>
       </div>

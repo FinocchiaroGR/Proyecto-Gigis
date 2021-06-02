@@ -12,6 +12,7 @@ exports.getProgramas = (request, response, next) => {
   const usuario = request.session.user;
   let existeTerapeuta = 0;
   const idPrograma = request.params.id_programa;
+  const programasParticipante = request.session.programasParticipante;
   Programa.fetchNombreProgama(idPrograma)
     .then(([programa, fieldData]) => {
       Grupo.fethcGruposProgramaActual(idPrograma)
@@ -20,7 +21,7 @@ exports.getProgramas = (request, response, next) => {
           if (grupo.login === usuario)
             existeTerapeuta = 1;
         }
-        if(existeTerapeuta || rol === 4) {
+        if(existeTerapeuta || programasParticipante.includes(parseInt(idPrograma)) || rol === 4) {
           Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(idPrograma)
             .then(([participantes,fieldData2]) => {
               Participante_Grupo_Objetivo.calificacionesPorPrograma(idPrograma)
@@ -32,6 +33,7 @@ exports.getProgramas = (request, response, next) => {
                     tituloDeHeader: programa[0].nombrePrograma,
                     tituloBarra: programa[0].nombrePrograma,
                     programa: idPrograma,
+                    puntajeMax: programa[0].puntajeMaximo,
                     grupos: listaGrupos,
                     rol: rol,
                     usuario: usuario,
@@ -108,9 +110,21 @@ exports.get = (request, response, next) => {
   const permiso = request.session.permisos;
   const rol = request.session.rol;
   const usuario = request.session.user;
+  request.session.programasParticipante = [];
+
   if(permiso.includes(15)){ 
     Programa.fetchProgramasCicloActual()
       .then(([programas, fieldData1]) => {
+        (async() => { 
+          for (let programa of programas) {
+            await Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(programa.idPrograma)
+              .then(([participantes, fieldData3]) => {
+                for (let participante of participantes)
+                  if (usuario === participante.login)
+                  request.session.programasParticipante.push(programa.idPrograma)
+              })
+              .catch((err) => console.log(err));
+          }
         Grupo.fetchGruposCicloActual()
           .then(([grupos, fieldData2]) => {
             response.render('programas', {
@@ -120,12 +134,14 @@ exports.get = (request, response, next) => {
               grupos: grupos,
               rol: rol,
               usuario: usuario,
+              programasParticipante: request.session.programasParticipante,
               permisos: request.session.permisos,
               backArrow: arrows[0],
               forwArrow: arrows[1],
             });
           })
           .catch((err) => console.log(err));
+        })();
       })
       .catch((err) => console.log(err));
   }

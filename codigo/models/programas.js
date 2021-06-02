@@ -47,7 +47,7 @@ module.exports = class Programas {
     }
 
     static fetchNombreProgama(idPrograma){
-        return db.execute('SELECT nombrePrograma FROM programas WHERE idPrograma=?', 
+        return db.execute('SELECT nombrePrograma, puntajeMaximo FROM programas WHERE idPrograma=?', 
             [idPrograma]
         );
     }
