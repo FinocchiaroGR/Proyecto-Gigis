@@ -2,28 +2,28 @@
   <% if(estadoConsulta) { %> <!-- Tabla de un solo programa -->
     <table class="striped highlight responsive-table">
       <thead>
-        <tr class="center-aligned">
-          <% let archivo = new Object(); %>
-          <td>Participantes</td>
-          <% archivo.participante = 'Participante'; %>
+        <tr class="center strong">
+          <% //var archivo = new Object(); %>
+          <td class="center" rowspan="2">Participantes</td>
+          <% //archivo.participante = 'Participante'; %>
           <% if(mostrarSexEdad) { %>
-            <td>Sexo</td>
-            <% archivo.sexo = 'Sexo'; %>
-            <td>Edad</td>
-            <% archivo.edad = 'Edad'; %>
+            <td class="center" rowspan="2">Sexo</td>
+            <% //archivo.sexo = 'Sexo'; %>
+            <td class="center" rowspan="2">Edad</td>
+            <% //archivo.edad = 'Edad'; %>
           <% } %>
 
           <% if(mostrarCalif) { %>
 
             <% let cicloCont = 0, progCont = 0; %>
             <% for(let i = 0; i<cantCol; i++) { %>
-              <td> Calificación Inicial <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini+cicloCont %> </td>
-              <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= ciclos.ini+cicloCont %> </td>
-              <% let calificacion_final = 'calificacion_final_' + cicloCont;
+              <td class="center" colspan="2"><%= programas[listaProg[progCont]-1].nombrePrograma %> Ciclo-<%= ciclos.ini+cicloCont %> </td>
+              <% /*let calificacion_inicial = 'calificacion_inicial_' + ciclos.ini;
+                 archivo[calificacion_inicial] = 'Calificacion Inicial ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini;*/ %>
+              <% /*let calificacion_final = 'calificacion_final_' + cicloCont; 
                  let ciclo =  ciclos.ini+cicloCont;
-                 archivo[calificacion_final] = 'Calificacion Final ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini; %>
-              <% let calificacion_inicial = 'calificacion_inicial_' + ciclos.ini;
-                 archivo[calificacion_inicial] = 'Calificacion Inicial ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini; %>
+                 archivo[calificacion_final] = 'Calificacion Final ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini;*/ %>
+              
               <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
               <% } else { %>
@@ -32,38 +32,43 @@
 
             <% } %>
 
-            <td>Calificación Inicial</td>
-            <% archivo.calificacion_inicial = 'Calificación Inicial'; %>
+            <td class="center" rowspan="2">Calificación <br> Inicial</td>
+            <% //archivo.calificacion_inicial = 'Calificación Inicial'; %>
 
-            <td>Calificación Final</td>
-            <% archivo.calificacion_final = 'Calificación Final'; %>
+            <td class="center" rowspan="2">Calificación <br> Final</td>
+            <% //archivo.calificacion_final = 'Calificación Final'; %>
 
-            <td>Promedio</td>
-            <% archivo.promedio = 'Promedio'; %>
+            <td class="center" rowspan="2">Promedio</td>
+            <% //archivo.promedio = 'Promedio'; %>
 
-            <td>Avance</td>
-            <% archivo.avance = 'Avance'; %>
+            <td class="center" rowspan="2">Avance</td>
+            <% //archivo.avance = 'Avance'; %>
+          <% } %>
+        </tr>
+        <tr>
+          <% for(let i = 0; i<cantCol; i++) { %>
+            <td class="center" > Calificación <br> Inicial</td>
+            <td class="center"> Calificación <br> Final</td>
           <% } %>
         </tr>
       </thead>
-      <%console.log(archivo) %>
+      <%//console.log(archivo) %>
       <% for(let i = 0; i < cantPart; i++) { %>
         <tr>
 
           <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
 
           <% if(mostrarSexEdad) { %>
-            <td><%= datos[i].sexo %></td>
-            <td><%= datos[i].Edad %></td>
+            <td class="center"><%= datos[i].sexo %></td>
+            <td class="center"><%= datos[i].Edad %></td>
           <% } %>
 
           <% if(mostrarCalif) { %>
-            <td><%= Math.round((datos[i][col_Datos[9]['name']]) * 10) / 10 %> </td>
 
             <% let acumProm=0,contProm = 0,flag=0, par=1;%>
-            <% for(let j = 10; j<col_Datos.length; j++) { //7 porque es la primera calif Final %>
+            <% for(let j = 9; j<col_Datos.length; j++) { //9 porque es la primera calif Final %>
 
-              <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
+              <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
 
               <% if(datos[i][col_Datos[j]['name']] !== null && par % 2 === 0){ %>
                 <% acumProm += Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10; %>
@@ -71,75 +76,100 @@
               <% } par++;%>
 
             <% } %>
-            <td><%= Math.round((datos[i][col_Datos[10]['name']] ) * 10) / 10 %></td>
-            <td><%= Math.round((datos[i][col_Datos[flag]['name']] ) * 10) / 10 %></td>
-            <td><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
-            <td><%= Math.round(((datos[i][col_Datos[flag]['name']] - datos[i][col_Datos[6]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
+            <td class="center"><%= Math.round((datos[i][col_Datos[9]['name']] ) * 10) / 10 %></td>
+            <td class="center"><%= Math.round((datos[i][col_Datos[flag]['name']] ) * 10) / 10 %></td>
+            <td class="center"><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
+            <td class="center"><%= Math.round(((datos[i][col_Datos[flag]['name']] - datos[i][col_Datos[9]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
           <% } %>
         </tr>
       <% } %>
       <tbody>
         
       </tbody>
-  </table>
+    </table>
+
   <% } else { %> <!-- Tabla de varios programas -->
+
     <table class="striped highlight responsive-table">
       <thead>
-        <tr>
+        <% if(!califOava) { %>
+          <tr class="center strong">
 
-          <td>Participantes</td>
-
-          <% if(mostrarSexEdad) { %>
-            <td>Sexo</td>
-            <td>Edad</td>
-          <% } %>
-
-          <% if(mostrarCalif) { %>
-
-            <% if(!califOava) { %>
-
-              <% let cicloCont = 0, progCont = 0;%>
-              <% for(let i = 0; i<cantCol; i++) { %>
-                <td>Calificación Inicial <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
-                <td>Calificación Final<br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
-                <% if(((progCont+1) % cantProg) === 0){%>
-                  <% progCont = 0; cicloCont++;%>
-                <% }else{ %>
-                  <%progCont++; %>
-                <% } %>
-              <% } %>
-            <% } else { %>
-
-              <% let cicloCont = 0, progCont = 0;%>
-              <% for(let i = 0; i<cantCol; i++) { %>
-                <td>Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
-                
-                <% if(((progCont+1) % cantProg) === 0){%>
-                  <% progCont = 0; cicloCont++;%>
-                <% }else{ %>
-                  <%progCont++; %>
-                <% } %>
-              <% } %>
+            <td rowspan="2">Participantes</td>
+  
+            <% if(mostrarSexEdad) { %>
+              <td class="center" rowspan="2">Sexo</td>
+              <td class="center" rowspan="2">Edad</td>
             <% } %>
-          <% } %>
-        </tr>
+  
+            <% if(mostrarCalif) { %>
+
+              <% let cicloCont = 0, progCont = 0;%>
+              <% for(let i = 0; i<cantCol; i++) { %>
+
+                <td class="center" colspan="2"> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+
+                <% if(((progCont+1) % cantProg) === 0){%>
+                  <% progCont = 0; cicloCont++;%>
+                <% }else{ %>
+                  <%progCont++; %>
+                <% } %>
+
+              <% } %>
+
+            <% } %>
+            
+          </tr>
+          <tr>
+            <% for(let i = 0; i<cantCol; i++) { %>
+              <td class="center" > Calificación <br> Inicial</td>
+              <td class="center"> Calificación <br> Final</td>
+            <% } %>
+          </tr>
+        <% } else { %>
+          <tr class="center strong">
+
+            <td>Participantes</td>
+  
+            <% if(mostrarSexEdad) { %>
+              <td class="center">Sexo</td>
+              <td class="center">Edad</td>
+            <% } %>
+  
+            <% if(mostrarCalif) { %>
+
+              <% let cicloCont = 0, progCont = 0;%>
+              <% for(let i = 0; i<cantCol; i++) { %>
+
+                <td class="center">Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+            
+                <% if(((progCont+1) % cantProg) === 0){%>
+                  <% progCont = 0; cicloCont++;%>
+                <% }else{ %>
+                  <%progCont++; %>
+                <% } %>
+
+              <% } %>
+
+            <% } %>
+          </tr>
+        <% } %>
+        
       </thead>
       <tbody>
         <% for(let i = 0; i < cantPart; i++) { %>
           <tr>
             <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
             <% if(mostrarSexEdad) { %>
-              <td><%= datos[i].sexo %></td>
-              <td><%= datos[i].Edad %></td>
+              <td class="center"><%= datos[i].sexo %></td>
+              <td class="center"><%= datos[i].Edad %></td>
             <% } %>
-            <% if(mostrarCalif) { %><!--Prueba de que se imprimen califs-->
-              <% if(!califOava) { %><!--Prueba de que se imprimen calificaciones-->
-                <% for(let j = 10; j < col_Datos.length; j++) { %>
-                  <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
-                <% } %>
-              <% } else { %><!--Prueba de que se imprimen avances-->
-                <% for(let j = 9; j < col_Datos.length; j++) { %>
-                  <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> %</td>
+            <% if(mostrarCalif) { %>
+              <% for(let j = 9; j < col_Datos.length; j++) { %>
+                <% if(!califOava) { %>
+                  <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %></td>
+                <% }else{ %>
+                  <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 100) / 100 %> %</td>
                 <% } %>
               <% } %>
             <% } %>

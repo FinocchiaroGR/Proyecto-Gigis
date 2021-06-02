@@ -48,7 +48,7 @@
                         </div>
                     <% } else { %>
                         <div class="col s12">
-                            <p class="flow-text">Total de resultados: <%= datos.length %></p>
+                            <p class="flow-text right">Total de resultados: <%= datos.length %></p>
                             <% let cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
                                 <p class="flow-text">Promedio <%= programas[listaProg[progCont]-1].nombrePrograma %> Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[i+1]['name']] ) * 10) / 10 %></p>
