@@ -249,8 +249,6 @@ exports.postSelProgram = ((request, response, next) => {
 });
 
 exports.getHistorial = ((request, response, next) => {
-    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
-    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
     const permiso = request.session.permisos;
     const tienePermiso = permiso.includes(14);
     if(tienePermiso){     
@@ -261,8 +259,6 @@ exports.getHistorial = ((request, response, next) => {
                 Participante.fetchAll()
                 .then(([rows_Participantes, fieldData_Prog]) => {
                     response.render('consultas_Historial', {
-                        mensaje: mensaje,
-                        bandera: bandera,
                         tituloDeHeader: "Historial - Consultas",
                         tituloBarra: "Historial por alumno",
                         permisos: permiso,
@@ -275,25 +271,17 @@ exports.getHistorial = ((request, response, next) => {
                         backArrow: {display: 'block', link: '/consultas'},
                         forwArrow: arrows[1]
                     });
-                    request.session.mensaje = undefined;
-                    request.session.bandera = undefined;
                     console.log("Consultas - Historial");
                     response.status(201);
                 }).catch(err => {
-                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                    request.session.bandera = true;
                     response.redirect('/consultas');
                     console.log(err);
                 });
             }).catch(err => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
                 response.redirect('/consultas');
                 console.log(err);
             });
         }).catch(err => {
-            request.session.mensaje = 'Error de comunicacion con el servidor';
-            request.session.bandera = true;
             response.redirect('/consultas');
             console.log(err);
         });

@@ -18,7 +18,7 @@
                     <% if(estadoConsulta) { %>
                         <div class="col s12">
                             <h5 class="flow-text center-align">Resultados de la consulta en <%= programas[listaProg[0]-1].nombrePrograma %></h5>
-                            <p class="flow-text">Total de resultados: <%= cantPart %></p>
+                            <p class="flow-text right">Total de resultados: <%= cantPart %></p>
                             <% let contPromGen = 1, acumPromGen = 0, cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
                                 <p class="flow-text">Promedio Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10 %></p>

@@ -32,10 +32,10 @@
 
             <% } %>
 
-            <td class="center" rowspan="2">Calificación <br> Inicial</td>
+            <td class="center" rowspan="2">Calificación <br> Inicial <br> Absoluta </td>
             <% //archivo.calificacion_inicial = 'Calificación Inicial'; %>
 
-            <td class="center" rowspan="2">Calificación <br> Final</td>
+            <td class="center" rowspan="2">Calificación <br> Final <br> Absoluta </td>
             <% //archivo.calificacion_final = 'Calificación Final'; %>
 
             <td class="center" rowspan="2">Promedio</td>
@@ -65,21 +65,25 @@
 
           <% if(mostrarCalif) { %>
 
-            <% let acumProm=0,contProm = 0,flag=0, par=1;%>
+            <% let acumProm=0,contProm = 0,flagfin=0, flagIni=0, par=1;%>
             <% for(let j = 9; j<col_Datos.length; j++) { //9 porque es la primera calif Final %>
 
               <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
 
+              <% if(datos[i][col_Datos[j]['name']] !== null && flagIni === 0){ %>
+                <% flagIni = j; %>
+              <% } %>
+
               <% if(datos[i][col_Datos[j]['name']] !== null && par % 2 === 0){ %>
                 <% acumProm += Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10; %>
-                <% contProm++; flag = j; %>
+                <% contProm++; flagfin = j; %>
               <% } par++;%>
 
             <% } %>
-            <td class="center"><%= Math.round((datos[i][col_Datos[9]['name']] ) * 10) / 10 %></td>
-            <td class="center"><%= Math.round((datos[i][col_Datos[flag]['name']] ) * 10) / 10 %></td>
+            <td class="center"><%= Math.round((datos[i][col_Datos[flagIni]['name']] ) * 10) / 10 %></td>
+            <td class="center"><%= Math.round((datos[i][col_Datos[flagfin]['name']] ) * 10) / 10 %></td>
             <td class="center"><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
-            <td class="center"><%= Math.round(((datos[i][col_Datos[flag]['name']] - datos[i][col_Datos[9]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
+            <td class="center"><%= Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
           <% } %>
         </tr>
       <% } %>
