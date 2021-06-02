@@ -742,14 +742,14 @@ const checkInfoPerfil = (login) => {
                     else {
                         html += '<li><strong><h5>Currículum:</h5></strong></li>' +
                                 '<li class="grey-text">' +
-                                    '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
+                                    '<h6 style="margin-left: 2%;">No se encontró un currículum</h6>' +
                                 '</li>';
                     }
                 }
                 else {
                     html += '<li><strong><h5>Currículum:</h5></strong></li>' +
                             '<li class="grey-text">' +
-                                '<h6 style="margin-left: 2%;">No se encuentró un currículum</h6>' +
+                                '<h6 style="margin-left: 2%;">No se encontró un currículum</h6>' +
                             '</li>';
                 }
 
