@@ -4,7 +4,7 @@
       <thead>
         <tr class="center strong">
           <% //var archivo = new Object(); %>
-          <td class="center" rowspan="2">Participantes</td>
+          <td rowspan="2">Participantes</td>
           <% //archivo.participante = 'Participante'; %>
           <% if(mostrarSexEdad) { %>
             <td class="center" rowspan="2">Sexo</td>
@@ -46,9 +46,11 @@
           <% } %>
         </tr>
         <tr>
-          <% for(let i = 0; i<cantCol; i++) { %>
-            <td class="center" > Calificación <br> Inicial</td>
-            <td class="center"> Calificación <br> Final</td>
+          <% if(mostrarCalif) { %>
+            <% for(let i = 0; i<cantCol; i++) { %>
+              <td class="center" > Calificación <br> Inicial</td>
+              <td class="center"> Calificación <br> Final</td>
+            <% } %>
           <% } %>
         </tr>
       </thead>
@@ -125,9 +127,11 @@
             
           </tr>
           <tr>
-            <% for(let i = 0; i<cantCol; i++) { %>
-              <td class="center" > Calificación <br> Inicial</td>
-              <td class="center"> Calificación <br> Final</td>
+            <% if(mostrarCalif) { %>
+              <% for(let i = 0; i<cantCol; i++) { %>
+                <td class="center" > Calificación <br> Inicial</td>
+                <td class="center"> Calificación <br> Final</td>
+              <% } %>
             <% } %>
           </tr>
         <% } else { %>
