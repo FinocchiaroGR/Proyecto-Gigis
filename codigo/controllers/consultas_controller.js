@@ -4,6 +4,8 @@ const Programas = require('../models/programas');
 const DatosConsultas = require('../models/consultasResultados');
 const Historial = require('../models/consultasHistorial');
 const Participante = require('../models/participantes');
+const fs = require('fs');
+const http = require('http');
 
 let datosConsultas = new DatosConsultas();
 const arrows = Arrow.fetchAll();
@@ -97,9 +99,9 @@ exports.getResultados = ((request, response, next) => {
 });
 
 exports.postResultados = ((request, response, next) => {
-    console.log("Accion post en resultados");
-    response.status(302);
-    response.redirect('/consultas');
+    var file = __dirname + './../downloads/reporte.csv';
+    response.download(file);
+    //console.log("Accion post en resultados");
 });
 
 exports.getResultadosGrupo = ((request, response, next) => {
@@ -155,9 +157,11 @@ exports.postResultadosGrupo = ((request, response, next) => {
 });
 
 exports.getConsultas = ((request, response, next) => {
-    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
-    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const mensaje = request.session.mensaje === undefined ? null : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? null : request.session.bandera;
     const permiso = request.session.permisos;
+    console.log(request.session.mensaje);
+    console.log(request.session.bandera);
     const tienePermiso = permiso.includes(5);
     if(tienePermiso){     
         DatosConsultas.prepConsulta();
