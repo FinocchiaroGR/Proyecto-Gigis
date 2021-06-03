@@ -295,13 +295,48 @@ exports.postAgrCiclo= (request,response,next) => {
 
 
 exports.getPerfilCiclo = (request,response,next) => {
-    response.render('perfil_usuario',{
-        permisos:request.session.permisos,
-        tituloDeHeader: "Gestión de ciclos",
-        tituloBarra: "Ciclos",
-        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-        forwArrow: arrows[1]
-    });
+    const usuario = request.session.user;
+    const error = request.session.error === undefined ? 'false' : request.session.error;
+    const bandera = request.session.bandera === undefined ? 'false' : request.session.bandera;
+    request.session.estadogc = request.session.error === undefined ? 'false' : request.session.error;
+    const idciclop =  request.params.idCiclo;
+    const permisos = request.session.permisos;
+    const permisoGestionCiclos = permisos.includes(3) || permisos.includes(4) || permisos.includes(11);
+    if(permisoGestionCiclos) { 
+        Ciclo.fetchUnoPorId(idciclop)
+        .then(([ciclo, fieldData1]) => {
+            let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];
+            let encabezado = 'Ciclo ' + meses + ' '+ ciclo[0].fechaInicial.getFullYear();
+            Grupo.fetchGPorIdCiclo(idciclop)
+                .then(([terapeutas, fieldData1]) => {
+                    Programa.fetchPorIdCiclo(idciclop)
+                        .then(([programas, fieldData1]) => {
+                            response.render('perfil_ciclo',{
+                                error: error,
+                                idciclo: idciclop,
+                                usuario: usuario,
+                                bandera: bandera,
+                                terapeutas: terapeutas,
+                                programas: programas,
+                                permisos: request.session.permisos,
+                                tituloDeHeader: "Gestión de ciclos",
+                                tituloBarra: encabezado,
+                                backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+                                forwArrow: arrows[1]
+                            });
+                        })
+                        .catch((err) => console.log(err));
+                })
+                .catch((err) => console.log(err));
+        }).catch((err) => console.log(err)); 
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
+    request.session.error = undefined;
+    request.session.bandera =undefined;
+    
 
 };
 
