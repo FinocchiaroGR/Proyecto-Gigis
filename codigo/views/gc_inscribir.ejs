@@ -55,15 +55,5 @@
   <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" > 
 
      
-<%- include('include/footer.ejs') %>
+  <%- include('includesGestion/footerInscribir.ejs') %>
 
-<script>
-  let error = document.getElementById('error').value;
-    let bandera = document.getElementById('bandera').value;
-    if (error !== 'false' && bandera == 'true'){
-    window.location="/gestionAdmin/gestionCiclos/";
-    }
-    if (error === 'false' && bandera == 'true'){
-        M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
-    }
-</script>

@@ -1,4 +1,11 @@
-
+let error = document.getElementById('error').value;
+let bandera = document.getElementById('bandera').value;
+if (error !== 'false' && bandera == 'true'){
+  window.location="/gestionAdmin/gestionCiclos/";
+}
+if (error === 'false' && bandera == 'true'){
+  M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
+}
 
 //Despliega la lista de participantes activos
 const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
