@@ -180,7 +180,22 @@ exports.editarPrograma  = (request, response, next) => {
         request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
         response.redirect('/gestionAdmin/gestionProgramas')
       });
-   }
+   }else{
+        response.redirect('/gestionAdmin/gestionProgramas')
+    }
+}
+
+exports.editarNiveles = async(request, response, next) => {
+  for(let i=0; i<request.body.idNivel.length;i++){
+    let id =request.body.idNivel[i];
+    let nombre = request.body.nombreNivel[i];
+    await Nivel.editarNivel(id,nombre)
+      .then(() => {
+        request.session.registro_exitoso = 'El programa se actualizó correctamente.'
+      }).catch((err) => {
+        request.session.error = "Error al actualizar el nombre del nivel.";
+      });
+  }
 }
 
 exports.agregarNivel = (request, response, next) => {

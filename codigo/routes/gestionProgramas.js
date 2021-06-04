@@ -40,6 +40,8 @@ subrouter.post('/', isAuth, gestionPrograController.postNuevoPrograma);
 
 subrouter.post('/editarPrograma',isAuth, gestionPrograController.editarPrograma);
 
+subrouter.post('/editar-niveles',isAuth, gestionPrograController.editarNiveles);
+
 subrouter.post('/buscar-programa',isAuth, gestionPrograController.buscarPrograma);
 
 subrouter.post('/agregarNivel',isAuth, gestionPrograController.agregarNivel);
