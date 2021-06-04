@@ -85,6 +85,7 @@ exports.eliminarObjetivo  = (request, response, next) => {
 exports.get = (request, response, next) => {
   const error = request.session.error === undefined ? false : request.session.error;
   const registro_exitoso = request.session.registro_exitoso === undefined ? false : request.session.registro_exitoso;
+  console.log(registro_exitoso);
   const permisos = request.session.permisos;
   const permisoGestionPrograma = permisos.includes(1) || permisos.includes(2) || permisos.includes(16) || permisos.includes(18) || permisos.includes(19);
   if(permisoGestionPrograma) { 
@@ -180,7 +181,23 @@ exports.editarPrograma  = (request, response, next) => {
         request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
         response.redirect('/gestionAdmin/gestionProgramas')
       });
-   }
+   }else{
+        response.redirect('/gestionAdmin/gestionProgramas')
+    }
+}
+
+exports.editarNiveles = async(request, response, next) => {
+  let limite = request.body.idNivel.length;
+  for(let i=0; i<limite;i++){
+    let id =request.body.idNivel[i];
+    let nombre = request.body.nombreNivel[i];
+    await Nivel.editarNivel(id,nombre)
+      .then(() => {
+        request.session.registro_exitoso = 'El programa se actualizó correctamente.'
+      }).catch((err) => {
+        request.session.error = "Error al actualizar el nombre del nivel.";
+      });
+  }
 }
 
 exports.agregarNivel = (request, response, next) => {
