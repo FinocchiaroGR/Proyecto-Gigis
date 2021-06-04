@@ -52,13 +52,13 @@
                   <div class="row valign-wrapper">
                     <div class="col s1">
                       <label>
-                          <input type="checkbox" id="enNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" onchange="guardarNombres(<%=nivel.idNivel%>,<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')" onclick="enable(<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')">
+                          <input type="checkbox" id="enNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" onchange="guardarNiveles(<%=nivel.idNivel%>,<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')" onclick="enable(<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')">
                           <span> <strong class= "flow-text black-text" ></strong> </span>
                       </label>
                     </div>        
                     <div class="col s11">
                       <div class="input-field tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar el nombre del nivel <%=nivel.nombreNivel%>">
-                        <input disabled type="text" class="validate"  placeholder="<%=nivel.nombreNivel%>" id="cambiarNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" onchange="guardarNombres(<%=nivel.idNivel%>,<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')" required>
+                        <input disabled type="text" class="validate"  placeholder="<%=nivel.nombreNivel%>" id="cambiarNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" onchange="guardarNiveles(<%=nivel.idNivel%>,<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')" required>
                       </div>
                     </div>
                   </div>
@@ -114,7 +114,7 @@
   }
 
   let idNiveles = [], nombres=[];
-  function guardarNombres(id,idPrograma, idCheck, idInput){
+  function guardarNiveles(id,idPrograma, idCheck, idInput){
     idCheck +=  idPrograma;
     idInput += idPrograma;
     let bool = document.getElementById(idCheck).checked;

@@ -38,8 +38,19 @@
 
 <input type="hidden" id="errorPrograma" value="<%=error%>">
 <input type="hidden" id="registroExitoso" value="<%=registro_exitoso%>">
-<%- include('include/footer.ejs') %>
 
+<%- include('include/footer.ejs') %>
+<script>
+  let error = document.getElementById('errorPrograma').value;
+  let registro_exitoso = document.getElementById('registroExitoso').value;
+  if (error !== 'false'){
+    M.toast({html: error , length:7500, classes: 'black'});
+  }
+
+  if (registro_exitoso !== 'false'){
+    M.toast({html: registro_exitoso ,  length:6500, classes: 'grey'});
+  }
+</script>
 <script>
   const buscarPrograma = () => {
     const csrf = document.getElementById('_csrf').value;
@@ -84,17 +95,5 @@
     }).catch(err => {
       console.log(err);
     });
-  }
-  let error = document.getElementById('errorPrograma').value;
-  let registro_exitoso = document.getElementById('registroExitoso').value;
-
-</script>
-<script>
-  if (error !== 'false'){
-    M.toast({html: error , length:7500, classes: 'black'});
-  }
-
-  if (registro_exitoso !== 'false'){
-    M.toast({html: registro_exitoso ,  length:6500, classes: 'grey'});
   }
 </script>

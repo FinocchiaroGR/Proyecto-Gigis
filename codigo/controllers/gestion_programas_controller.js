@@ -85,6 +85,7 @@ exports.eliminarObjetivo  = (request, response, next) => {
 exports.get = (request, response, next) => {
   const error = request.session.error === undefined ? false : request.session.error;
   const registro_exitoso = request.session.registro_exitoso === undefined ? false : request.session.registro_exitoso;
+  console.log(registro_exitoso);
   const permisos = request.session.permisos;
   const permisoGestionPrograma = permisos.includes(1) || permisos.includes(2) || permisos.includes(16) || permisos.includes(18) || permisos.includes(19);
   if(permisoGestionPrograma) { 
@@ -186,7 +187,8 @@ exports.editarPrograma  = (request, response, next) => {
 }
 
 exports.editarNiveles = async(request, response, next) => {
-  for(let i=0; i<request.body.idNivel.length;i++){
+  let limite = request.body.idNivel.length;
+  for(let i=0; i<limite;i++){
     let id =request.body.idNivel[i];
     let nombre = request.body.nombreNivel[i];
     await Nivel.editarNivel(id,nombre)
