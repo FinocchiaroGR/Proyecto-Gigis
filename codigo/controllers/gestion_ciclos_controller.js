@@ -277,7 +277,7 @@ exports.postAgrCiclo= (request,response,next) => {
                             .then(() => {
                                 if(tsize=== parseInt(t) && psize === parseInt(p)){
                                     request.session.error = undefined; 
-                                    request.session.bandera =true;
+                                    request.session.bandera ="El ciclo se registro correctamente";
                                     return response.status(300).json({ciclo: ciclo});
                                 }                                                               
                             }).catch( err => {
@@ -428,7 +428,7 @@ exports.getEditarGrupos = (request,response,next) => {
     }
 }
 
-exports.postEditarGrupos = async(request,response,next) => {
+exports.postEditarGrupos = (request,response,next) => {
     let idCiclo = request.body.idciclo;
     let idGrupo =  parseInt(request.session.idlastgrupo); 
     let psize = Object.keys(request.body.prograsSel).length-1;
@@ -442,13 +442,9 @@ exports.postEditarGrupos = async(request,response,next) => {
                 let numeroGrupo =  parseInt(t) + 1;
                 idGrupo += 1;  
                 let grupo = new Grupo(idGrupo, numeroGrupo, idPrograma, idCiclo,login);
-                await grupo.save()
+                grupo.save()
                     .then(() => {
-                        if(tsize=== parseInt(t) && psize === parseInt(p)){
-                            request.session.error = undefined; 
-                            request.session.bandera =true;
-                            return response.status(300).json({idciclo: idciclo});
-                        }                                                               
+                                                                                      
                     }).catch( err => {
                         console.log(err); 
                         request.session.bandera =true;
@@ -456,7 +452,13 @@ exports.postEditarGrupos = async(request,response,next) => {
                         return response.status(300).json({idciclo: idciclo});
                     });
             }
+            if(tsize=== parseInt(t) && psize === parseInt(p)){
+                request.session.error = undefined; 
+                request.session.bandera ="El ciclo fue modificado correctamente";
+                return response.status(300).json({idciclo: idciclo});
+            } 
         }
+        
     }
     
 
