@@ -17,12 +17,16 @@ BEGIN
     CALL getProgs(Programas);
 
     #Crear tabla temporal de datos
+    SET @edIni = 0; 
+    SET @edFin = 200; 
     IF Filtrar_edad = TRUE THEN
         IF Filtrar_sexo = TRUE THEN
             CALL crearTablaTempDatos1(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin, Sexo);
         ELSE
             CALL crearTablaTempDatos2(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin);
         END IF;
+        SET @edIni = Edad_ini; 
+        SET @edFin = Edad_fin; 
     ELSE
         IF Filtrar_sexo = TRUE THEN
             CALL crearTablaTempDatos3(Ciclo_ini, Ciclo_fin, Sexo);
@@ -44,9 +48,9 @@ BEGIN
     REPEAT 
         SET @x = @x + 1; 
         IF Calif_Ava = TRUE THEN
-            CALL mergeTablaCalif_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x);
+            CALL mergeTablaCalif_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x, @edIni, @edFin);
         ELSE
-            CALL mergeTablaAva_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x);
+            CALL mergeTablaAva_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x, @edIni, @edFin);
         END IF;
 
         if(((@progCont+1) % numProg) = 0) THEN 
@@ -69,7 +73,7 @@ $$
 
 DELIMITER ;              
 
--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -90,7 +94,7 @@ $$
 
 DELIMITER ;
 
--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -105,7 +109,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
     
     CREATE TEMPORARY TABLE datosPart_temp AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, GROUP_CONCAT(DISTINCT C.Edad_Matriculacion SEPARATOR ',') AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
@@ -117,7 +121,7 @@ $$
 
 DELIMITER ;
 
--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -131,7 +135,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
 
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, GROUP_CONCAT(DISTINCT C.Edad_Matriculacion SEPARATOR ',') AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin 
       AND C.Edad_Matriculacion >= Edad_ini AND C.Edad_Matriculacion <= Edad_fin
@@ -142,7 +146,7 @@ $$
 
 DELIMITER ;
 
--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -155,7 +159,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
 
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, GROUP_CONCAT(DISTINCT C.Edad_Matriculacion SEPARATOR ',') AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.sexo = Sexo
@@ -166,7 +170,7 @@ $$
 
 DELIMITER ;
 
--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -178,7 +182,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS datosPart_temp;
 
     CREATE TEMPORARY TABLE `datosPart_temp` AS
-    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, C.Edad_Matriculacion AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
+    SELECT C.login, C.nombreUsuario, C.apellidoPaterno, C.apellidoMaterno, C.sexo, GROUP_CONCAT(DISTINCT C.Edad_Matriculacion SEPARATOR ',') AS `Edad`, C.idPrograma, C.idCiclo, C.idGrupo
     FROM CalifDatos C 
     WHERE C.idCiclo >= Ciclo_ini AND C.idCiclo <= Ciclo_fin
       AND C.idPrograma IN (SELECT idPrograma FROM listProg_temp)
@@ -188,11 +192,11 @@ $$
 
 DELIMITER ;
 
------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 
 DELIMITER $$
 
-CREATE PROCEDURE mergeTablaCalif_datos(IN `Ciclo` INT, IN `Programa` INT, IN `Num` INT)
+CREATE PROCEDURE mergeTablaCalif_datos(IN `Ciclo` INT, IN `Programa` INT, IN `Num` INT,IN `Edad_ini` INT,IN `Edad_fin` INT)
 BEGIN
     SET @droptable = CONCAT ('DROP TEMPORARY TABLE IF EXISTS `datosPart_temp', CAST(Num AS CHAR), '`');
     
@@ -201,7 +205,8 @@ BEGIN
             ' SELECT t1.*, t2.CalifInicial_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),', t2.CalifFinal_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),' FROM',
             ' (SELECT * FROM  datosPart_temp', IF(Num=1,'',Num-1), ') t1',
             ' LEFT OUTER JOIN',
-            ' (SELECT login, CalifInicial AS `CalifInicial_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),'`, CalifFinal AS `CalifFinal_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),'` FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),')',
+            ' (SELECT login, CalifInicial AS `CalifInicial_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),'`, CalifFinal AS `CalifFinal_P',CAST(Programa AS CHAR),'_C',CAST(Ciclo AS CHAR),'`',
+            ' FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),' AND Edad_Matriculacion >= ',CAST(Edad_ini AS CHAR),' AND Edad_Matriculacion <= ',CAST(Edad_fin AS CHAR),')',
             ' t2 ON (t1.login = t2.login)'
         );
     PREPARE deletetb FROM @droptable;
@@ -217,11 +222,11 @@ $$
 
 DELIMITER ;
 
------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 
 DELIMITER $$
 
-CREATE PROCEDURE mergeTablaAva_datos(IN `Ciclo` INT, IN `Programa` INT, IN `Num` INT)
+CREATE PROCEDURE mergeTablaAva_datos(IN `Ciclo` INT, IN `Programa` INT, IN `Num` INT,IN `Edad_ini` INT,IN `Edad_fin` INT)
 BEGIN
     SET @droptable = CONCAT ('DROP TEMPORARY TABLE IF EXISTS `datosPart_temp', CAST(Num AS CHAR), '`');
     SET @sql = CONCAT(
@@ -229,7 +234,8 @@ BEGIN
             ' SELECT t1.*, t2.Avance_P', CAST(Programa AS CHAR), '_C', CAST(Ciclo AS CHAR),' FROM',
             ' (SELECT * FROM  datosPart_temp', IF(Num=1,'',Num-1), ') t1',
             ' LEFT OUTER JOIN',
-            ' (SELECT login, Avance AS `Avance_P', CAST(Programa AS CHAR),'_C', CAST(Ciclo AS CHAR),'` FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),')',
+            ' (SELECT login, Avance AS `Avance_P', CAST(Programa AS CHAR),'_C', CAST(Ciclo AS CHAR),'`',
+            ' FROM CalifDatos WHERE idCiclo = ',CAST(Ciclo AS CHAR),' AND idPrograma = ',CAST(Programa AS CHAR),' AND Edad_Matriculacion >= ',CAST(Edad_ini AS CHAR),' AND Edad_Matriculacion <= ',CAST(Edad_fin AS CHAR),')',
             ' t2 ON (t1.login = t2.login)'
         ) ;
     PREPARE deletetb FROM @droptable;
@@ -245,7 +251,7 @@ $$
 
 DELIMITER ;
 
------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -309,7 +315,7 @@ $$
 
 DELIMITER ;
 
-----------------------------------------------------------
+#----------------------------------------------------------
 
 DELIMITER $$
 
@@ -349,8 +355,8 @@ BEGIN
     PRIMARY KEY (login);
 
     #Merge de la tabla de datos con las calificaciones y avances
-    CALL mergeTablaCalif_datos (@Ciclo, @programa, 1);
-    CALL mergeTablaAva_datos (@Ciclo, @programa, 2);
+    CALL mergeTablaCalif_datos (@Ciclo, @programa, 1, Edad_ini, Edad_fin);
+    CALL mergeTablaAva_datos (@Ciclo, @programa, 2, Edad_ini, Edad_fin);
 
     DROP TABLE IF EXISTS ConsultaGrupo;
     CREATE TABLE `ConsultaGrupo` AS SELECT * FROM datosPart_temp2;
@@ -359,7 +365,7 @@ $$
 
 DELIMITER ;
 
---------------------------------------------------
+#-------------------------------------------------
 
 DELIMITER $$
 
