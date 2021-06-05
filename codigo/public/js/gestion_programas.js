@@ -1,11 +1,12 @@
-let error = document.getElementById('errorPrograma').value;
-let registro_exitoso = document.getElementById('registroExitoso').value;
-if (error !== 'false'){
-  M.toast({html: error , length:7500, classes: 'black'});
+// -------------------- Gestion de Programas --------------------------------
+let error_progra = document.getElementById('errorPrograma').value;
+let registro_exitoso_progra = document.getElementById('registroExitoso').value;
+if (error_progra !== 'false'){
+  M.toast({html: error_progra , length:7500, classes: 'black'});
 }
 
-if (registro_exitoso !== 'false'){
-  M.toast({html: registro_exitoso ,  length:6500, classes: 'grey'});
+if (registro_exitoso_progra !== 'false'){
+  M.toast({html: registro_exitoso_progra ,  length:6500, classes: 'grey'});
 }
 
 const buscarPrograma = () => {

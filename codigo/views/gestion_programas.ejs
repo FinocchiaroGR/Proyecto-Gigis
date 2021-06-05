@@ -22,9 +22,13 @@
         </div>
     </div>
     <!-- Inicia Modal Structure agregar programa-->
-    <div id="agregarPrograma" class="modal">
-      <%- include('includesGestion/modst_agregar_programa.ejs') %>  
-    </div><!--Fin Modal Structure agregar programa-->
+    <form action="/gestionAdmin/gestionProgramas/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
+      <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+      <div id="agregarPrograma" class="modal">
+        <%- include('includesGestion/modst_agregar_programa.ejs') %>  
+      </div>
+    </form>
+      <!--Fin Modal Structure agregar programa-->
     
     <!-- Modals Editar programas-->
     <%- include('includesGestion/modst_editar_programa.ejs') %>  
@@ -40,3 +44,5 @@
 <input type="hidden" id="registroExitoso" value="<%=registro_exitoso%>">
 
 <%- include('include/footer.ejs') %>
+
+<script type="text/javascript" src="/js/gestion_programas.js"></script>

@@ -2,7 +2,7 @@
 <% for (let programa of programas) { %>  
     <div id="EditarPrograma-<%=programa.idPrograma%>" class="modal">
       <form action="/gestionAdmin/gestionProgramas/editarPrograma/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
-        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+        <input type="hidden" id="_csrf_<%=programa.idPrograma%>" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Editar: <%=programa.nombrePrograma%></h3>
           <input type="hidden" name="idPrograma" value="<%=programa.idPrograma%>">
@@ -52,13 +52,14 @@
                   <div class="row valign-wrapper">
                     <div class="col s1">
                       <label>
-                          <input type="checkbox" id="enNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" onchange="guardarNiveles(<%=nivel.idNivel%>,<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')" onclick="enable(<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')">
+                          <input type="checkbox" id="enNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" name="enNivel_<%=nivel.idNivel%>" onclick="enable(<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')">
                           <span> <strong class= "flow-text black-text" ></strong> </span>
                       </label>
                     </div>        
                     <div class="col s11">
                       <div class="input-field tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar el nombre del nivel <%=nivel.nombreNivel%>">
-                        <input disabled type="text" class="validate"  placeholder="<%=nivel.nombreNivel%>" id="cambiarNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" onchange="guardarNiveles(<%=nivel.idNivel%>,<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')" required>
+                        <input disabled type="text" class="validate" name="nivel_<%=nivel.idNivel%>" placeholder="<%=nivel.nombreNivel%>" id="cambiarNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" required>
+                        <input type="hidden" name="nivel_<%=nivel.idNivel%>_" value="<%=nivel.idNivel%>">
                       </div>
                     </div>
                   </div>
@@ -68,7 +69,7 @@
           </ul>
         </div>
         <div class="modal-footer">
-          <button  type = "submit" id="btnNiveles" class="modal-action waves-effect btn-flat grey lighten-1">Actualizar</button>
+          <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1">Actualizar</button>
           <label style="visibility:hidden">**</label>
           <br>
         </div>
@@ -78,7 +79,7 @@
     <!-- Modal Structure Agregar Nivel-->
     <div id="agregarNivel-<%=programa.idPrograma%>" class="modal">
       <form action="/gestionAdmin/gestionProgramas/agregarNivel" method="POST">
-        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Agregar Nivel</h3>
           <label> * Campos obligatorios.</label>
@@ -112,55 +113,4 @@
         document.getElementById(idInput).disabled = true;
     }
   }
-
-  let idNiveles = [], nombres=[];
-  function guardarNiveles(id,idPrograma, idCheck, idInput){
-    idCheck +=  idPrograma;
-    idInput += idPrograma;
-    let bool = document.getElementById(idCheck).checked;
-    let nombre = document.getElementById(idInput).value;
-    if(bool){
-        let idExiste =idNiveles.indexOf(id);
-        console.log(idExiste);
-        if( idExiste===-1){
-          idNiveles.push(id);
-          nombres.push(nombre);
-        }
-        else{
-          idNiveles.splice(idExiste, 1);
-          nombres.splice(idExiste, 1);
-          idNiveles.push(id);
-          nombres.push(nombre);
-        }
-    }else{
-        let i = idNiveles.indexOf(id);
-		    idNiveles.splice(i, 1);
-        let j = nombres.indexOf(nombre);
-		    nombres.splice(j, 1);
-    }
-    console.log(idNiveles);
-    console.log(nombres);
-    document.getElementById('idNiveles').value = idNiveles;
-    document.getElementById('nombresNiveles').value = nombres;
-  }
-
-  document.getElementById("btnNiveles").onclick = () => {
-    console.log("holajs");
-    const csrf = document.getElementById('_csrf').value;
-    let data = {
-      nombreNivel: nombres,
-      idNivel: idNiveles
-    };
-
-    fetch('/gestionAdmin/gestionProgramas/editar-niveles',{
-      method: 'POST',
-      headers: {'Content-Type':'application/json',
-                'csrf-token': csrf
-              },
-      body:JSON.stringify(data)
-    }).then(result => {
-      return result.json();
-    }).catch((err) => {});
-}
-
 </script>
