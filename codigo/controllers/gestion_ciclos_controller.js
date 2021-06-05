@@ -7,6 +7,7 @@ const Participante = require('../models/participantes');
 const Grupo = require('../models/grupos');
 const Objetivo = require('../models/objetivos');
 const Participantes_Grupos_Objetivos = require('../models/participantes_grupos_objetivos');
+const { request, response } = require('express');
 
 const arrows = Arrow.fetchAll();
 const mes = [
@@ -366,6 +367,38 @@ exports.getEditarCiclo = (request,response,next) => {
     }
 };
 
+exports.getEditarGrupos = (request,response,next) => {
+    const permisos = request.session.permisos;
+    if(permisos.includes(11)) {
+        request.session.idcicloparam =undefined;
+        Programa.fetchAll()
+        .then(([programas, fieldData1]) => {
+            Usuario.fetchNomTerapeutas()
+            .then(([terapeutas, fieldData1]) => {
+                Grupo.fetchIdUltimoGrupo()
+                    .then(([idUltimoGrupo, fieldData1]) => {
+                    request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
+                    response.render('gc_editar', {
+                        programas: programas,
+                        terapeutas: terapeutas,
+                        permisos: permisos,
+                        tituloDeHeader: "Nuevo ciclo",
+                        tituloBarra: "Nuevo ciclo",
+                        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
+                        forwArrow: arrows[1]
+                    });
+                    })
+                    .catch(err => console.log(err)); 
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
+}
 
 exports.postEditarCiclo = (request,response,next) => {
     request.session.error = undefined;

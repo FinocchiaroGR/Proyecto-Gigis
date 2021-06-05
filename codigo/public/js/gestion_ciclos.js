@@ -380,7 +380,7 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
 }
 
 //Funcion para modificar las fechas del ciclo
-const modificarCiclo = () => {
+const modificarFechasCiclo = () => {
   let idCiclo = document.getElementById("idciclo").value;
   fetch('/gestionAdmin/gestionCiclos/editar-ciclo/'+idCiclo, {
       method: 'GET'

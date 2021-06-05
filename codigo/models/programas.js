@@ -66,7 +66,7 @@ module.exports = class Programas {
 
     static fetchPorIdCiclo(idCiclo) {
         return db.execute(
-        'SELECT P.nombrePrograma, P.idPrograma FROM Programas P, Grupos G WHERE P.idPrograma = G.idPrograma AND G.idCiclo = ? GROUP BY (idPrograma)',
+        'SELECT P.nombrePrograma, P.idPrograma FROM programas P, grupos G WHERE P.idPrograma = G.idPrograma AND G.idCiclo = ? GROUP BY (idPrograma)',
         [idCiclo]
         );
     }

@@ -28,6 +28,8 @@ subrouter.get('/agregar-ciclo', isAuth, gestionCicloController.getAgrCiclo);
 
 subrouter.get('/perfil-ciclo/:idCiclo', isAuth, gestionCicloController.getPerfilCiclo);
 
+subrouter.get('/editar', isAuth, gestionCicloController.getEditarGrupos);
+
 subrouter.get('/editar-ciclo/:idCiclo', isAuth, gestionCicloController.getEditarCiclo);
 
 subrouter.post('/editar-ciclo/', isAuth, gestionCicloController.postEditarCiclo);

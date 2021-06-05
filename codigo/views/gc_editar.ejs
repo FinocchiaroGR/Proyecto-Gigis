@@ -5,17 +5,6 @@
 <div class="row">
     <br>
     <div class="row">
-        <div class="input-field col s2 m1">
-            <p><strong>Fecha:</strong></p>
-        </div>
-        <div class="input-field col s4 m3">
-          <input type="text"  id="from" name="fechaInicial" class="datepickerInicial">
-          <label for="from">Elige la fecha de inicio</label>
-        </div>
-        <div class="input-field col s4 m3">
-          <input type="text" id="to" name="fechaFinal" class="datepickerFinal">
-          <label for="to">Elige la fecha de finalización</label>
-        </div>
         <div class="col right">
             <div class="input-field" id = "btnRegCiclo">
                <a id="botonRegCiclo" class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>
@@ -58,8 +47,7 @@
         <% } %>  
         </ul>       
     </div> 
-  <input type="text" id="fechaLimite" value="<%= fechaLimite[0].fechaFinal %>" style="visibility:hidden;">
 </div>
 <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
 
-<%- include('includesGestion/footerAgrCiclos.ejs') %>
+<%- include('include/footer.ejs') %>
