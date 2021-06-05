@@ -1,5 +1,5 @@
---STORED PROCEDURE PARA EDITAR NIVEL
--- Creación de SP "modificanivel"
+#--STORED PROCEDURE PARA EDITAR NIVEL
+#-- Creación de SP "modificanivel"
 DELIMITER $$
 
 CREATE PROCEDURE modificaNivel (
@@ -13,5 +13,5 @@ END
 $$
 DELIMITER ;
 
---Llamada a SP "modificanivel"
-CALL modificaNivel (7, "Nivel 1");
+#--Llamada a SP "modificanivel"
+#CALL modificaNivel (7, "Nivel 1");

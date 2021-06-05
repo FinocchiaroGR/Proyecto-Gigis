@@ -99,9 +99,234 @@ exports.getResultados = ((request, response, next) => {
 });
 
 exports.postResultados = ((request, response, next) => {
-    var file = __dirname + './../downloads/reporte.csv';
-    response.download(file);
-    //console.log("Accion post en resultados");
+    const permiso = request.session.permisos;
+    if(permiso.includes(7)){ 
+        Programas.fetchAllSOrd()
+        .then(([lisProg, Col_programas]) => {
+            //console.table(lisProg);
+            datosConsultas.fetch()
+            .then(([datos, col_Datos]) => {
+                //console.table(datos);
+                datosConsultas.fetchCants()
+                .then((metaData) => {
+                    let texto = '';
+                    let bools = datosConsultas.getBools();
+                
+                    /*//metadata
+                    cantProg : metaData.TotProg,
+                    cantCiclos : metaData.TotCicl,
+                    cantCol : metaData.TotCol,
+                    cantPart : metaData.TotPart,
+                    ciclos : {ini : parseInt(metaData.cicloIni),
+                            fin : parseInt(metaData.cicloFin)},
+                    listaProg : metaData.listaProg,
+                    //bools
+                    estadoConsulta: bools.estadoConsulta,
+                    mostrarSexEdad: bools.mostrarSexEdad,
+                    mostrarCalif: bools.mostrarCalif,
+                    califOava: bools.califOava,
+                    //datos
+                    datos: rowsDatos,
+                    col_Datos: fieldData_Datos,
+                    programas: rows_Programas,*/
+
+                    if(bools.estadoConsulta) {
+                        texto += 'Participantes,';
+                        if(bools.mostrarSexEdad){
+                            texto += 'Sexo,Edad,';
+                        }
+                        if(bools.mostrarCalif) {
+                            let cicloCont = 0, progCont = 0;
+                            for(let i = 0; i<metaData.TotCol; i++) {
+                                texto += '"' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                         'Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+                                if(((progCont+1) % metaData.TotProg) === 0){
+                                    progCont = 0;
+                                    cicloCont++;
+                                } else {
+                                    progCont++;
+                                }
+                            }
+                            texto += '"Calificación_Inicial_Absoluta",';
+                            texto += '"Calificación Final Absoluta",';
+                            texto += 'Promedio,Avance';
+                        }
+                        texto += '\n';
+                        for(let i = 0; i < metaData.TotPart; i++) {
+                            texto += '"' + datos[i].nombreUsuario + ' ' + datos[i].apellidoPaterno + ' ' + datos[i].apellidoMaterno + '",';
+                            if(bools.mostrarSexEdad){
+                                texto += datos[i].sexo + ',"' + datos[i].Edad + '",';
+                            }
+                            if(bools.mostrarCalif) {
+
+                                let acumProm=0,contProm = 0,flagfin=0, flagIni=0, par=1;
+                                for(let j = 9; j<col_Datos.length; j++) { //9 porque es la primera calif Final
+
+                                    texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10) + ',';
+
+                                    if(datos[i][col_Datos[j]['name']] !== null && flagIni === 0){
+                                        flagIni = j;
+                                    }
+                    
+                                    if(datos[i][col_Datos[j]['name']] !== null && par % 2 === 0){ 
+                                        acumProm += Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10;
+                                        contProm++; 
+                                        flagfin = j;
+                                    } 
+                                    par++;
+                                }                         
+
+                                texto += (Math.round((datos[i][col_Datos[flagIni]['name']] ) * 10) / 10) +',';
+                                texto += (Math.round((datos[i][col_Datos[flagfin]['name']] ) * 10) / 10) +',';
+                                texto += (Math.round((acumProm/contProm ) * 10) / 10) + ',';
+                                texto += (Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10) + '%,';
+                            }
+                        }
+                    } else {
+                        texto += 'Participantes,';
+                        if(bools.mostrarSexEdad){
+                            texto += 'Sexo,Edad,';
+                        }
+                        if(bools.mostrarCalif) {
+                            let cicloCont = 0, progCont = 0;
+                            for(let i = 0; i<metaData.TotCol; i++) {
+                                if(!bools.califOava) {
+
+                                }
+                                texto += '"' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                         'Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+                                if(((progCont+1) % metaData.TotProg) === 0){
+                                    progCont = 0;
+                                    cicloCont++;
+                                } else {
+                                    progCont++;
+                                }
+                            }
+                            texto += '"Calificación_Inicial_Absoluta",';
+                            texto += '"Calificación Final Absoluta",';
+                            texto += 'Promedio,Avance';
+                    }
+                                                
+                                                    <table class="striped highlight responsive-table">
+                                                      <thead>
+                                                        <% if(!califOava) { %>
+                                                          <tr class="center strong">
+                                                
+                                                            <td rowspan="2">Participantes</td>
+                                                  
+                                                            <% if(mostrarSexEdad) { %>
+                                                              <td class="center" rowspan="2">Sexo</td>
+                                                              <td class="center" rowspan="2">Edad</td>
+                                                            <% } %>
+                                                  
+                                                            <% if(mostrarCalif) { %>
+                                                
+                                                              <% let cicloCont = 0, progCont = 0;%>
+                                                              <% for(let i = 0; i<cantCol; i++) { %>
+                                                
+                                                                <td class="center" colspan="2"> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+                                                
+                                                                <% if(((progCont+1) % cantProg) === 0){%>
+                                                                  <% progCont = 0; cicloCont++;%>
+                                                                <% }else{ %>
+                                                                  <%progCont++; %>
+                                                                <% } %>
+                                                
+                                                              <% } %>
+                                                
+                                                            <% } %>
+                                                            
+                                                          </tr>
+                                                          <tr>
+                                                            <% if(mostrarCalif) { %>
+                                                              <% for(let i = 0; i<cantCol; i++) { %>
+                                                                <td class="center" > Calificación <br> Inicial</td>
+                                                                <td class="center"> Calificación <br> Final</td>
+                                                              <% } %>
+                                                            <% } %>
+                                                          </tr>
+                                                        <% } else { %>
+                                                          <tr class="center strong">
+                                                
+                                                            <td>Participantes</td>
+                                                  
+                                                            <% if(mostrarSexEdad) { %>
+                                                              <td class="center">Sexo</td>
+                                                              <td class="center">Edad</td>
+                                                            <% } %>
+                                                  
+                                                            <% if(mostrarCalif) { %>
+                                                
+                                                              <% let cicloCont = 0, progCont = 0;%>
+                                                              <% for(let i = 0; i<cantCol; i++) { %>
+                                                
+                                                                <td class="center">Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+                                                            
+                                                                <% if(((progCont+1) % cantProg) === 0){%>
+                                                                  <% progCont = 0; cicloCont++;%>
+                                                                <% }else{ %>
+                                                                  <%progCont++; %>
+                                                                <% } %>
+                                                
+                                                              <% } %>
+                                                
+                                                            <% } %>
+                                                          </tr>
+                                                        <% } %>
+                                                        
+                                                      </thead>
+                                                      <tbody>
+                                                        <% for(let i = 0; i < cantPart; i++) { %>
+                                                          <tr>
+                                                            <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
+                                                            <% if(mostrarSexEdad) { %>
+                                                              <td class="center"><%= datos[i].sexo %></td>
+                                                              <td class="center"><%= datos[i].Edad %></td>
+                                                            <% } %>
+                                                            <% if(mostrarCalif) { %>
+                                                              <% for(let j = 9; j < col_Datos.length; j++) { %>
+                                                                <% if(!califOava) { %>
+                                                                  <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %></td>
+                                                                <% }else{ %>
+                                                                  <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 100) / 100 %> %</td>
+                                                                <% } %>
+                                                              <% } %>
+                                                            <% } %>
+                                                          </tr>
+                                                        <% } %>
+                                                      </tbody>
+                                                    </table> 
+                                                <% } %>                
+                                                var file = __dirname + './../downloads/reporte.csv';
+                                                response.download(file);
+
+
+                    
+                    var file = __dirname + './../downloads/reporte.csv';
+                    response.download(file);
+                }).catch( err => {
+                    request.session.mensaje = 'Error de actualizacion de la base de datos';
+                    request.session.bandera = true;
+                    response.redirect('/consultas');
+                    console.log(err);
+                });
+            }).catch( err => {
+                request.session.mensaje = 'Error de comunicacion con el servidor';
+                request.session.bandera = true;
+                response.redirect('/consultas');
+                console.log(err);
+            });
+        }).catch( err => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/consultas');
+            console.log(err);
+        });
+    }
+    else {
+        response.redirect('/consultas/resultados');
+    }
+    console.log("Archivo CSV en resultados");
 });
 
 exports.getResultadosGrupo = ((request, response, next) => {
@@ -151,9 +376,7 @@ exports.getResultadosGrupo = ((request, response, next) => {
 });
 
 exports.postResultadosGrupo = ((request, response, next) => {
-    console.log("Accion post en resultados por Grupo");
-    response.status(302);
-    response.redirect('/consultas/Resultados');
+
 });
 
 exports.getConsultas = ((request, response, next) => {
