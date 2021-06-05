@@ -367,39 +367,6 @@ exports.getEditarCiclo = (request,response,next) => {
     }
 };
 
-exports.getEditarGrupos = (request,response,next) => {
-    const permisos = request.session.permisos;
-    if(permisos.includes(11)) {
-        request.session.idcicloparam =undefined;
-        Programa.fetchAll()
-        .then(([programas, fieldData1]) => {
-            Usuario.fetchNomTerapeutas()
-            .then(([terapeutas, fieldData1]) => {
-                Grupo.fetchIdUltimoGrupo()
-                    .then(([idUltimoGrupo, fieldData1]) => {
-                    request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
-                    response.render('gc_editar', {
-                        programas: programas,
-                        terapeutas: terapeutas,
-                        permisos: permisos,
-                        tituloDeHeader: "Nuevo ciclo",
-                        tituloBarra: "Nuevo ciclo",
-                        backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos'},
-                        forwArrow: arrows[1]
-                    });
-                    })
-                    .catch(err => console.log(err)); 
-            })
-            .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-    }
-    else {
-        response.status(404);
-        response.send('Lo sentimos, este sitio no existe');
-    }
-}
-
 exports.postEditarCiclo = (request,response,next) => {
     request.session.error = undefined;
     Ciclo.actualizar(request.body.idCiclo, request.body.fechaInicial, request.body.fechaFinal)
@@ -421,6 +388,80 @@ exports.postEditarCiclo = (request,response,next) => {
             console.log(err);
         });
 };
+
+exports.getEditarGrupos = (request,response,next) => {
+    const permisos = request.session.permisos;
+    if(permisos.includes(11)) {
+        idciclo = request.params.idCiclo;
+        Programa.programasCiclo(idciclo)
+        .then(([programas, fieldData1]) => {
+            Usuario.fetchNomTerapeutas()
+            .then(([terapeutas, fieldData1]) => {
+                Grupo.fetchIdUltimoGrupo()
+                    .then(([idUltimoGrupo, fieldData1]) => {
+                    request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
+                    Participantes_Grupos_Objetivos.fetchTerapeutasCiclos(idciclo)
+                        .then(([terapeutasreg, fieldData1]) => {
+                            response.render('gc_editar', {
+                                programas: programas,
+                                terapeutas: terapeutas,
+                                terapeutasreg: terapeutasreg,
+                                permisos: permisos,
+                                idciclo: idciclo,
+                                tituloDeHeader: "Editar ciclo",
+                                tituloBarra: "Editar ciclo",
+                                backArrow: {display: 'block', link: '/gestionAdmin/gestionCiclos/inscribir/'+idciclo},
+                                forwArrow: arrows[1]
+                            });
+                        })
+                        .catch(err => console.log(err));
+                    })
+                    .catch(err => console.log(err)); 
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    }
+    else {
+        response.status(404);
+        response.send('Lo sentimos, este sitio no existe');
+    }
+}
+
+exports.postEditarGrupos = async(request,response,next) => {
+    let idCiclo = request.body.idciclo;
+    let idGrupo =  parseInt(request.session.idlastgrupo); 
+    let psize = Object.keys(request.body.prograsSel).length-1;
+    let tsize = Object.keys(request.body.terapAsig).length-1;
+    for (let p in request.body.prograsSel){
+        let idPrograma = request.body.prograsSel[p];
+        for (let t in request.body.terapAsig){
+            let idProgAsig = request.body.terapAsig[t][0].idPrograma;
+            let login = request.body.terapAsig[t][0].login.toString();
+            if (idPrograma === idProgAsig){
+                let numeroGrupo =  parseInt(t) + 1;
+                idGrupo += 1;  
+                let grupo = new Grupo(idGrupo, numeroGrupo, idPrograma, idCiclo,login);
+                await grupo.save()
+                    .then(() => {
+                        if(tsize=== parseInt(t) && psize === parseInt(p)){
+                            request.session.error = undefined; 
+                            request.session.bandera =true;
+                            return response.status(300).json({idciclo: idciclo});
+                        }                                                               
+                    }).catch( err => {
+                        console.log(err); 
+                        request.session.bandera =true;
+                        request.session.error = "El ciclo no se pudo actualizar correctamente.";
+                        return response.status(300).json({idciclo: idciclo});
+                    });
+            }
+        }
+    }
+    
+
+}
+
 
 exports.get = (request,response,next) => {
     const estado = request.session.estadogc === undefined ? 'vacio' : request.session.estadogc;

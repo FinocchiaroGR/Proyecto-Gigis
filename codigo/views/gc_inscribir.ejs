@@ -10,7 +10,7 @@
         <% if (permisos.includes(11) && idlastciclop==idciclo ) { %>
         <!-- Boton Modificar ciclo -->
         <a  onclick="modificarFechasCiclo()"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">date_range</i>Editar fechas</a>
-        <a  href="/gestionAdmin/gestionCiclos/editar"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
+        <a  href="/gestionAdmin/gestionCiclos/editar/<%= idciclo %>"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
         <% } %>
         <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4 right"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
         <!-- Modal Modificar ciclo-->

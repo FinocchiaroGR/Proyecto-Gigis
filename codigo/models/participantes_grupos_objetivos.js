@@ -51,4 +51,9 @@ module.exports = class Participante_Grupo_Objetivo {
         return db.execute('SELECT COUNT(*) AS num_groups FROM participantes_grupos_objetivo WHERE login = ?',
         [login]);
     }
+
+    static fetchTerapeutasCiclos(idCiclo) {
+        return db.execute('SELECT login, idPrograma FROM `grupos_programas_ciclos_terapeutas` WHERE idCiclo = ?',
+        [idCiclo]);
+    }
 }

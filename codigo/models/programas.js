@@ -71,5 +71,12 @@ module.exports = class Programas {
         );
     }
 
+    static programasCiclo(idCiclo) {
+        return db.execute(
+        'SELECT P.*,  GPCT.idGrupo, case when GPCT.idPrograma is null then 0 else 1 end as paloma FROM programas P LEFT JOIN grupos_programas_ciclos_terapeutas GPCT ON GPCT.idPrograma = P.idPrograma AND GPCT.idCiclo = ? GROUP BY P.idPrograma',
+        [idCiclo]
+        );
+    }
+
 }
 
