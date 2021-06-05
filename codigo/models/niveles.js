@@ -28,4 +28,10 @@ module.exports = class Nivel {
         return db.execute('SELECT * FROM niveles WHERE idPrograma  IN (SELECT idPrograma FROM grupos WHERE idGrupo = ?)',
         [idGrupo])
     }
+    static editarNivel(id, nombre){
+        //CALL consultaGenGrupo ( grupo INT )
+        let procedimiento = 'CALL modificaNivel (?,?)';
+        let parametros = [id,nombre];
+        return db.execute(procedimiento,parametros)
+    }
 }
