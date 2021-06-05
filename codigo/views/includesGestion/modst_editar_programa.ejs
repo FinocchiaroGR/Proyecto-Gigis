@@ -79,7 +79,7 @@
     <!-- Modal Structure Agregar Nivel-->
     <div id="agregarNivel-<%=programa.idPrograma%>" class="modal">
       <form action="/gestionAdmin/gestionProgramas/agregarNivel" method="POST">
-        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Agregar Nivel</h3>
           <label> * Campos obligatorios.</label>
