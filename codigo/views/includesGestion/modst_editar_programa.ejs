@@ -2,7 +2,7 @@
 <% for (let programa of programas) { %>  
     <div id="EditarPrograma-<%=programa.idPrograma%>" class="modal">
       <form action="/gestionAdmin/gestionProgramas/editarPrograma/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
-        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+        <input type="hidden" id="_csrf_<%=programa.idPrograma%>" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Editar: <%=programa.nombrePrograma%></h3>
           <input type="hidden" name="idPrograma" value="<%=programa.idPrograma%>">
@@ -17,7 +17,7 @@
                   </label>
                 </div>        
                 <div class="col s11">
-                  <div class="input tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar el nombre">
+                  <div class="input-field tooltipped " data-position="bottom" data-tooltip="Selecciona la casilla para cambiar el nombre">
                     <input disabled name="nombrePrograma" type="text" class="validate"  placeholder="Nombre" id="cambiarNombre-<%=programa.idPrograma%>" required>
                   </div>
                 </div>
@@ -44,11 +44,32 @@
                   </div>
                 </div>
               </div>
-              </li>
+            </li>
+            <li><strong><br>Cambiar nombre de los niveles</strong></li>
+            <li>
+              <% for (let nivel of niveles) { %>
+                <% if (nivel.idPrograma === programa.idPrograma) {%>
+                  <div class="row valign-wrapper">
+                    <div class="col s1">
+                      <label>
+                          <input type="checkbox" id="enNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" name="enNivel_<%=nivel.idNivel%>" onclick="enable(<%=programa.idPrograma%>,'enNivel<%=nivel.idNivel%>-','cambiarNivel<%=nivel.idNivel%>-')">
+                          <span> <strong class= "flow-text black-text" ></strong> </span>
+                      </label>
+                    </div>        
+                    <div class="col s11">
+                      <div class="input-field tooltipped" data-position="bottom" data-tooltip="Selecciona la casilla para cambiar el nombre del nivel <%=nivel.nombreNivel%>">
+                        <input disabled type="text" class="validate" name="nivel_<%=nivel.idNivel%>" placeholder="<%=nivel.nombreNivel%>" id="cambiarNivel<%=nivel.idNivel%>-<%=programa.idPrograma%>" required>
+                        <input type="hidden" name="nivel_<%=nivel.idNivel%>_" value="<%=nivel.idNivel%>">
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              <% } %>
+            </li>
           </ul>
         </div>
         <div class="modal-footer">
-          <button  type = "submit"  class="modal-action waves-effect btn-flat grey lighten-1">Actualizar</button>
+          <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1">Actualizar</button>
           <label style="visibility:hidden">**</label>
           <br>
         </div>
@@ -58,7 +79,7 @@
     <!-- Modal Structure Agregar Nivel-->
     <div id="agregarNivel-<%=programa.idPrograma%>" class="modal">
       <form action="/gestionAdmin/gestionProgramas/agregarNivel" method="POST">
-        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
         <div class="modal-content">
           <h3>Agregar Nivel</h3>
           <label> * Campos obligatorios.</label>

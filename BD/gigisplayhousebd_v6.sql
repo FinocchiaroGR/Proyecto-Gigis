@@ -308,8 +308,8 @@ CREATE TABLE `califdatos` (
 
 CREATE TABLE `ciclos` (
   `idCiclo` int(11) NOT NULL,
-  `fechaInicial` date NOT NULL,
-  `fechaFinal` date NOT NULL
+  `fechaInicial` DATETIME NOT NULL,
+  `fechaFinal` DATETIME NOT NULL
 ) ;
 
 --
@@ -430,7 +430,7 @@ CREATE TABLE `grupos_programas_ciclos` (
 CREATE TABLE `grupos_terapeutas` (
   `idGrupo` int(11) NOT NULL,
   `login` varchar(50) COLLATE utf8mb4_spanish2_ci NOT NULL,
-  `fechaAsignacion` date NOT NULL DEFAULT current_timestamp()
+  `fechaAsignacion` DATETIME NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
@@ -527,7 +527,7 @@ CREATE TABLE `objetivos` (
   `idObjetivo` int(11) NOT NULL,
   `descripcion` varchar(400) COLLATE utf8mb4_spanish2_ci NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 1,
-  `fechaRegistroObj` date NOT NULL DEFAULT current_timestamp()
+  `fechaRegistroObj` DATETIME NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
@@ -718,7 +718,7 @@ CREATE TABLE `participantes` (
   `login` varchar(50) COLLATE utf8mb4_spanish2_ci NOT NULL,
   `estatus` char(1) COLLATE utf8mb4_spanish2_ci NOT NULL DEFAULT 'A',
   `sexo` char(1) COLLATE utf8mb4_spanish2_ci NOT NULL,
-  `fechaNacimiento` date NOT NULL,
+  `fechaNacimiento` DATETIME NOT NULL,
   `telefonoPadre` varchar(12) COLLATE utf8mb4_spanish2_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
@@ -2572,7 +2572,7 @@ INSERT INTO `roles` (`idRol`, `nombre`) VALUES
 CREATE TABLE `roles_funciones` (
   `idRol` int(11) NOT NULL,
   `idfuncion` int(11) NOT NULL,
-  `fechaRF` date NOT NULL DEFAULT current_timestamp()
+  `fechaRF` DATETIME NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
@@ -2792,7 +2792,7 @@ INSERT INTO `usuarios` (`login`, `password`, `nombreUsuario`, `apellidoPaterno`,
 CREATE TABLE `usuarios_roles` (
   `login` varchar(50) COLLATE utf8mb4_spanish2_ci NOT NULL,
   `idRol` int(11) NOT NULL,
-  `fechaUR` date NOT NULL DEFAULT current_timestamp()
+  `fechaUR` DATETIME NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --

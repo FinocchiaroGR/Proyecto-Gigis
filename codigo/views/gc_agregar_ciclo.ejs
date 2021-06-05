@@ -25,7 +25,7 @@
 
   <div class="row">
     <div class="col s12 m12">
-      <h4>Programas</h4>
+      <h5>Programas</h5>
       <ul class="collapsible">
         <% for (let programa of programas) { %>  
             <li>
@@ -46,7 +46,7 @@
                             <a class="collection-item"><%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %> 
                                 <span class="badge">
                                     <label>
-                                        <input name ="<%= programa.idPrograma %><%= terapeuta.login %>" id="<%= programa.idPrograma %><%= terapeuta.login %>" type="checkbox" onChange="selTe(this)"/>
+                                        <input name ="<%= programa.idPrograma %><%= terapeuta.login %>" id="<%= programa.idPrograma %><%= terapeuta.login %>" type="checkbox" onChange="selTe(this)" class="collection-item"/>
                                         <span></span>
                                     </label>
                                 </span> 

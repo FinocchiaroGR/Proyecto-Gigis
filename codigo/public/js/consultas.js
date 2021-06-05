@@ -170,7 +170,7 @@ const buscarHistorial = () => {
                         +'<thead><tr>'+
                         '<td>Programa</td>'+
                         //'<td>Periodo</td>'+
-                        '<td>Profesor</td>'+
+                        '<td>Terapeuta</td>'+
                         '<td>Calificación Inicial</td>'+
                         '<td>Calificación Final</td>'+
                         '<td>Avance</td>'+

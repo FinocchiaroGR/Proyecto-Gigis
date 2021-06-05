@@ -3,25 +3,26 @@
       <a href="/consultas/Grupo/<%= datoGrupo.idGrupo %>">
         <div class="card" >
           <div class="card-image">
-            <img src="<%= datoGrupo.dirImagen %>">
+            <img src="../<%= datoGrupo.dirImagen %>">
           </div>
           <div class="card-content">
             <div class="row">
-              <div class="col s10">
+              <div class="col s12">
                   <span class="card-title flow-text"><strong><%= datoGrupo.nombrePrograma %></strong></span>
               </div>
-              <div class="descr-programas-consultas">
-                <p >Ciclo: &nbsp <%= datoGrupo.idCiclo %></p>
-                <p >Num de matchs: &nbsp <%= datoGrupo.TotalMatchs %></p>
-                <p >Total Participantes: &nbsp <%= datoGrupo.TotalAlumnInscr %></p>
-                <p >Promedio: &nbsp <%= Math.round(datoGrupo.Prom_calif_gr) %></p>
+              <div class="descr-programas-consultas col s12">
+                <p style="text-align: right"><%= datoGrupo.idCiclo %></p>
+                <p >Terapeuta: <%= datoGrupo.nombreUsuario %> <%= datoGrupo.apellidoPaterno %></p>
+                <p >Num de Coincidencias: &nbsp <%= datoGrupo.TotalMatchs %></p>
+                <p >Total de Participantes: &nbsp <%= datoGrupo.TotalAlumnInscr %></p>
+                <p >Promedio del grupo: &nbsp <%= Math.round(datoGrupo.Prom_calif_gr*10)/10 %></p>
                 <br>
               </div>
               <div>
                 <p class="col s8 offset-s1">Avance</p>
                 <p class="col s2 right-align"><%= Math.round(datoGrupo.Prom_Ava_gr*10)/10 %>%</p>
                 <div class="progress col s10 offset-s1">
-                  <div class="determinate" style="width: <%= Math.round(datoGrupo.Prom_Ava_gr*100) %>%"></div>
+                  <div class="determinate" style="width: <%= Math.round(datoGrupo.Prom_Ava_gr*100)/100 %>%"></div>
                 </div>
               </div>
             </div>

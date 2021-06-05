@@ -2,7 +2,7 @@
 <%- include('include/titleBar.ejs') %>
 <%- include('include/sideNavBar.ejs') %>
 
-    <br><h4>Consulta por Grupo:</h4>
+    <br><h4>Consulta por Terapeuta:</h4>
 
     <div class="row">
         <%- include('includesConsultas/tarjetaProg_resultados.ejs') %>
@@ -17,8 +17,8 @@
                     <div class="row">
                     <% if(estadoConsulta) { %>
                         <div class="col s12">
-                            <h5 class="flow-text center-align">Resultados de la consulta en <%= programas[listaProg[0]-1].nombrePrograma %></h5>
-                            <p class="flow-text">Total de resultados: <%= cantPart %></p>
+                            <h5 class="flow-text center-align">Resultados de la consulta en <%= datosGrupos[0].nombrePrograma %></h5>
+                            <p class="flow-text right">Total de resultados: <%= cantPart %></p>
                             <% let contPromGen = 1, acumPromGen = 0, cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
                                 <p class="flow-text">Promedio Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10 %></p>
@@ -48,7 +48,7 @@
                         </div>
                     <% } else { %>
                         <div class="col s12">
-                            <p class="flow-text">Total de resultados: <%= datos.length %></p>
+                            <p class="flow-text right">Total de resultados: <%= datos.length %></p>
                             <% let cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
                                 <p class="flow-text">Promedio <%= programas[listaProg[progCont]-1].nombrePrograma %> Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[i+1]['name']] ) * 10) / 10 %></p>
@@ -72,7 +72,7 @@
             <form action="/consultas/Resultados" method="post">
                 <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
                 <div class="row">
-                    <button type="submit" class="waves-effect right waves-light btn-large"> Descargar archivo </button>
+                    <button type="submit" class="waves-effect right light-blue darken-2 btn-large"> Descargar archivo </button>
                 </div>
             </form>
         <% } %>

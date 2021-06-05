@@ -271,6 +271,24 @@ GROUP BY
     Punt.idGrupo,
     Punt.idNivel);
 
+CREATE VIEW grupos_programas_ciclos AS 
+(SELECT 
+    P.nombrePrograma, 
+    P.idPrograma, 
+    G.idCiclo, 
+    G.idGrupo,
+    GT.login
+FROM 
+    programas P, 
+    grupos G,
+    grupos_terapeutas GT 
+WHERE 
+    P.idPrograma = G.idPrograma AND
+    G.idGrupo = GT.idGrupo 
+GROUP BY 
+    (idGrupo));
+
+
 -- Para Empezar servidor :
 -- INSERT INTO usuarios (login, password, nombreUsuario, apellidoPaterno, apellidoMaterno) VALUES ('sandra@hotmail.com','$2a$12$opSzIUOqyS1hlYR5CPXvWOBoDUYG6AXjlHr3weEV3E1DMl0JE9PE2','Sandra','Tello','Del Valle');
 -- Usuario: sandra@hotmail.com  Password: sandra525&

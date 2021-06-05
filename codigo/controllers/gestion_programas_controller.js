@@ -13,7 +13,6 @@ exports.nivelObjetivos = (request, response, next) => {
     .then(([programa,fieldData]) => {
       Objetivo.objetivosPorNivel(request.params.nivel_id)
       .then(([objetivos, fieldData2]) =>{
-        console.table(objetivos);
         const tituloBarra = programa[0].nombrePrograma + ' - Nivel: ' + programa[0].nombreNivel;
         response.render('objetivos', {
           tituloDeHeader: 'Objetivos',
@@ -150,37 +149,141 @@ exports.postNuevoPrograma = (request, response, next) => {
     });
 };
 
-exports.editarPrograma  = (request, response, next) => {
-   if(request.body.enImagen === 'on' && request.body.enNombre === 'on'){
-      Programa.editarPrograma(request.body.idPrograma, request.body.nombrePrograma, request.file.path)
+exports.editarPrograma  = async(request, response, next) => {
+  let niveles = Object.values(request.body);
+  let idNiveles = [];
+  let nombreNiveles =[];
+  let i = 2;                    // Index inicial del arreglo con el request.body
+
+  // Verificar si se edito algun campo diferente a los niveles e incrementar el index
+  i = request.body.enNombre !== undefined ? i + 2 : i;
+  i = request.body.enImagen !== undefined ? i + 1 : i;
+  i = niveles.indexOf('on', i);
+  //Recorrer los niveles que se cambiaron
+  for(i; i < niveles.length ; i += 3){
+    if(niveles[i] === 'on'){
+      nombreNiveles.push(niveles[i + 1]);
+      idNiveles.push(niveles[i + 2]);
+    }
+  }
+  let enNiveles = idNiveles.length > 0 ? true : false;
+  if(request.body.enImagen === 'on' && request.body.enNombre === 'on'){
+    Programa.editarPrograma(request.body.idPrograma, request.body.nombrePrograma, request.file.path)
+    .then(() => {
+      (async() =>{
+        if (enNiveles){
+          for (let j = 0; j < idNiveles.length; j++){
+            let id =idNiveles[j];
+            let nombre = nombreNiveles[j];
+            await Nivel.editarNivel(id,nombre)
+              .then(() => {
+                request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+                response.redirect('/gestionAdmin/gestionProgramas');
+              }).catch((err) => {
+                request.session.error = "Error al actualizar el nombre del nivel.";
+              });
+          }
+        }
+        else{
+          request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+          response.redirect('/gestionAdmin/gestionProgramas');
+        }
+      })();
+    }).catch((err) => {
+      request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
+      console.log(err);
+      response.redirect('/gestionAdmin/gestionProgramas')
+    });
+  } else if (request.body.enImagen === undefined && request.body.enNombre === 'on'){
+    Programa.editarProgramaSinImagen(request.body.idPrograma, request.body.nombrePrograma)
+    .then(() => {
+      (async() =>{
+        if (enNiveles){
+          for (let j = 0; j < idNiveles.length; j++){
+            let id =idNiveles[j];
+            let nombre = nombreNiveles[j];
+            await Nivel.editarNivel(id,nombre)
+              .then(() => {
+                request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+              }).catch((err) => {
+                request.session.error = "Error al actualizar el nombre del nivel.";
+                response.redirect('/gestionAdmin/gestionProgramas');
+              });
+          }
+          response.redirect('/gestionAdmin/gestionProgramas');
+        }
+        else{
+          request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+          response.redirect('/gestionAdmin/gestionProgramas');
+        }
+      })();
+    }).catch((err) => {
+      request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
+      console.log(err);
+      response.redirect('/gestionAdmin/gestionProgramas');
+    });
+  } else if (request.body.enImagen === 'on' && request.body.enNombre === undefined) {
+    Programa.editarProgramaSinTitulo(request.body.idPrograma, request.file.path)
+    .then(() => {
+      (async() =>{
+        if (enNiveles){
+          for (let j = 0; j < idNiveles.length; j++){
+            let id =idNiveles[j];
+            let nombre = nombreNiveles[j];
+            await Nivel.editarNivel(id,nombre)
+              .then(() => {
+                request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+              }).catch((err) => {
+                request.session.error = "Error al actualizar el nombre del nivel.";
+                response.redirect('/gestionAdmin/gestionProgramas');
+              });
+          }
+          response.redirect('/gestionAdmin/gestionProgramas');
+        }
+        else{
+          request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+          response.redirect('/gestionAdmin/gestionProgramas');
+        }
+      })();
+    }).catch((err) => {
+      request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
+      response.redirect('/gestionAdmin/gestionProgramas');
+    });
+  }else{
+    (async() =>{
+      if (enNiveles){
+        for (let j = 0; j < idNiveles.length; j++){
+          let id =idNiveles[j];
+          let nombre = nombreNiveles[j];
+          await Nivel.editarNivel(id,nombre)
+            .then(() => {
+              request.session.registro_exitoso = 'El programa se actualizó correctamente.';
+            }).catch((err) => {
+              request.session.error = "Error al actualizar el nombre del nivel.";
+              response.redirect('/gestionAdmin/gestionProgramas');
+            });
+        }
+        response.redirect('/gestionAdmin/gestionProgramas');
+      }
+      else{
+        response.redirect('/gestionAdmin/gestionProgramas');
+      }
+    })();
+  }
+}
+
+exports.editarNiveles = async(request, response, next) => {
+  let limite = request.body.idNivel.length;
+  for(let i=0; i<limite;i++){
+    let id =request.body.idNivel[i];
+    let nombre = request.body.nombreNivel[i];
+    await Nivel.editarNivel(id,nombre)
       .then(() => {
         request.session.registro_exitoso = 'El programa se actualizó correctamente.'
-        response.redirect('/gestionAdmin/gestionProgramas')
       }).catch((err) => {
-        request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
-        console.log(err);
-        response.redirect('/gestionAdmin/gestionProgramas')
+        request.session.error = "Error al actualizar el nombre del nivel.";
       });
-   } else if (request.body.enImagen === undefined && request.body.enNombre === 'on'){
-      Programa.editarProgramaSinImagen(request.body.idPrograma, request.body.nombrePrograma)
-      .then(() => {
-        request.session.registro_exitoso = 'El programa se actualizó correctamente.'
-        response.redirect('/gestionAdmin/gestionProgramas')
-      }).catch((err) => {
-        request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
-        console.log(err);
-        response.redirect('/gestionAdmin/gestionProgramas')
-      });
-   } else if (request.body.enImagen === 'on' && request.body.enNombre === undefined) {
-      Programa.editarProgramaSinTitulo(request.body.idPrograma, request.file.path)
-      .then(() => {
-        request.session.registro_exitoso = 'El programa se actualizó correctamente.'
-        response.redirect('/gestionAdmin/gestionProgramas')
-      }).catch((err) => {
-        request.session.error = "Ya existe un programa registrado con el nombre que ingresaste.";
-        response.redirect('/gestionAdmin/gestionProgramas')
-      });
-   }
+  }
 }
 
 exports.agregarNivel = (request, response, next) => {

@@ -1,0 +1,35 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %> 
+
+<div class="row">
+  <div>
+    <br>
+    <p><strong>Programas que se impartieron</strong></p>
+    <ul class="collapsible" id="lista-programas"> 
+      <% for (let programa of programas) { %>  
+          <li>
+              <div class="collapsible-header">
+                  <%= programa.nombrePrograma %>
+                  <span class="badge">
+                      <!-- Modal Editar -->
+                      <i class="material-icons left">expand_more</i>
+                  </span>
+              </div>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        <% for (let terapeuta of terapeutas) { %>
+                          <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
+                            <a class="collection-item" >Con <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                          <% } %>
+                        <% } %>
+                    </div>
+                </div>
+          </li>
+      <% } %>
+    </ul>
+  </div>
+</div>
+
+     
+<%- include('include/footer.ejs') %>

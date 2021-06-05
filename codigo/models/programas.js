@@ -22,6 +22,10 @@ module.exports = class Programas {
         return db.execute('SELECT * FROM programas ORDER BY nombrePrograma ASC');
     }
 
+    static fetchAllSOrd() {
+        return db.execute('SELECT * FROM programas');
+    }
+
     static fetch(criterio) {
         return db.execute('SELECT * FROM programas WHERE nombrePrograma LIKE ?' , ['%'+criterio+'%']);
     }
@@ -37,8 +41,8 @@ module.exports = class Programas {
     }
     
     static fetchProgramasCicloActual() {
-        return db.execute(
-        'SELECT G.idPrograma, nombrePrograma,GP.login, P.dirImagen, DATE_FORMAT(fechaInicial, "%M") AS fechaInicio , DATE_FORMAT(fechafinal, "%M %Y") AS fechaFinal FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo = GP.idGrupo AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE GROUP BY idPrograma'
+        db.execute('SET lc_time_names = "es_MX";')
+        return db.execute('SELECT G.idPrograma, nombrePrograma,GP.login, P.dirImagen, DATE_FORMAT(fechaInicial, "%M") AS fechaInicio , DATE_FORMAT(fechafinal, "%M %Y") AS fechaFinal FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo = GP.idGrupo AND fechaInicial<CURRENT_DATE AND fechaFinal>CURRENT_DATE GROUP BY idPrograma'
         );
     }
 
@@ -62,7 +66,14 @@ module.exports = class Programas {
 
     static fetchPorIdCiclo(idCiclo) {
         return db.execute(
-        'SELECT P.nombrePrograma, P.idPrograma FROM Programas P, Grupos G WHERE P.idPrograma = G.idPrograma AND G.idCiclo = ? GROUP BY (idPrograma)',
+        'SELECT P.nombrePrograma, P.idPrograma FROM programas P, grupos G WHERE P.idPrograma = G.idPrograma AND G.idCiclo = ? GROUP BY (idPrograma)',
+        [idCiclo]
+        );
+    }
+
+    static programasCiclo(idCiclo) {
+        return db.execute(
+        'SELECT P.*,  GPCT.idGrupo, case when GPCT.idPrograma is null then 0 else 1 end as paloma FROM programas P LEFT JOIN grupos_programas_ciclos_terapeutas GPCT ON GPCT.idPrograma = P.idPrograma AND GPCT.idCiclo = ? GROUP BY P.idPrograma',
         [idCiclo]
         );
     }

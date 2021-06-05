@@ -4,6 +4,8 @@ const Programas = require('../models/programas');
 const DatosConsultas = require('../models/consultasResultados');
 const Historial = require('../models/consultasHistorial');
 const Participante = require('../models/participantes');
+const fs = require('fs');
+const http = require('http');
 
 let datosConsultas = new DatosConsultas();
 const arrows = Arrow.fetchAll();
@@ -12,7 +14,7 @@ exports.getResultados = ((request, response, next) => {
     const permiso = request.session.permisos;
     if(permiso.includes(5)){ 
         let bools = datosConsultas.getBools();
-        Programas.fetchAll()
+        Programas.fetchAllSOrd()
         .then(([rows_Programas, fieldData_Prog]) => {
             //console.table(rows_Programas);
             datosConsultas.fetch()
@@ -26,7 +28,7 @@ exports.getResultados = ((request, response, next) => {
                         //console.table(rowsGen);
                         DatosConsultas.fetchPorGroup_cons()
                         .then(([rowsGroup, fieldData_Group]) => {
-                            //console.table(rowsGroup);
+                            console.table(rowsGroup);
                             response.render('consultas_Resultados', {
                                 tituloDeHeader: "Consulta - Resultados",
                                 tituloBarra: "Resultados de consulta",
@@ -97,9 +99,9 @@ exports.getResultados = ((request, response, next) => {
 });
 
 exports.postResultados = ((request, response, next) => {
-    console.log("Accion post en resultados");
-    response.status(302);
-    response.redirect('/consultas');
+    var file = __dirname + './../downloads/reporte.csv';
+    response.download(file);
+    //console.log("Accion post en resultados");
 });
 
 exports.getResultadosGrupo = ((request, response, next) => {
@@ -132,13 +134,13 @@ exports.getResultadosGrupo = ((request, response, next) => {
             }).catch( err => {
                 request.session.mensaje = 'Error de comunicacion con el servidor';
                 request.session.bandera = true;
-                response.redirect('/consultas');
+                response.redirect('/consultas/Resultados');
                 console.log(err);
             });
         }).catch( err => {
             request.session.mensaje = 'Error de comunicacion con el servidor';
             request.session.bandera = true;
-            response.redirect('/consultas');
+            response.redirect('/consultas/Resultados');
             console.log(err);
         });
     }
@@ -155,9 +157,11 @@ exports.postResultadosGrupo = ((request, response, next) => {
 });
 
 exports.getConsultas = ((request, response, next) => {
-    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
-    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const mensaje = request.session.mensaje === undefined ? null : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? null : request.session.bandera;
     const permiso = request.session.permisos;
+    console.log(request.session.mensaje);
+    console.log(request.session.bandera);
     const tienePermiso = permiso.includes(5);
     if(tienePermiso){     
         DatosConsultas.prepConsulta();
@@ -249,8 +253,6 @@ exports.postSelProgram = ((request, response, next) => {
 });
 
 exports.getHistorial = ((request, response, next) => {
-    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
-    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
     const permiso = request.session.permisos;
     const tienePermiso = permiso.includes(14);
     if(tienePermiso){     
@@ -261,8 +263,6 @@ exports.getHistorial = ((request, response, next) => {
                 Participante.fetchAll()
                 .then(([rows_Participantes, fieldData_Prog]) => {
                     response.render('consultas_Historial', {
-                        mensaje: mensaje,
-                        bandera: bandera,
                         tituloDeHeader: "Historial - Consultas",
                         tituloBarra: "Historial por alumno",
                         permisos: permiso,
@@ -275,25 +275,17 @@ exports.getHistorial = ((request, response, next) => {
                         backArrow: {display: 'block', link: '/consultas'},
                         forwArrow: arrows[1]
                     });
-                    request.session.mensaje = undefined;
-                    request.session.bandera = undefined;
                     console.log("Consultas - Historial");
                     response.status(201);
                 }).catch(err => {
-                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                    request.session.bandera = true;
                     response.redirect('/consultas');
                     console.log(err);
                 });
             }).catch(err => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
                 response.redirect('/consultas');
                 console.log(err);
             });
         }).catch(err => {
-            request.session.mensaje = 'Error de comunicacion con el servidor';
-            request.session.bandera = true;
             response.redirect('/consultas');
             console.log(err);
         });

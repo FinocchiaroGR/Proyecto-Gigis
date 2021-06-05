@@ -1,11 +1,10 @@
 let error = document.getElementById('error').value;
 let bandera = document.getElementById('bandera').value;
-if (error !== 'false' && bandera == 'true'){
+if (error !== 'false' && bandera != 'false'){
   window.location="/gestionAdmin/gestionCiclos/";
 }
-if (error === 'false' && bandera == 'true'){
-  
-  M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
+if (error === 'false' && bandera !='false'){
+  M.toast({html: bandera,  length:6500, classes: 'grey'})
 }
 
 //Despliega la lista de participantes activos
@@ -33,8 +32,8 @@ const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
             '<tbody id = "tablita">';
             let colorPalomita = 'grey-text text-lighten-3';
             for (let participante of data.participantes) {
-              let apellidoP =  participante.apellidoPaterno === 'null '? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
-              let apellidoM =  participante.apellidoMaterno === 'null '? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
+              let apellidoP =  participante.apellidoPaterno === null? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
+              let apellidoM =  participante.apellidoMaterno === null? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
               for (let inscrito of data.inscritos){
                 if(inscrito.login === participante.login){
                   colorPalomita = 'light-green-text text-accent-4';
@@ -381,7 +380,7 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
 }
 
 //Funcion para modificar las fechas del ciclo
-const modificarCiclo = () => {
+const modificarFechasCiclo = () => {
   let idCiclo = document.getElementById("idciclo").value;
   fetch('/gestionAdmin/gestionCiclos/editar-ciclo/'+idCiclo, {
       method: 'GET'

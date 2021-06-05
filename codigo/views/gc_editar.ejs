@@ -1,0 +1,99 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>   
+
+<div class="row">
+    <br>
+    <div class="row">
+        <div class="col right">
+            <div class="input-field" id = "btnModCiclo">
+               <a id="botonModCiclo" class="btn-small grey accent-4 right tooltipped" data-tooltip="Realiza algún cambio: selecciona al menos un programa y/o asigna al menos a un terapeuta para actualizar el ciclo."><i class="material-icons left">update</i>Actualizar</a>
+            </div>
+        </div>
+    </div>
+
+  <div class="row">
+    <div class="col s12 m12">
+      <h5>Programas</h5>
+      <ul class="collapsible">
+        <% let arrProg = []; %>
+        <% for (let programa of programas) { %>  
+            <li>
+                <div class="collapsible-header">
+                    <% if (programa.paloma === 0) { %>
+                        <i id = "iconoExpand<%= programa.idPrograma %>" class="material-icons left grey-text text-lighten-2">expand_more</i>
+                        <%= programa.nombrePrograma %>
+                        <span class="badge">
+                            <label>
+                                <input name ="<%= programa.idPrograma %>" id="<%= programa.idPrograma %>" type="checkbox" onChange="mostrarOps(this)"/>
+                                <span></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="collection" id="<%= programa.idPrograma %>at" style = "display:none">
+                            <% for (let terapeuta of terapeutas) { %> 
+                                <a class="collection-item"><%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %> 
+                                    <span class="badge">
+                                        <label>
+                                            <input name ="<%= programa.idPrograma %><%= terapeuta.login %>" id="<%= programa.idPrograma %><%= terapeuta.login %>" type="checkbox" onChange="selTe(this)" class="collection-item"/>
+                                            <span></span>
+                                        </label>
+                                    </span> 
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% if (programa.paloma === 1) {  %>
+                        <% arrProg.push(programa.idPrograma); %>
+                        <i class="material-icons left black-text text-lighten-2">expand_more</i>
+                        <%= programa.nombrePrograma %>
+                        <span class="badge">
+                            <label>
+                                <i class="material-icons left orange-text" >check</i>
+                                <span></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="collection" id="<%= programa.idPrograma %>at" style = "display:block">
+                            <% for (let terapeuta of terapeutas) { 
+                                let aux = false; %> 
+                                <a class="collection-item"><%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %> 
+                                    <% for (let terapeutareg of terapeutasreg) { %>
+                                        <% if (programa.idPrograma === terapeutareg.idPrograma && terapeuta.login === terapeutareg.login) { 
+                                            aux = true; %> 
+                                            <span class="badge">
+                                                <label>
+                                                    <i class="material-icons left orange-text" >check</i>
+                                                    <span></span>
+                                                </label>
+                                            </span> 
+                                        <% } %>
+                                    <% } %>
+                                    <% if(aux === false) { %>
+                                        <span class="badge">
+                                            <label>
+                                                <input name ="<%= programa.idPrograma %><%= terapeuta.login %>" id="<%= programa.idPrograma %><%= terapeuta.login %>" type="checkbox" onChange="selTe(this)" class="collection-item"/>
+                                                <span></span>
+                                            </label>
+                                        </span>
+                                    <% } %>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+                    
+            </li>
+        <% } %>  
+        <button style="visibility:hidden" id="llenarProgramas" onclick="agregarProgramas( '<%= arrProg%>');"></button>
+        </ul>       
+    </div> 
+</div>
+<input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
+<input type="hidden" id="ciclo" name="ciclo" value="<%= idciclo %>" >
+
+
+<%- include('includesGestion/footerModCiclos.ejs') %>

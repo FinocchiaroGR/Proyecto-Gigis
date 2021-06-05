@@ -5,13 +5,14 @@
 <div class="row">
   <div id= "contenido">
     <div class = "row">
-      <div class = "right">
+      <div >
         <br><br>
         <% if (permisos.includes(11) && idlastciclop==idciclo ) { %>
         <!-- Boton Modificar ciclo -->
-        <a  onclick="modificarCiclo()"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
+        <a  onclick="modificarFechasCiclo()"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">date_range</i>Editar fechas</a>
+        <a  href="/gestionAdmin/gestionCiclos/editar/<%= idciclo %>"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
         <% } %>
-        <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
+        <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4 right"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
         <!-- Modal Modificar ciclo-->
         <div id="modificarCiclo" class="modal">
           <div id="modalModCiclo">
@@ -55,4 +56,5 @@
   <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" > 
 
      
-<%- include('include/footer.ejs') %>
+  <%- include('includesGestion/footerInscribir.ejs') %>
+
