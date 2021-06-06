@@ -1,49 +1,42 @@
 <%- include('include/head.ejs') %>
 
-<body>
-    <div class = "row yellow valign-wrapper center-align">
-        <div class="col m6 s12 portada">
-            
-        </div>
-        <div class="col m6 s12 offset-s1">
-            <div >
-                <div class="z-depth-1 grey lighten-4 row box-white centered">  
-                    <img alt="Logo escrito Gigis" style="display: block; width: 50%; margin-left: auto; margin-right: auto;" src="<%= imagen %>">
-                    <% if (error !== false) { %>
-                    <span style="color: #ff3d41;"><%- error %></span>
-                    <% } %>
-                    <form action= "login" method="POST">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
-                        <div class="input-field col s12">
-                            <label for="username">Email</label>
-                            <input type="text" name="username" required>
-                        </div>
-                        
-                        <div class="input-field col s12">
-                            <label for="password">Clave</label>
-                            <input class="input-field" id="password" name="password" type="password" name="password">
-                            <div id="spanpass"><span toggle="#password" class="material-icons field-icon grey-text" onclick="showPassLogin(this)">visibility_off</span></div>
-                        </div>
-                        <div class="input-field col s12">
-                            <button style="color: rgb(255, 255, 255); width: 100%;" class="btn light-blue darken-1 waves-effect waves-light" type="submit" name="action">Entrar
-                                <i class="material-icons right">send</i>
-                            </button>
-                        </div>
-                        <div style="text-align: center;">
-                            <a style="color: rgb(37, 34, 255);" href="">¿Olvidaste la contraseña?</a>
-                        </div>
-                    </form>
+<body class="yellow">
+    <div class="flex-row">
+        <div class="image-column" alt="Imagen de entrada a Gigis-PlayHouse"></div>
+        <div class="login-column center-align">
+            <div class="z-depth-2 grey lighten-4 box-white">  
+                <img alt="Logo escrito GigisPlayHouse" class="logo" src="<%= imagen %>">
+                <br><br>
+                <% if (error !== false) { %>
+                <span style="color: #ff3d41;"><%- error %></span>
+                <% } %>
+                <form action="login" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" >
+                    <div class="input-field col s12">
+                        <label for="username">Email</label>
+                        <input type="text" name="username" required>
                     </div>
-                </div>
-                <label class="indigo-text text-darken-4">
-                    Desarrollado por 
-                    <a target="_blank" href="mailto: Martinez.carlosr97@gmail.com?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Carlos Roberto Martínez Quijas, </a>
-                    <a target="_blank" href="mailto: gonzalo.light.agm@gmail.com?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Gonzalo Alberto García Muñoz,</a>
-                    <br><a target="_blank" href="mailto: FinocchiaroGR@gmail.com?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Giovanni Finocchiaro Ramírez y </a>
-                    <a target="_blank" href="mailto: sandratellosalinas@outlook.es?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Sandra Tello Salinas</a>
-                </label>
+                    
+                    <div class="input-field col s12">
+                        <label for="password">Clave</label>
+                        <input class="input-field" id="password" name="password" type="password" name="password">
+                        <div id="spanpass"><span toggle="#password" class="material-icons field-icon grey-text" onclick="showPassLogin(this)">visibility_off</span></div>
+                    </div>
+                    <div class="input-field col s12">
+                        <button style="color: rgb(255, 255, 255); width: 100%;" class="btn light-blue darken-1 waves-effect waves-light" type="submit" name="action">Entrar
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </form>
             </div>
-            
+            <br><br>
+            <label class="indigo-text text-darken-4">
+                Desarrollado por 
+                <a target="_blank" href="mailto: Martinez.carlosr97@gmail.com?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Carlos Roberto Martínez Quijas, </a>
+                <a target="_blank" href="mailto: gonzalo.light.agm@gmail.com?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Gonzalo Alberto García Muñoz,</a><br>
+                <a target="_blank" href="mailto: FinocchiaroGR@gmail.com?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Giovanni Finocchiaro Ramírez y </a>
+                <a target="_blank" href="mailto: sandratellosalinas@outlook.es?subject=Información para el desarrollo de un sistema web." class="indigo-text text-darken-4">Sandra Tello Salinas</a>
+            </label>
         </div>
     </div>
 </body>
