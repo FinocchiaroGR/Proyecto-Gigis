@@ -3,26 +3,19 @@
     <table class="striped highlight responsive-table">
       <thead>
         <tr class="center strong">
-          <% //var archivo = new Object(); %>
-          <td rowspan="2">Participantes</td>
-          <% //archivo.participante = 'Participante'; %>
+          
+          <td rowspan="2"><strong>Participantes</strong></td>
+          
           <% if(mostrarSexEdad) { %>
-            <td class="center" rowspan="2">Sexo</td>
-            <% //archivo.sexo = 'Sexo'; %>
-            <td class="center" rowspan="2">Edad</td>
-            <% //archivo.edad = 'Edad'; %>
+            <td class="center" rowspan="2">Sexo</strong></td>
+            <td class="center" rowspan="2">Edad</strong></td>
           <% } %>
 
           <% if(mostrarCalif) { %>
 
             <% let cicloCont = 0, progCont = 0; %>
             <% for(let i = 0; i<cantCol; i++) { %>
-              <td class="center" colspan="2"><%= datosGrupos[0].nombrePrograma %> Ciclo-<%= ciclos.ini+cicloCont %> </td>
-              <% /*let calificacion_inicial = 'calificacion_inicial_' + ciclos.ini;
-                 archivo[calificacion_inicial] = 'Calificacion Inicial ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini;*/ %>
-              <% /*let calificacion_final = 'calificacion_final_' + cicloCont; 
-                 let ciclo =  ciclos.ini+cicloCont;
-                 archivo[calificacion_final] = 'Calificacion Final ' + programas[listaProg[progCont]-1].nombrePrograma + ' Ciclo-' + ciclos.ini;*/ %>
+              <td class="center" colspan="2"><strong><%= datosGrupos[0].nombrePrograma %> Ciclo-<%= ciclos.ini+cicloCont %> </strong></td>
               
               <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
@@ -32,29 +25,22 @@
 
             <% } %>
 
-            <td class="center" rowspan="2">Calificación <br> Inicial <br> Absoluta </td>
-            <% //archivo.calificacion_inicial = 'Calificación Inicial'; %>
-
-            <td class="center" rowspan="2">Calificación <br> Final <br> Absoluta </td>
-            <% //archivo.calificacion_final = 'Calificación Final'; %>
-
-            <td class="center" rowspan="2">Promedio</td>
-            <% //archivo.promedio = 'Promedio'; %>
-
-            <td class="center" rowspan="2">Avance</td>
-            <% //archivo.avance = 'Avance'; %>
+            <td class="center" rowspan="2"><strong>Calificación <br> Inicial <br> Absoluta </strong></td>
+            <td class="center" rowspan="2"><strong>Calificación <br> Final <br> Absoluta </strong></td>
+            <td class="center" rowspan="2"><strong>Promedio</strong></td>
+            <td class="center" rowspan="2"><strong>Avance</strong></td>
           <% } %>
         </tr>
         <tr>
           <% if(mostrarCalif) { %>
             <% for(let i = 0; i<cantCol; i++) { %>
-              <td class="center" > Calificación <br> Inicial</td>
-              <td class="center"> Calificación <br> Final</td>
+              <td class="center" > Calificación <br> Inicial</strong></td>
+              <td class="center"> Calificación <br> Final</strong></td>
             <% } %>
           <% } %>
         </tr>
       </thead>
-      <%//console.log(archivo) %>
+      
       <% for(let i = 0; i < cantPart; i++) { %>
         <tr>
 

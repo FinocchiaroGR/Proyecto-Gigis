@@ -457,7 +457,7 @@ module.exports = class DatosConsultas {
         }
         vars.push(this.listaProgam.length);
         vars.push(this.listaProgam.toString());
-        console.log(vars);
+        //console.log(vars);
         return db.execute(texto,vars)
         .then(() => {
             return db.execute('SELECT * FROM ultimaConsulta',[]);
@@ -585,10 +585,15 @@ module.exports = class DatosConsultas {
         });
     }
 
-    static DatosGenGrupo(id){
-        //CALL consultaGenGrupo ( grupo INT )
+    static DatosGenGrupo(){
+        /*//CALL consultaGenGrupo ( grupo INT )
         let texto = 'CALL consultaGenGrupo (?)';
         let vars = [id];
-        return db.execute(texto,vars)
+        return db.execute(texto,vars);*/
+        let texto = 'SELECT C.idGrupo, C.idPrograma, C.idCiclo, P.nombrePrograma, U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno,'+
+        ' AVG(C.CalifFinal) AS `Prom_CaliF`, AVG(C.Avance) AS `Prom_Ava`'+
+        ' FROM consultagrupo C, programas P, grupos_terapeutas GT, usuarios U WHERE'+
+        ' C.idGrupo = GT.idGrupo AND GT.login = U.login AND P.idPrograma=C.idPrograma';
+        return db.execute(texto,[]);
     }
 };

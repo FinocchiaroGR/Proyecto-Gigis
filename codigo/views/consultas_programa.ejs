@@ -3,9 +3,9 @@
 <%- include('include/sideNavBar.ejs') %>
 
     <br><br>
-    <h5>Terapeuta: <%= datoGrupo.nombreUsuario %><%= datoGrupo.apellidoPaterno %><%= datoGrupo.apellidoMaterno %></h5>
+    <h5><strong>Terapeuta:</strong> <%= datoGrupo.nombreUsuario %> <%= datoGrupo.apellidoPaterno %> <%= datoGrupo.apellidoMaterno %></h5>
     <br><br>
-    <h6>Promedio: Calificaciones - <%= datoGrupo.Prom_CaliF %> Avance - <%= datoGrupo.Prom_Ava %> %</h6>
+    <h6><strong>Promedio:</strong> &nbsp; &nbsp; Calificaciones - <%= Math.round(datoGrupo.Prom_CaliF*10)/10 %> &nbsp; &nbsp; Avance - <%= Math.round(datoGrupo.Prom_Ava*10)/10 %> %</h6>
     <br><br>
 
     <%- include('includesConsultas/tabla_consultas_grupo.ejs') %>

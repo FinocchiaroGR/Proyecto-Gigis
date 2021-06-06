@@ -18,7 +18,7 @@ exports.getResultados = ((request, response, next) => {
             //console.table(rows_Programas);
             datosConsultas.fetch()
             .then(([rowsDatos, fieldData_Datos]) => {
-                console.table(rowsDatos);
+                //console.table(rowsDatos);
                 datosConsultas.fetchCants()
                 .then((metaData) => {
                     //console.log(metaData);
@@ -27,7 +27,7 @@ exports.getResultados = ((request, response, next) => {
                         //console.table(rowsGen);
                         DatosConsultas.fetchPorGroup_cons()
                         .then(([rowsGroup, fieldData_Group]) => {
-                            console.table(rowsGroup);
+                            //console.table(rowsGroup);
                             response.render('consultas_Resultados', {
                                 tituloDeHeader: "Consulta - Resultados",
                                 tituloBarra: "Resultados de consulta",
@@ -161,7 +161,7 @@ exports.postResultados = ((request, response, next) => {
                                 texto += (Math.round((datos[i][col_Datos[flagIni]['name']] ) * 10) / 10) +',';
                                 texto += (Math.round((datos[i][col_Datos[flagfin]['name']] ) * 10) / 10) +',';
                                 texto += (Math.round((acumProm/contProm ) * 10) / 10) + ',';
-                                texto += (Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10) + '%,';
+                                texto += (Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(lisProg[metaData.listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10) + '%,';
                             }
                             texto += '\n';
                         }
@@ -173,12 +173,12 @@ exports.postResultados = ((request, response, next) => {
                         if(bools.mostrarCalif) {
                             let cicloCont = 0, progCont = 0;
                             if(!bools.califOava) {
-                                for(let i = 0; i<metaData.TotCol; i+=2) {
+                                for(let i = 0; i<metaData.TotCol; i++) {
                                 
                                     texto += '"Calif inicial ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
                                          ' Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
                                     texto += '"Calif Final ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
-                                         'Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+                                         ' Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
 
                                     if(((progCont+1) % metaData.TotProg) === 0){
                                         progCont = 0;
@@ -208,9 +208,9 @@ exports.postResultados = ((request, response, next) => {
                             if(bools.mostrarSexEdad){
                                 texto += datos[i].sexo + ',"' + datos[i].Edad + '",';
                             }
-                            if(mostrarCalif) {
+                            if(bools.mostrarCalif) {
                                 for(let j = 9; j < col_Datos.length; j++) {
-                                    if(!califOava) {
+                                    if(!bools.califOava) {
                                         texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10) + ',';
                                     } else {
                                         texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 100) / 100) + '%,';
@@ -221,31 +221,24 @@ exports.postResultados = ((request, response, next) => {
                         }
                     }                    
                     let file = __dirname + './../downloads/reporte.csv';
-                    fs.writeFileSync(file, texto, {encoding: "utf8", flag: "w"})
-                    .then(()=> {
-                        response.download(file);
-                    }).catch( err => {
-                        request.session.mensaje = 'Error al escribir documento';
-                        request.session.bandera = true;
-                        response.redirect('/consultas/Resultados');
-                        console.log(err);
-                    });
+                    fs.writeFileSync(file, texto, {encoding: "latin1", flag: "w"});
+                    response.download(file);
                 }).catch( err => {
                     request.session.mensaje = 'Error de actualizacion de la base de datos';
                     request.session.bandera = true;
-                    response.redirect('/consultas');
+                    response.redirect('/consultas/resultados');
                     console.log(err);
                 });
             }).catch( err => {
                 request.session.mensaje = 'Error de comunicacion con el servidor';
                 request.session.bandera = true;
-                response.redirect('/consultas');
+                response.redirect('/consultas/resultados');
                 console.log(err);
             });
         }).catch( err => {
             request.session.mensaje = 'Error de comunicacion con el servidor';
             request.session.bandera = true;
-            response.redirect('/consultas');
+            response.redirect('/consultas/resultados');
             console.log(err);
         });
     }
@@ -264,19 +257,19 @@ exports.getResultadosGrupo = ((request, response, next) => {
     if(permiso.includes(5)){ 
         datosConsultas.fetchPorGrupo(id)
         .then(([rows_dato, fieldData_dato]) => {
+            //console.table(rows_dato);
             DatosConsultas.DatosGenGrupo(id)
             .then(([rows_Gen, fieldData_Gen]) => {
-                console.table(rows_Gen);
-                console.table(fieldData_Gen);
+                //console.table(rows_Gen);
                 response.render('consultas_Programa', {
-                    tituloDeHeader: 'Resultados ' + rows_Gen.nombrePrograma,
-                    tituloBarra: 'Resultados - Programa ' + rows_Gen.idPrograma + ' - Ciclo ' + rows_Gen.idCiclo,
+                    tituloDeHeader: 'Resultados ' + rows_Gen[0].nombrePrograma,
+                    tituloBarra: 'Resultados - ' + rows_Gen[0].nombrePrograma + ' - Ciclo ' + rows_Gen[0].idCiclo,
                     permisos: permiso,
                     mostrarSexEdad: bools.mostrarSexEdad,
                     mostrarCalif: bools.mostrarCalif,
                     col_Datos : fieldData_dato,
                     datos : rows_dato,
-                    datoGrupo : rows_Gen,
+                    datoGrupo : rows_Gen[0],
                     backArrow: {display: 'block', link: '/consultas/Resultados'},
                     forwArrow: arrows[1]
                 });
@@ -323,27 +316,21 @@ exports.postResultadosGrupo = ((request, response, next) => {
                 if(bools.mostrarSexEdad){
                     texto += dato.sexo + ',"' + dato.Edad + '",';
                 }
-                if(mostrarCalif) {
-                    texto += (Math.round((dato[col_Datos[ 9]['name']]) * 10) / 10) + ',';
-                    texto += (Math.round((dato[col_Datos[10]['name']]) * 10) / 10) + ',';
-                    texto += (Math.round((dato[col_Datos[11]['name']]) * 10) / 10) + '%,';
+                if(bools.mostrarCalif) {
+                    texto += (Math.round((dato.CalifInicial) * 10) / 10) + ',';
+                    texto += (Math.round((dato.CalifFinal)*10) / 10) + ',';
+                    texto += (Math.round((dato.Avance) * 100) / 100) + '%,';
                 }
+                texto += '\n';
             }
                             
             let file = __dirname + './../downloads/reporte.csv';
-            fs.writeFileSync(file, texto, {encoding: "utf8", flag: "w"})
-            .then(()=> {
-                response.download(file);
-            }).catch( err => {
-                request.session.mensaje = 'Error al escribir documento';
-                request.session.bandera = true;
-                response.redirect('/consultas/Resultados');
-                console.log(err);
-            });
+            fs.writeFileSync(file, texto, {encoding: "latin1", flag: "w"});
+            response.download(file);
         }).catch( err => {
             request.session.mensaje = 'Error de comunicacion con el servidor';
             request.session.bandera = true;
-            response.redirect('/consultas/Resultados');
+            response.redirect('/consultas/Grupo/'+id);
             console.log(err);
         });
     } else {
