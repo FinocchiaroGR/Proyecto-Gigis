@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 
 //fileStorage: Es nuestra constante de configuración para manejar el almacenamiento
+
 const fileStorage = multer.diskStorage({
     destination: (request, file, callback) => {
         //'uploads': Es el directorio del servidor donde se subirán los archivos 
@@ -16,8 +17,18 @@ const fileStorage = multer.diskStorage({
         callback(null, new Date().getMonth()+'_'+ new Date().getMilliseconds() + '_' + file.originalname);
     },
 });
+const fileFilter = (request, file, callback) => {
+    if (file.mimetype == 'image/png' || 
+        file.mimetype == 'image/jpg' ||
+        file.mimetype == 'image/jpeg' ) {
+            callback(null, true);
+    } else {
+            callback(null, false);
+    }
+}
 
-subrouter.use(multer({ storage: fileStorage}).single('imagen')); 
+
+subrouter.use(multer({ storage: fileStorage, fileFilter: fileFilter}).single('imagen')); 
 subrouter.use(bodyParser.urlencoded({ extended: false }));
 subrouter.use(express.static(path.join(__dirname,'..', 'public')));
 
