@@ -15,15 +15,17 @@
 
       <div class="input-field">
         <i class="material-icons prefix">lock</i>
-        <input type="text" id="contraseña-nueva" name="nueva" required minlength="8">
+        <input type="password" id="contraseña-nueva" name="nueva" required minlength="8">
         <label for="contraseña-nueva">Nueva Contraseña</label>
+        <div id="spanpass1"><span toggle="#contraseña-nueva" class="material-icons field-icon grey-text" onclick="showPassCambiarPass(this)">visibility_off</span></div>
       </div>
       <br>
 
       <div class="input-field">
         <i class="material-icons prefix">lock</i>
-        <input type="text" id="confirmacion" name="confirmacion" required>
+        <input type="password" id="confirmacion" name="confirmacion" required>
         <label for="confirmacion">Confirmación</label>
+        <div id="spanpass2"><span toggle="#confirmacion" class="material-icons field-icon grey-text" onclick="showPassCambiarConfirm(this)">visibility_off</span></div>
       </div>
       <br>
       
@@ -38,10 +40,10 @@
 <%- include('include/footer.ejs') %>
 
 <script>
-  let error = document.getElementById('errorPassword').value;
+  let error_cambiar_contra = document.getElementById('errorPassword').value;
 
-  if (error !== 'false'){
-    M.toast({html: error , length:10000, classes: 'black'});
+  if (error_cambiar_contra !== 'false'){
+    M.toast({html: error_cambiar_contra , length:10000, classes: 'black'});
   }
  
 </script>

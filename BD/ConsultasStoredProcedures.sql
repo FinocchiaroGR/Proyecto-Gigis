@@ -355,11 +355,17 @@ BEGIN
     PRIMARY KEY (login);
 
     #Merge de la tabla de datos con las calificaciones y avances
-    CALL mergeTablaCalif_datos (@Ciclo, @programa, 1, Edad_ini, Edad_fin);
-    CALL mergeTablaAva_datos (@Ciclo, @programa, 2, Edad_ini, Edad_fin);
+    DROP TEMPORARY TABLE IF EXISTS datosGroup_temp;
+    CREATE TEMPORARY TABLE `datosGroup_temp` AS
+        SELECT t1.*, t2.CalifInicial, t2.CalifFinal, t2.Avance FROM
+            (SELECT * FROM  datosPart_temp) t1
+        LEFT OUTER JOIN
+            (SELECT login, CalifInicial, CalifFinal, Avance FROM CalifDatos 
+             WHERE idCiclo = @Ciclo AND idPrograma = @programa AND Edad_Matriculacion >= Edad_ini AND Edad_Matriculacion <= Edad_fin) t2 
+        ON (t1.login = t2.login);
 
     DROP TABLE IF EXISTS ConsultaGrupo;
-    CREATE TABLE `ConsultaGrupo` AS SELECT * FROM datosPart_temp2;
+    CREATE TABLE `ConsultaGrupo` AS SELECT * FROM datosGroup_temp;
 END
 $$
 
@@ -369,21 +375,12 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE consultaGenGrupo ( IN `grupo` INT )
+CREATE PROCEDURE consultaGenGrupo ()
 BEGIN
-    SET @programa = (SELECT idPrograma FROM grupos WHERE idGrupo = grupo);
-    SET @Ciclo = (SELECT idCiclo FROM grupos WHERE idGrupo = grupo);
-
-    SET @sql = CONCAT(
-            'SELECT C.idGrupo, C.idPrograma, C.idCiclo, P.nombrePrograma, U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno,',
-            ' AVG(C.CalifFinal_P', CAST(@programa AS CHAR), '_C', CAST(@Ciclo AS CHAR),') AS `Prom_CaliF`,',
-            ' AVG(C.Avance_P', CAST(@programa AS CHAR), '_C', CAST(@Ciclo AS CHAR),') AS `Prom_Ava`',
-            ' FROM consultagrupo C, programas P, grupos_terapeutas GT, usuarios U WHERE',
-            ' C.idGrupo = GT.idGrupo AND GT.login = U.login AND P.idPrograma=C.idPrograma'
-        );
-    PREPARE stmt FROM @sql ;
-    EXECUTE stmt ;
-    DEALLOCATE PREPARE stmt;
+    SELECT C.idGrupo, C.idPrograma, C.idCiclo, P.nombrePrograma, U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno,
+     AVG(C.CalifFinal) AS `Prom_CaliF`, AVG(C.Avance) AS `Prom_Ava`
+     FROM consultagrupo C, programas P, grupos_terapeutas GT, usuarios U WHERE
+     C.idGrupo = GT.idGrupo AND GT.login = U.login AND P.idPrograma=C.idPrograma;
 END
 $$
 

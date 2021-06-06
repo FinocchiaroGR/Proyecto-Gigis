@@ -3,17 +3,17 @@
         <thead>
             <tr class="center-aligned">
     
-                <td>Participantes</td>
+                <td><strong>Participantes</strong></td>
     
                 <% if(mostrarSexEdad) { %>
-                    <td>Sexo</td>
-                    <td>Edad</td>
+                    <td><strong>Sexo</strong></td>
+                    <td><strong>Edad</strong></td>
                 <% } %>
     
                 <% if(mostrarCalif) { %>
-                    <td> Calificación Inicial </td>
-                    <td> Calificación Final </td>
-                    <td>Avance</td>
+                    <td><strong>Calificación Inicial</strong></td>
+                    <td><strong>Calificación Final</strong></td>
+                    <td><strong>Avance</strong></td>
                 <% } %>
             </tr>
         </thead>
@@ -29,9 +29,9 @@
                 <% } %>
 
                 <% if(mostrarCalif) { %>
-                    <td><%= Math.round((dato[col_Datos[9]['name']]) * 10) / 10 %> </td>
-                    <td><%= Math.round((dato[col_Datos[10]['name']]) * 10) / 10 %></td>
-                    <td><%= Math.round((dato[col_Datos[11]['name']]) * 10) / 10 %>%</td>
+                    <td><%= Math.round((dato.CalifInicial) * 10) / 10 %> </td>
+                    <td><%= Math.round((dato.CalifFinal) * 10) / 10 %></td>
+                    <td><%= Math.round((dato.Avance) * 10) / 10 %>%</td>
                 <% } %>
               </tr>
             <% } %>

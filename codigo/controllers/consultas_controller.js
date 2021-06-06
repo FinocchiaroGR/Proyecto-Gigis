@@ -5,7 +5,6 @@ const DatosConsultas = require('../models/consultasResultados');
 const Historial = require('../models/consultasHistorial');
 const Participante = require('../models/participantes');
 const fs = require('fs');
-const http = require('http');
 
 let datosConsultas = new DatosConsultas();
 const arrows = Arrow.fetchAll();
@@ -19,7 +18,7 @@ exports.getResultados = ((request, response, next) => {
             //console.table(rows_Programas);
             datosConsultas.fetch()
             .then(([rowsDatos, fieldData_Datos]) => {
-                console.table(rowsDatos);
+                //console.table(rowsDatos);
                 datosConsultas.fetchCants()
                 .then((metaData) => {
                     //console.log(metaData);
@@ -28,7 +27,7 @@ exports.getResultados = ((request, response, next) => {
                         //console.table(rowsGen);
                         DatosConsultas.fetchPorGroup_cons()
                         .then(([rowsGroup, fieldData_Group]) => {
-                            console.table(rowsGroup);
+                            //console.table(rowsGroup);
                             response.render('consultas_Resultados', {
                                 tituloDeHeader: "Consulta - Resultados",
                                 tituloBarra: "Resultados de consulta",
@@ -99,9 +98,154 @@ exports.getResultados = ((request, response, next) => {
 });
 
 exports.postResultados = ((request, response, next) => {
-    var file = __dirname + './../downloads/reporte.csv';
-    response.download(file);
-    //console.log("Accion post en resultados");
+    const permiso = request.session.permisos;
+    if(permiso.includes(7)){ 
+        Programas.fetchAllSOrd()
+        .then(([lisProg, Col_programas]) => {
+            //console.table(lisProg);
+            datosConsultas.fetch()
+            .then(([datos, col_Datos]) => {
+                //console.table(datos);
+                datosConsultas.fetchCants()
+                .then((metaData) => {
+                    let texto = '';
+                    let bools = datosConsultas.getBools();
+
+                    if(bools.estadoConsulta) {
+                        texto += 'Participantes,';
+                        if(bools.mostrarSexEdad){
+                            texto += 'Sexo,Edad,';
+                        }
+                        if(bools.mostrarCalif) {
+                            let cicloCont = 0, progCont = 0;
+                            for(let i = 0; i<metaData.TotCol; i++) {
+                                texto += '"Calif inicial ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                         ' Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+                                texto += '"Calif Final ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                         'Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+                                if(((progCont+1) % metaData.TotProg) === 0){
+                                    progCont = 0;
+                                    cicloCont++;
+                                } else {
+                                    progCont++;
+                                }
+                            }
+                            texto += '"Calificación Inicial Absoluta",';
+                            texto += '"Calificación Final Absoluta",';
+                            texto += 'Promedio,Avance,';
+                        }
+                        texto += '\n';
+                        for(let i = 0; i < metaData.TotPart; i++) {
+                            texto += '"' + datos[i].nombreUsuario + ' ' + datos[i].apellidoPaterno + ' ' + datos[i].apellidoMaterno + '",';
+                            if(bools.mostrarSexEdad){
+                                texto += datos[i].sexo + ',"' + datos[i].Edad + '",';
+                            }
+                            if(bools.mostrarCalif) {
+
+                                let acumProm=0,contProm = 0,flagfin=0, flagIni=0;
+                                for(let j = 9; j<col_Datos.length; j++) { //9 porque es la primera calif Final
+
+                                    texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10) + ',';
+
+                                    if(datos[i][col_Datos[j]['name']] !== null && flagIni === 0){
+                                        flagIni = j;
+                                    }
+                    
+                                    if(datos[i][col_Datos[j]['name']] !== null && j % 2 === 0){ 
+                                        acumProm += Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10;
+                                        contProm++; 
+                                        flagfin = j;
+                                    }
+                                }                         
+
+                                texto += (Math.round((datos[i][col_Datos[flagIni]['name']] ) * 10) / 10) +',';
+                                texto += (Math.round((datos[i][col_Datos[flagfin]['name']] ) * 10) / 10) +',';
+                                texto += (Math.round((acumProm/contProm ) * 10) / 10) + ',';
+                                texto += (Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(lisProg[metaData.listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10) + '%,';
+                            }
+                            texto += '\n';
+                        }
+                    } else {
+                        texto += 'Participantes,';
+                        if(bools.mostrarSexEdad){
+                            texto += 'Sexo,Edad,';
+                        }
+                        if(bools.mostrarCalif) {
+                            let cicloCont = 0, progCont = 0;
+                            if(!bools.califOava) {
+                                for(let i = 0; i<metaData.TotCol; i++) {
+                                
+                                    texto += '"Calif inicial ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                         ' Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+                                    texto += '"Calif Final ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                         ' Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+
+                                    if(((progCont+1) % metaData.TotProg) === 0){
+                                        progCont = 0;
+                                        cicloCont++;
+                                    } else {
+                                        progCont++;
+                                    }
+                                }
+                            } else {
+                                for(let i = 0; i<metaData.TotCol; i++) {
+
+                                    texto += '"Avance ' + lisProg[metaData.listaProg[progCont]-1].nombrePrograma +
+                                            'Ciclo '+(parseInt(metaData.cicloIni)+cicloCont)+'",';
+
+                                    if(((progCont+1) % metaData.TotProg) === 0){
+                                        progCont = 0;
+                                        cicloCont++;
+                                    } else {
+                                        progCont++;
+                                    }
+                                }
+                            }
+                        }
+                        texto += '\n';
+                        for(let i = 0; i < metaData.TotPart; i++) {
+                            texto += '"' + datos[i].nombreUsuario + ' ' + datos[i].apellidoPaterno + ' ' + datos[i].apellidoMaterno + '",';
+                            if(bools.mostrarSexEdad){
+                                texto += datos[i].sexo + ',"' + datos[i].Edad + '",';
+                            }
+                            if(bools.mostrarCalif) {
+                                for(let j = 9; j < col_Datos.length; j++) {
+                                    if(!bools.califOava) {
+                                        texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10) + ',';
+                                    } else {
+                                        texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 100) / 100) + '%,';
+                                    }
+                                }
+                            }
+                            texto += '\n';
+                        }
+                    }                    
+                    let file = __dirname + './../downloads/reporte.csv';
+                    fs.writeFileSync(file, texto, {encoding: "latin1", flag: "w"});
+                    response.download(file);
+                }).catch( err => {
+                    request.session.mensaje = 'Error de actualizacion de la base de datos';
+                    request.session.bandera = true;
+                    response.redirect('/consultas/resultados');
+                    console.log(err);
+                });
+            }).catch( err => {
+                request.session.mensaje = 'Error de comunicacion con el servidor';
+                request.session.bandera = true;
+                response.redirect('/consultas/resultados');
+                console.log(err);
+            });
+        }).catch( err => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/consultas/resultados');
+            console.log(err);
+        });
+    }
+    else {
+        response.redirect('/consultas/resultados');
+    }
+    console.log("Archivo CSV en resultados");
 });
 
 exports.getResultadosGrupo = ((request, response, next) => {
@@ -113,19 +257,19 @@ exports.getResultadosGrupo = ((request, response, next) => {
     if(permiso.includes(5)){ 
         datosConsultas.fetchPorGrupo(id)
         .then(([rows_dato, fieldData_dato]) => {
+            //console.table(rows_dato);
             DatosConsultas.DatosGenGrupo(id)
             .then(([rows_Gen, fieldData_Gen]) => {
-                console.table(rows_Gen);
-                console.table(fieldData_Gen);
+                //console.table(rows_Gen);
                 response.render('consultas_Programa', {
-                    tituloDeHeader: 'Resultados ' + rows_Gen.nombrePrograma,
-                    tituloBarra: 'Resultados - Programa ' + rows_Gen.idPrograma + ' - Ciclo ' + rows_Gen.idCiclo,
+                    tituloDeHeader: 'Resultados ' + rows_Gen[0].nombrePrograma,
+                    tituloBarra: 'Resultados - ' + rows_Gen[0].nombrePrograma + ' - Ciclo ' + rows_Gen[0].idCiclo,
                     permisos: permiso,
                     mostrarSexEdad: bools.mostrarSexEdad,
                     mostrarCalif: bools.mostrarCalif,
                     col_Datos : fieldData_dato,
                     datos : rows_dato,
-                    datoGrupo : rows_Gen,
+                    datoGrupo : rows_Gen[0],
                     backArrow: {display: 'block', link: '/consultas/Resultados'},
                     forwArrow: arrows[1]
                 });
@@ -151,9 +295,47 @@ exports.getResultadosGrupo = ((request, response, next) => {
 });
 
 exports.postResultadosGrupo = ((request, response, next) => {
-    console.log("Accion post en resultados por Grupo");
-    response.status(302);
-    response.redirect('/consultas/Resultados');
+    const permiso = request.session.permisos;
+    const id = request.params.idGrupo;
+    if(permiso.includes(7)){ 
+        datosConsultas.fetchPorGrupo(id)
+        .then(([datos, col_Datos]) => {
+            let texto = '';
+            let bools = datosConsultas.getBools();
+
+            texto += 'Participantes,';
+            if(bools.mostrarSexEdad){
+                texto += 'Sexo,Edad,';
+            }
+            if(bools.mostrarCalif) {
+                texto += '"Calificación inicial","Calificación Final","Avance",';
+            }
+            texto += '\n';
+            for(let dato of datos) {
+                texto += '"' + dato.nombreUsuario + ' ' + dato.apellidoPaterno + ' ' + dato.apellidoMaterno + '",';
+                if(bools.mostrarSexEdad){
+                    texto += dato.sexo + ',"' + dato.Edad + '",';
+                }
+                if(bools.mostrarCalif) {
+                    texto += (Math.round((dato.CalifInicial) * 10) / 10) + ',';
+                    texto += (Math.round((dato.CalifFinal)*10) / 10) + ',';
+                    texto += (Math.round((dato.Avance) * 100) / 100) + '%,';
+                }
+                texto += '\n';
+            }
+                            
+            let file = __dirname + './../downloads/reporte.csv';
+            fs.writeFileSync(file, texto, {encoding: "latin1", flag: "w"});
+            response.download(file);
+        }).catch( err => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/consultas/Grupo/'+id);
+            console.log(err);
+        });
+    } else {
+        response.redirect('/consultas/Resultados');
+    }
 });
 
 exports.getConsultas = ((request, response, next) => {
@@ -210,6 +392,8 @@ exports.getConsultas = ((request, response, next) => {
             response.redirect('/consultas');
             console.log(err);
         });
+        request.session.mensaje = undefined;
+        request.session.bandera = undefined;
     }
     else {
         return response.redirect('/gestionAdmin');
@@ -248,7 +432,6 @@ exports.postConsultas = ((request, response, next) => {
 
 exports.postSelProgram = ((request, response, next) => {
     datosConsultas.setListaProg(request.body.listaProg);
-    //listaProgam = request.body.listaProg;
     //console.table(listaProgam);
 });
 
