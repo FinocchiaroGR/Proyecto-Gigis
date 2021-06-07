@@ -143,40 +143,40 @@ exports.postNuevoRoll = (request, response) => {
     }
     else
     {
-    let nombreRol = request.body.nombreRol;
-    const rol = new Rol(nombreRol);
-    rol.save()
-        .then(() => {
-            Rol.fetchId(nombreRol)
-                .then(([idRol]) => {
-                    for (let idfuncion of funciones){
-                        if (idfuncion != null){
-                            const add = new Rol_Func(idRol[0].idRol, idfuncion);
-                            add.save()
-                                .catch(err => {
-                                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                                    request.session.bandera = true; 
-                                    response.redirect('/gestionAdmin/gestionUsuarios');
-                                    console.log(err);
-                                });
+        let nombreRol = request.body.nombreRol;
+        const rol = new Rol(nombreRol);
+        rol.save()
+            .then(() => {
+                Rol.fetchId(nombreRol)
+                    .then(([idRol]) => {
+                        for (let idfuncion of funciones){
+                            if (idfuncion != null){
+                                const add = new Rol_Func(idRol[0].idRol, idfuncion);
+                                add.save()
+                                    .catch(err => {
+                                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                                        request.session.bandera = true; 
+                                        response.redirect('/gestionAdmin/gestionUsuarios');
+                                        console.log(err);
+                                    });
+                            }
                         }
-                    }
-                    request.session.mensaje = 'El rol fue creado correctamente';
-                    request.session.bandera = false;
-                    response.redirect('/gestionAdmin/gestionUsuarios');
-                })
-                .catch( err => {
-                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                    request.session.bandera = true;
-                    console.log(err);
-                });
-        })
-        .catch( err => {
-            request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
-            request.session.bandera = true; 
-            response.redirect('/gestionAdmin/gestionUsuarios');
-            console.log(err);
-        });
+                        request.session.mensaje = 'El rol fue creado correctamente';
+                        request.session.bandera = false;
+                        response.redirect('/gestionAdmin/gestionUsuarios');
+                    })
+                    .catch( err => {
+                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                        request.session.bandera = true;
+                        console.log(err);
+                    });
+            })
+            .catch( err => {
+                request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
+                request.session.bandera = true; 
+                response.redirect('/gestionAdmin/gestionUsuarios');
+                console.log(err);
+            });
     }
 };
 
@@ -320,9 +320,6 @@ exports.postUpdateUser = (request, response) => {
     if (password != null) {
         Usuario.actualizarPassword(password, oldEmail)
         .catch((err) => {
-            request.session.mensaje = 'Error de comunicacion con el servidor';
-            request.session.bandera = true;
-            response.redirect('/gestionAdmin/gestionUsuarios');
             console.log(err);
         })
     }
@@ -356,16 +353,10 @@ exports.postUpdateUser = (request, response) => {
                                             response.redirect('/gestionAdmin/gestionParticipantes');
                                         })
                                 }).catch((err) => {
-                                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                                    request.session.bandera = true;
-                                    response.redirect('/gestionAdmin/gestionUsuarios');
                                     console.log(err);
                                 })
                             
                         }).catch((err) => {
-                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                            request.session.bandera = true;
-                            response.redirect('/gestionAdmin/gestionUsuarios');
                             console.log(err);
                         })
                 }
@@ -402,22 +393,13 @@ exports.postUpdateUser = (request, response) => {
                                             response.redirect('/gestionAdmin/gestionParticipantes');
                                         })
                                 }).catch((err) => {
-                                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                                    request.session.bandera = true;
-                                    response.redirect('/gestionAdmin/gestionUsuarios');
                                     console.log(err);
                                 })
                         }).catch((err) => {
-                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                            request.session.bandera = true;
-                            response.redirect('/gestionAdmin/gestionUsuarios');
                             console.log(err);
                         })
                 }
             }).catch((err) => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
-                response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
             })
     }
@@ -459,9 +441,6 @@ exports.postUpdateUser = (request, response) => {
                         response.redirect('/gestionAdmin/gestionParticipantes');
                     })
             }).catch((err) => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
-                response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
             })
     }
@@ -498,9 +477,6 @@ exports.postUpdateUser = (request, response) => {
                         response.redirect('/gestionAdmin/gestionParticipantes');
                     })
             }).catch((err) => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
-                response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
             })
     }
