@@ -6,7 +6,6 @@ const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
 const Grupos_Terapeutas = require('../models/grupos_terapeutas');
-const { request, response } = require('express');
 
 const arrows = Arrow.fetchAll();
 
@@ -144,47 +143,40 @@ exports.postNuevoRoll = (request, response) => {
     }
     else
     {
-        if (request.body.nombreRol == '') {
-            request.session.mensaje = 'El rol tiene que tener un nombre';
-            request.session.bandera = true; 
-            response.redirect('/gestionAdmin/gestionUsuarios');
-        }
-        else {
-            let nombreRol = request.body.nombreRol;
-            const rol = new Rol(nombreRol);
-            rol.save()
-                .then(() => {
-                    Rol.fetchId(nombreRol)
-                        .then(([idRol]) => {
-                            for (let idfuncion of funciones){
-                                if (idfuncion != null){
-                                    const add = new Rol_Func(idRol[0].idRol, idfuncion);
-                                    add.save()
-                                        .catch(err => {
-                                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                                            request.session.bandera = true; 
-                                            response.redirect('/gestionAdmin/gestionUsuarios');
-                                            console.log(err);
-                                        });
-                                }
-                            }
-                            request.session.mensaje = 'El rol fue creado correctamente';
-                            request.session.bandera = false;
-                            response.redirect('/gestionAdmin/gestionUsuarios');
-                        })
-                        .catch( err => {
-                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                            request.session.bandera = true;
-                            console.log(err);
-                        });
+    let nombreRol = request.body.nombreRol;
+    const rol = new Rol(nombreRol);
+    rol.save()
+        .then(() => {
+            Rol.fetchId(nombreRol)
+                .then(([idRol]) => {
+                    for (let idfuncion of funciones){
+                        if (idfuncion != null){
+                            const add = new Rol_Func(idRol[0].idRol, idfuncion);
+                            add.save()
+                                .catch(err => {
+                                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                                    request.session.bandera = true; 
+                                    response.redirect('/gestionAdmin/gestionUsuarios');
+                                    console.log(err);
+                                });
+                        }
+                    }
+                    request.session.mensaje = 'El rol fue creado correctamente';
+                    request.session.bandera = false;
+                    response.redirect('/gestionAdmin/gestionUsuarios');
                 })
                 .catch( err => {
-                    request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
-                    request.session.bandera = true; 
-                    response.redirect('/gestionAdmin/gestionUsuarios');
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
                     console.log(err);
                 });
-        }
+        })
+        .catch( err => {
+            request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
+            request.session.bandera = true; 
+            response.redirect('/gestionAdmin/gestionUsuarios');
+            console.log(err);
+        });
     }
 };
 
