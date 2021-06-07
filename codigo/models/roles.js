@@ -9,7 +9,7 @@ module.exports = class Rol {
   //Este método servirá para guardar de manera persistente el nuevo objeto.
   save() {
     return db.execute(
-      'INSERT INTO roles (`idRol`, `nombre`) VALUES (null,?)',
+      'INSERT INTO roles (`nombre`) VALUES (?)',
       [this.nombre]
     );
   }

@@ -237,6 +237,9 @@ CHECK (fechaInicial < fechaFinal);
 ALTER TABLE programas 
 ADD UNIQUE `nombre_unico` (`nombrePrograma`);
 
+ALTER TABLE roles 
+ADD UNIQUE `nombreRoles_unico` (`nombre`);
+
 CREATE VIEW CalifDatos AS (SELECT
     Punt.login,
     U.nombreUsuario,
