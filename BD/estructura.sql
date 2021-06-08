@@ -237,6 +237,9 @@ CHECK (fechaInicial < fechaFinal);
 ALTER TABLE programas 
 ADD UNIQUE `nombre_unico` (`nombrePrograma`);
 
+ALTER TABLE roles 
+ADD UNIQUE `nombreRoles_unico` (`nombre`);
+
 CREATE VIEW CalifDatos AS (SELECT
     Punt.login,
     U.nombreUsuario,
@@ -292,6 +295,7 @@ GROUP BY
 -- Para Empezar servidor :
 -- INSERT INTO usuarios (login, password, nombreUsuario, apellidoPaterno, apellidoMaterno) VALUES ('sandra@hotmail.com','$2a$12$opSzIUOqyS1hlYR5CPXvWOBoDUYG6AXjlHr3weEV3E1DMl0JE9PE2','Sandra','Tello','Del Valle');
 -- Usuario: sandra@hotmail.com  Password: sandra525&
+-- INSERT INTO usuarios_roles (login, idRol) VALUES ('sandra@hotmail.com', 4);
 -- INSERT INTO funciones (idFuncion, requisitoFuncional) VALUES (1,'Registrar Programa'), (2,'Modificar Datos de Programas'), (3,'Inscribir Participantes'), (4,'Agregar Ciclo'), (5,'Consultar Programas'), (6,'Editar Participante'), (7,'Generar Archivo de Descarga'), (8,'Registrar Usuario'), (9,'Modificar Usuario'), (10,'Modificar Funciones Del Rol'), (11,'Modificar Ciclo'), (12,'Crear Rol'), (13,'Cambiar Rol De Usuarios'), (14,'Consultar Historial de Participantes'), (15,'Registrar Puntaje de Participante'), (16,'Modificar Objetivos de Niveles'), (17,'Eliminar Usuario'), (18,'Agregar Objetivos'), (19,'Eliminar Objetivos'),(20,'Registrar Participante'), (21,'Inscribir Participantes por Grupo Asignado');
 -- INSERT INTO roles (`idRol`, `nombre`) VALUES (null,'Participante'), (null,'Terapeuta'), (null,'Gestor'), (null,'Administrador');
--- INSERT INTO `roles_funciones` (`idRol`, `idfuncion`) VALUES ('4', '10');
+-- INSERT INTO `roles_funciones` (`idRol`, `idfuncion`, `fechaRF`) VALUES ('4', '10', 'current_timestamp()');

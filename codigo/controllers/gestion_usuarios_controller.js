@@ -6,7 +6,6 @@ const Rol = require('../models/roles');
 const Func = require('../models/funciones');
 const Rol_Func = require('../models/roles_funciones');
 const Grupos_Terapeutas = require('../models/grupos_terapeutas');
-const { request, response } = require('express');
 
 const arrows = Arrow.fetchAll();
 
@@ -144,47 +143,40 @@ exports.postNuevoRoll = (request, response) => {
     }
     else
     {
-        if (request.body.nombreRol == '') {
-            request.session.mensaje = 'El rol tiene que tener un nombre';
-            request.session.bandera = true; 
-            response.redirect('/gestionAdmin/gestionUsuarios');
-        }
-        else {
-            let nombreRol = request.body.nombreRol;
-            const rol = new Rol(nombreRol);
-            rol.save()
-                .then(() => {
-                    Rol.fetchId(nombreRol)
-                        .then(([idRol]) => {
-                            for (let idfuncion of funciones){
-                                if (idfuncion != null){
-                                    const add = new Rol_Func(idRol[0].idRol, idfuncion);
-                                    add.save()
-                                        .catch(err => {
-                                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                                            request.session.bandera = true; 
-                                            response.redirect('/gestionAdmin/gestionUsuarios');
-                                            console.log(err);
-                                        });
-                                }
+        let nombreRol = request.body.nombreRol;
+        const rol = new Rol(nombreRol);
+        rol.save()
+            .then(() => {
+                Rol.fetchId(nombreRol)
+                    .then(([idRol]) => {
+                        for (let idfuncion of funciones){
+                            if (idfuncion != null){
+                                const add = new Rol_Func(idRol[0].idRol, idfuncion);
+                                add.save()
+                                    .catch(err => {
+                                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                                        request.session.bandera = true; 
+                                        response.redirect('/gestionAdmin/gestionUsuarios');
+                                        console.log(err);
+                                    });
                             }
-                            request.session.mensaje = 'El rol fue creado correctamente';
-                            request.session.bandera = false;
-                            response.redirect('/gestionAdmin/gestionUsuarios');
-                        })
-                        .catch( err => {
-                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                            request.session.bandera = true;
-                            console.log(err);
-                        });
-                })
-                .catch( err => {
-                    request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
-                    request.session.bandera = true; 
-                    response.redirect('/gestionAdmin/gestionUsuarios');
-                    console.log(err);
-                });
-        }
+                        }
+                        request.session.mensaje = 'El rol fue creado correctamente';
+                        request.session.bandera = false;
+                        response.redirect('/gestionAdmin/gestionUsuarios');
+                    })
+                    .catch( err => {
+                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                        request.session.bandera = true;
+                        console.log(err);
+                    });
+            })
+            .catch( err => {
+                request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
+                request.session.bandera = true; 
+                response.redirect('/gestionAdmin/gestionUsuarios');
+                console.log(err);
+            });
     }
 };
 
@@ -276,7 +268,8 @@ exports.postModUser = (request, response) => {
                                     roles : roles,
                                     terapeuta : terapeuta,
                                     tBool : tBool,
-                                    permisos: request.session.permisos
+                                    permisos: request.session.permisos,
+                                    user: request.session.user
                                 })
                             })
                             .catch((err) => {
@@ -291,7 +284,8 @@ exports.postModUser = (request, response) => {
                             usuarios : usuarios,
                             roles : roles,
                             tBool : tBool,
-                            permisos: request.session.permisos
+                            permisos: request.session.permisos,
+                            user: request.session.user
                         });
                     }
                 })
@@ -328,9 +322,6 @@ exports.postUpdateUser = (request, response) => {
     if (password != null) {
         Usuario.actualizarPassword(password, oldEmail)
         .catch((err) => {
-            request.session.mensaje = 'Error de comunicacion con el servidor';
-            request.session.bandera = true;
-            response.redirect('/gestionAdmin/gestionUsuarios');
             console.log(err);
         })
     }
@@ -364,16 +355,10 @@ exports.postUpdateUser = (request, response) => {
                                             response.redirect('/gestionAdmin/gestionParticipantes');
                                         })
                                 }).catch((err) => {
-                                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                                    request.session.bandera = true;
-                                    response.redirect('/gestionAdmin/gestionUsuarios');
                                     console.log(err);
                                 })
                             
                         }).catch((err) => {
-                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                            request.session.bandera = true;
-                            response.redirect('/gestionAdmin/gestionUsuarios');
                             console.log(err);
                         })
                 }
@@ -410,22 +395,13 @@ exports.postUpdateUser = (request, response) => {
                                             response.redirect('/gestionAdmin/gestionParticipantes');
                                         })
                                 }).catch((err) => {
-                                    request.session.mensaje = 'Error de comunicacion con el servidor';
-                                    request.session.bandera = true;
-                                    response.redirect('/gestionAdmin/gestionUsuarios');
                                     console.log(err);
                                 })
                         }).catch((err) => {
-                            request.session.mensaje = 'Error de comunicacion con el servidor';
-                            request.session.bandera = true;
-                            response.redirect('/gestionAdmin/gestionUsuarios');
                             console.log(err);
                         })
                 }
             }).catch((err) => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
-                response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
             })
     }
@@ -467,9 +443,6 @@ exports.postUpdateUser = (request, response) => {
                         response.redirect('/gestionAdmin/gestionParticipantes');
                     })
             }).catch((err) => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
-                response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
             })
     }
@@ -506,9 +479,6 @@ exports.postUpdateUser = (request, response) => {
                         response.redirect('/gestionAdmin/gestionParticipantes');
                     })
             }).catch((err) => {
-                request.session.mensaje = 'Error de comunicacion con el servidor';
-                request.session.bandera = true;
-                response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
             })
     }
@@ -544,78 +514,113 @@ exports.postUpdateUser = (request, response) => {
 exports.postDeleteUser = (request, response) => {
     let oldEmail = request.body.oldEmail2;
     let tBool = request.body.tBool2;
+    let user = request.body.user;
 
-    if (tBool == 'true') {
-        Grupos_Terapeutas.fetchIfTerapeutaHaveGroups(oldEmail)
-            .then(([numGrupos]) => {
-                if (numGrupos[0].num_groups == 0){
-                    Terapeuta.deleteById(oldEmail)
-                        .then(() => {
-                            Usuario_Rol.deleteById(oldEmail)
-                                .then(() => {
-                                    Usuario.deleteById(oldEmail)
-                                        .then(() => {
-                                            request.session.mensaje = 'El usuario fue eliminado';
-                                            request.session.bandera = false; 
-                                            response.redirect('/gestionAdmin/gestionUsuarios');
-                                        })
-                                        .catch((err) => {
-                                            console.log(err);
-                                        })
-                                })
-                                .catch((err) => {
-                                    console.log(err);
-                                })
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        })
-                }
-                else {
-                    Usuario_Rol.deleteById(oldEmail)
-                        .then(() => {
-                            Terapeuta.changeStatusToB(oldEmail)
-                                .then(() => {
-                                    let timestamp = new Date().getUTCMilliseconds();
-                                        Usuario.changeLogin(oldEmail, timestamp)
+    if (user != oldEmail) {
+        if (tBool == 'true') {
+            Grupos_Terapeutas.fetchIfTerapeutaHaveGroups(oldEmail)
+                .then(([numGrupos]) => {
+                    if (numGrupos[0].num_groups == 0){
+                        Terapeuta.deleteById(oldEmail)
+                            .then(() => {
+                                Usuario_Rol.deleteById(oldEmail)
+                                    .then(() => {
+                                        Usuario.deleteById(oldEmail)
                                             .then(() => {
                                                 request.session.mensaje = 'El usuario fue eliminado';
                                                 request.session.bandera = false; 
                                                 response.redirect('/gestionAdmin/gestionUsuarios');
                                             })
                                             .catch((err) => {
+                                                request.session.mensaje = 'Error de comunicacion con el servidor';
+                                                request.session.bandera = true;
+                                                response.redirect('/gestionAdmin/gestionUsuarios');
                                                 console.log(err);
                                             })
-                                })
-                                .catch((err) => {
-                                    console.log(err);
-                                })
+                                    })
+                                    .catch((err) => {
+                                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                                        request.session.bandera = true;
+                                        response.redirect('/gestionAdmin/gestionUsuarios');
+                                        console.log(err);
+                                    })
+                            })
+                            .catch((err) => {
+                                request.session.mensaje = 'Error de comunicacion con el servidor';
+                                request.session.bandera = true;
+                                response.redirect('/gestionAdmin/gestionUsuarios');
+                                console.log(err);
+                            })
+                    }
+                    else {
+                        Usuario_Rol.deleteById(oldEmail)
+                            .then(() => {
+                                Terapeuta.changeStatusToB(oldEmail)
+                                    .then(() => {
+                                        let timestamp = new Date().getUTCMilliseconds();
+                                            Usuario.changeLogin(oldEmail, timestamp)
+                                                .then(() => {
+                                                    request.session.mensaje = 'El usuario fue eliminado';
+                                                    request.session.bandera = false; 
+                                                    response.redirect('/gestionAdmin/gestionUsuarios');
+                                                })
+                                                .catch((err) => {
+                                                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                                                    request.session.bandera = true;
+                                                    response.redirect('/gestionAdmin/gestionUsuarios');
+                                                    console.log(err);
+                                                })
+                                    })
+                                    .catch((err) => {
+                                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                                        request.session.bandera = true;
+                                        response.redirect('/gestionAdmin/gestionUsuarios');
+                                        console.log(err);
+                                    })
+                            })
+                            .catch((err) => {
+                                request.session.mensaje = 'Error de comunicacion con el servidor';
+                                request.session.bandera = true;
+                                response.redirect('/gestionAdmin/gestionUsuarios');
+                                console.log(err);
+                            })
+                    }
+                })
+                .catch((err) => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
+                    response.redirect('/gestionAdmin/gestionUsuarios');
+                    console.log(err);
+                })
+        }
+        else {
+            Usuario_Rol.deleteById(oldEmail)
+                .then(() => {
+                    Usuario.deleteById(oldEmail)
+                        .then(() => {
+                            request.session.mensaje = 'El usuario fue eliminado';
+                            request.session.bandera = false; 
+                            response.redirect('/gestionAdmin/gestionUsuarios');
                         })
                         .catch((err) => {
+                            request.session.mensaje = 'Error de comunicacion con el servidor';
+                            request.session.bandera = true;
+                            response.redirect('/gestionAdmin/gestionUsuarios');
                             console.log(err);
                         })
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+                })
+                .catch((err) => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
+                    response.redirect('/gestionAdmin/gestionUsuarios');
+                    console.log(err);
+                })
+        }
     }
     else {
-        Usuario_Rol.deleteById(oldEmail)
-            .then(() => {
-                Usuario.deleteById(oldEmail)
-                    .then(() => {
-                        request.session.mensaje = 'El usuario fue eliminado';
-                        request.session.bandera = false; 
-                        response.redirect('/gestionAdmin/gestionUsuarios');
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+        request.session.mensaje = 'No puedes borrarte a ti mismo';
+        request.session.bandera = true;
+        response.redirect('/gestionAdmin/gestionUsuarios');
     }
 };
 
@@ -635,10 +640,16 @@ exports.getPerfil = (request, response) => {
                     });
                 })
                 .catch((err) => {
+                    request.session.mensaje = 'Error de comunicacion con el servidor';
+                    request.session.bandera = true;
+                    response.redirect('/gestionAdmin/gestionUsuarios');
                     console.log(err);
                 })
         })
         .catch((err) => {
+            request.session.mensaje = 'Error de comunicacion con el servidor';
+            request.session.bandera = true;
+            response.redirect('/gestionAdmin/gestionUsuarios');
             console.log(err);
         })
 };
