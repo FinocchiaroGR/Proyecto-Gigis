@@ -387,6 +387,7 @@ const modUser = (login) => {
                     '<input type="hidden" id="_csrf" name="_csrf" value="' + csrf + '">' +
                     '<input hidden name="oldEmail2" value="' + data.usuarios[0].login + '">' +
                     '<input hidden name="tBool2" value="' + data.tBool + '">' +
+                    '<input hidden name="user" value="' + data.user + '">' +
                 '</form><div class="modal-footer">' +
                     '<button type="submit" class="modal-action waves-effect btn-flat grey lighten-1 right" boton-md" style="margin:5px;" form="saveModUser">Actualizar</button>';
             if (data.permisos.includes(17)) { 
