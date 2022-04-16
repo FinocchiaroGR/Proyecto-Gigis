@@ -1,1 +1,1 @@
-# Proyecto-Gigi-s
+# Proyecto Gigis
